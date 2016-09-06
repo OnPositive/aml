@@ -18,6 +18,11 @@ import org.aml.typesystem.meta.TypeInformation;
 
 public class AnnotationsProcessingConfig {
 
+	private static final String FALSE = "false";
+	private static final String TRUE = "true";
+	private static final String NULLABLE = "nullable";
+	private static final String REQUIRED = "required";
+
 	public static class MemberMapping {
 		@XmlAttribute
 		String name;
@@ -71,17 +76,21 @@ public class AnnotationsProcessingConfig {
 				} else {
 					if (m.value != null) {
 						value = m.value;
-						if (value.equals("true")) {
+						if (value.equals(TRUE)) {
 							value = true;
 						}
-						if (value.equals("false")) {
-							value = true;
+						if (value.equals(FALSE)) {
+							value = false;
 						}
 					}
 				}
-				if (facetName.equals("required")){
+				if (facetName.equals(REQUIRED)){
 					
 					cfg.required=(boolean) Boolean.valueOf(""+value);
+				}
+				if (facetName.equals(NULLABLE)){
+				
+					cfg.nullable=(boolean) Boolean.valueOf(""+value);
 				}
 				if (value==null||value.equals(false)||value.equals("")){
 					continue;

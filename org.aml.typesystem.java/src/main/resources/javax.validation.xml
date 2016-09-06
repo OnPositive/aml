@@ -1,0 +1,24 @@
+<annotations>
+	<annotation name="javax.validation.constraints.Max" skipFromRaml="true">
+		<member name="value" target="maximum"/>
+	</annotation>
+	<annotation name="javax.validation.constraints.Min" skipFromRaml="true">
+		<member name="value" target="minimum"/>
+	</annotation>
+	<annotation name="javax.validation.constraints.DecimalMax" skipFromRaml="true">
+		<member name="value" target="maximum"/>
+	</annotation>
+	<annotation name="javax.validation.constraints.DecimalMin" skipFromRaml="true">
+		<member name="value" target="minimum"/>
+	</annotation>
+	<annotation name="javax.validation.constraints.Pattern" skipFromRaml="true">
+		<member name="regexp" target="pattern"/>
+	</annotation>
+	<annotation name="javax.validation.constraints.Size" skipFromRaml="true">
+		<member name="min" target="minLength"/>
+		<member name="max" target="maxLength"/>
+	</annotation>
+	<annotation name="javax.validation.constraints.NotNull" skipFromRaml="true">
+		<member value="false" target="nullable"/>	
+	</annotation>
+</annotations>

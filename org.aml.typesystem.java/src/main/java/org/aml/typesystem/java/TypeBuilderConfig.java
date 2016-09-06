@@ -16,6 +16,7 @@ public class TypeBuilderConfig {
 	public TypeBuilderConfig() {
 		annotationsProcessingConfig.append(TypeBuilderConfig.class.getResourceAsStream("/jaxb.xml"));
 		annotationsProcessingConfig.append(TypeBuilderConfig.class.getResourceAsStream("/lang.xml"));
+		annotationsProcessingConfig.append(TypeBuilderConfig.class.getResourceAsStream("/javax.validation.xml"));
 	}
 	
 	public IPropertyNameBuilder getPropertyNameBuilder() {

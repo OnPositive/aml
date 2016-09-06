@@ -805,4 +805,8 @@ public abstract class AbstractType implements IType {
 	public void setNullable(boolean nullable) {
 		this.nullable=nullable;
 	}
+	
+	public boolean isNullable(){
+		return this.nullable;
+	}
 }

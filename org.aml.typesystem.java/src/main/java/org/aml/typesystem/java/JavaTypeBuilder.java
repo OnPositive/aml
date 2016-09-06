@@ -166,7 +166,7 @@ public class JavaTypeBuilder {
 			cfg.isProperty = true;
 			cfg.type = buildType;
 			cfg.required = !optional;
-
+			cfg.nullable=config.getCheckNullable().isNullable(iMember);
 			for (IAnnotationModel annotation : iMember.getAnnotations()) {
 				if (!config.getAnnotationsProcessingConfig().process(cfg, annotation)) {
 					if (config.getAnnotationsFilter().preserve(annotation)) {
@@ -175,6 +175,12 @@ public class JavaTypeBuilder {
 				}
 			}
 			cfg.type = appendAnnotations(cfg.type, toProcess, true);
+			if (cfg.nullable){
+				if (!cfg.type.isAnonimous()) {
+					cfg.type = TypeOps.derive("", cfg.type);
+				}
+				cfg.type.setNullable(true);
+			}
 			tp.declareProperty(p, cfg.type, !cfg.required);
 		}
 		ArrayList<IAnnotationModel> toProcess = new ArrayList<>();

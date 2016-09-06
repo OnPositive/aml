@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.IMember;
 import org.aml.typesystem.java.IAnnotationFilter;
+import org.aml.typesystem.java.OptionalityNullabilityChecker;
 import org.junit.Test;
 
 import junit.framework.TestCase;
@@ -89,6 +91,36 @@ public class BasicTest extends TestCase{
 		});
 		r0.add(NestedAnnotations.class);		
 		compare(r0.flush(), "/t9.raml");		
+	}
+	
+	public void test9(){
+		Java2Raml r0=new Java2Raml();
+		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
+			
+			public boolean preserve(IAnnotationModel mdl) {
+				return true;
+			}
+		});
+		r0.getTypeBuilderConfig().setCheckNullable(new OptionalityNullabilityChecker() {
+			
+			@Override
+			public boolean isOptional(IMember f) {
+				return false;
+			}
+			
+			@Override
+			public boolean isNullable(IMember f) {
+				if (f.isCollection()){
+					return true;
+				}
+				if (f.getType().getFullyQualifiedName().indexOf('.')!=-1){
+					return true;
+				}
+				return false;
+			}
+		});
+		r0.add(ValidationBean.class);		
+		compare(r0.flush(), "/t10.raml");		
 	}
 	
 	

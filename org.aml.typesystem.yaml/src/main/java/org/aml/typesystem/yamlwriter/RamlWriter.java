@@ -47,12 +47,20 @@ public class RamlWriter {
 		Set<AbstractType> superTypes = t.superTypes();
 		if(superTypes.size()>0){
 			if (superTypes.size()==1){
-				result.put(TYPE,superTypes.iterator().next().name());
+				String name = superTypes.iterator().next().name();
+				if (t.isNullable()){
+					name=name+" | nil";
+				}
+				result.put(TYPE,name);
 			}
 			else{
 				ArrayList<String>types=new ArrayList<>();
 				for (AbstractType ts:superTypes){
-					types.add(ts.name());
+					String name = ts.name();
+					if (t.isNullable()){
+						name=name+" | nil";
+					}
+					types.add(name);
 				}
 				result.put(TYPE,types);
 			}
@@ -143,6 +151,9 @@ public class RamlWriter {
 		else{
 			String name = p.name();
 			vl=name;
+			if (p.isNullable()){
+				return vl+" | nil";
+			}
 		}
 		return vl;
 	}

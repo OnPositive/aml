@@ -12,6 +12,6 @@ public class XMLSerialized2 {
 	@XmlAttribute(required=false,name="LastName")
 	String lastName;
 //	
-	@XmlElement(defaultValue="100",nillable=true)
+	@XmlElement(defaultValue="100")
 	double salary;
 }

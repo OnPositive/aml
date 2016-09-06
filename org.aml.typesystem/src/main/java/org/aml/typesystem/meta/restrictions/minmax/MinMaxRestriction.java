@@ -126,6 +126,18 @@ public abstract class MinMaxRestriction extends FacetRestriction<Number> {
 	
 	@Override
 	public void setValue(Object vl) {
+		if (vl instanceof String){
+			try{
+				if ((""+vl).indexOf(".")!=-1){
+					vl=Double.parseDouble((String) vl);
+				}
+				else{
+					vl=Long.parseLong(""+vl);
+				}
+			}catch(NumberFormatException e){
+				vl=-1;
+			}
+		}
 		this.value=(Number) vl;
 	}
 

@@ -6,7 +6,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.aml.typesystem.IFieldModel;
@@ -49,9 +48,7 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 		return Modifier.isPublic(element.getModifiers());		
 	}
 
-	public List<ITypeModel> getJAXBTypes() {		
-		return Utils.getJAXBTypes(this.element);
-	}
+	
 
 	public Class<?> getJavaType() {
 		return element.getType();
@@ -88,4 +85,6 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 	public boolean isMap() {
 		return Map.class.isAssignableFrom(this.element.getType());
 	}
+
+	
 }

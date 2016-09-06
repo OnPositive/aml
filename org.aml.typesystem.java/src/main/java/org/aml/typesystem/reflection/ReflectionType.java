@@ -2,6 +2,7 @@ package org.aml.typesystem.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.aml.typesystem.IFieldModel;
 import org.aml.typesystem.IMethodModel;
@@ -107,6 +108,27 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
+	}
+
+
+	@Override
+	public boolean isCollection() {
+		if (this.element.isArray()){
+			return true;
+		}
+		if (Collection.class.isAssignableFrom(this.element)){
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public ITypeModel getComponentType() {
+		if (this.element.isArray()){
+			return new ReflectionType(element.getComponentType());
+		}
+		return null;
 	}
 
 }

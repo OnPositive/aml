@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.aml.typesystem.beans.IProperty;
+import org.aml.typesystem.beans.IPropertyView;
 import org.aml.typesystem.beans.PropertyBean;
 import org.aml.typesystem.beans.PropertyViewImpl;
 import org.aml.typesystem.meta.BasicMeta;
@@ -59,6 +60,10 @@ public abstract class AbstractType implements IType {
 	
 	public final boolean isSuperType(AbstractType t){
 		return this.equals(t)||this.allSubTypes().contains(t);
+	}
+	
+	public IPropertyView toPropertiesView(){
+		return new PropertyViewImpl(this);
 	}
 
 	/**

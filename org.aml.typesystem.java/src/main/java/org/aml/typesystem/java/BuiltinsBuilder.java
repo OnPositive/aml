@@ -28,14 +28,29 @@ public class BuiltinsBuilder implements IJavaTypeBuilder {
 
 		@Override
 		public AbstractType getType(ITypeModel mdl) {
-			AbstractType result = TypeOps.derive(null, base);
-			if (this.nullable) {
-				result.setNullable(this.nullable);
-			}
 			if (this.format != null) {
-				result.addMeta(new Format(this.format));
+				String name=this.format;
+				if (this.nullable){
+					name=Character.toUpperCase(name.charAt(0))+name.substring(1);
+				}
+				AbstractType result = TypeOps.derive(name, base);
+				if (this.nullable) {
+					result.setNullable(this.nullable);
+				}
+				if (this.format != null) {
+					result.addMeta(new Format(this.format));
+				}
+				return result;
 			}
-			return result;
+			
+			if (this.nullable){
+				String name=this.base.name();
+				name=Character.toUpperCase(name.charAt(0))+name.substring(1);
+				AbstractType result = TypeOps.derive(name, base);
+				result.setNullable(true);
+				return result;
+			}
+			return base;
 		}
 
 	}
@@ -58,10 +73,10 @@ public class BuiltinsBuilder implements IJavaTypeBuilder {
 		bldrs.put(Boolean.class.getName(), new SimpleBuilder(BuiltIns.BOOLEAN, true, null));
 		bldrs.put(String.class.getName(), new SimpleBuilder(BuiltIns.STRING, true, null));
 	}
-	
-	private static BuiltinsBuilder bld=new BuiltinsBuilder();
-	
-	public static BuiltinsBuilder getInstance(){
+
+	private static BuiltinsBuilder bld = new BuiltinsBuilder();
+
+	public static BuiltinsBuilder getInstance() {
 		return bld;
 	}
 

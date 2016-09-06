@@ -31,7 +31,7 @@ public class Utils {
 		return false;		
 	}
 	
-	public static List<ITypeModel> getJAXBTypes(Object obj){
+	public static List<ITypeModel> getParameterTypes(Object obj){
 		Class<?> type = null;
 		Type gType = null;
 		if(obj instanceof Field){

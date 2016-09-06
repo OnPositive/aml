@@ -32,4 +32,9 @@ public class TypeRegistryImpl implements ITypeRegistry {
 	public void registerType(AbstractType tp) {
 		map.put(tp.name(), tp);
 	}
+
+	@Override
+	public Collection<AbstractType> types() {
+		return map.values();
+	}
 }

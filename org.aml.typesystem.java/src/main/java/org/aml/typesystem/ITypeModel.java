@@ -54,4 +54,9 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	 * @return class model object
 	 */
 	ITypeModel resolveClass(String qualifiedName);
+	
+	
+	boolean isCollection();
+	
+	ITypeModel getComponentType();
 }

@@ -3,10 +3,10 @@ package org.aml.typesystem.java;
 public class TypeBuilderConfig {
 
 	private ITypeNamingConvention namingConvention=new SimpleNamingConvention();
-	private IAnnotationFilter annotationsFilter;
-	private OptionalityNullabilityChecker checkNullable;
-	private IMemberFilter memberFilter;
-	private IPropertyNameBuilder propertyNameBuilder;
+	private IAnnotationFilter annotationsFilter=new SkipAnnotationsFilter();
+	private OptionalityNullabilityChecker checkNullable=new AllRequired();
+	private IMemberFilter memberFilter=new FieldMemberFilter();
+	private IPropertyNameBuilder propertyNameBuilder=new OneTwoOneNameBuilder();
 
 	public IPropertyNameBuilder getPropertyNameBuilder() {
 		return propertyNameBuilder;

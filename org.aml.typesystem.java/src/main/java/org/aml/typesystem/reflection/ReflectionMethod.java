@@ -7,7 +7,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.aml.typesystem.IDocInfo;
@@ -128,11 +127,7 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 	}
 
 
-	/** {@inheritDoc} */
-	@Override
-	public List<ITypeModel> getJAXBTypes() {
-		return Utils.getJAXBTypes(this.element);
-	}
+	
 
 
 	/** {@inheritDoc} */

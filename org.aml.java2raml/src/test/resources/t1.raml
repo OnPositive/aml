@@ -1,0 +1,16 @@
+#%RAML 1.0 Library
+types:
+  double:
+    type: number
+    format: double
+  Manager:
+    type: Person
+    properties:
+      managed: Person[]
+      title: string
+  Person:
+    type: object
+    properties:
+      name: string
+      lastName: string
+      age: double

@@ -1,7 +1,5 @@
 package org.aml.typesystem;
 
-import java.util.List;
-
 /**
  * <p>IMember interface.</p>
  *
@@ -35,7 +33,7 @@ public interface IMember extends IBasicModel{
 	 *
 	 * @return a {@link org.aml.typesystem.ITypeModel} object.
 	 */
-	List<ITypeModel> getJAXBTypes();
+	ITypeModel getCollectionMemberType();
 	/**
 	 * <p>getJavaType.</p>
 	 *

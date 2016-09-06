@@ -2,9 +2,11 @@ package org.aml.typesystem.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 import org.aml.typesystem.IAnnotationModel;
 import org.aml.typesystem.IBasicModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>Abstract BasicReflectionMember class.</p>
@@ -17,7 +19,17 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	private static final String VALUE = "value";
 	protected T element;
 
+	public List<ITypeModel> getParameterTypes() {		
+		return Utils.getParameterTypes(this.element);
+	}
 	
+	public ITypeModel getCollectionMemberType() {
+		List<ITypeModel> parameterTypes = getParameterTypes();
+		if(parameterTypes!=null&&parameterTypes.size()==1){
+			return parameterTypes.get(0);
+		}
+		return null;
+	}
 	/**
 	 * <p>hashCode.</p>
 	 *
@@ -177,4 +189,6 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	public T getElement() {
 		return element;
 	}
+	
+	
 }

@@ -168,4 +168,10 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 	public boolean isMap() {
 		return Map.class.isAssignableFrom(this.element.getReturnType());
 	}
+
+
+	@Override
+	public Object defaultValue() {
+		return this.element.getDefaultValue();
+	}
 }

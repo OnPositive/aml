@@ -3,6 +3,8 @@ package org.aml.typesystem.reflection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.aml.typesystem.IAnnotationModel;
 import org.aml.typesystem.ITypeModel;
@@ -116,6 +118,25 @@ public class AnnotationModel implements IAnnotationModel {
 	@Override
 	public ITypeModel getType() {
 		return new ReflectionType(((Annotation)this.annotation).annotationType());
+	}
+
+
+	@Override
+	public Map<String, Object> allValues() {
+		LinkedHashMap<String, Object>result=new LinkedHashMap<>();
+		for (Method m:annotation.annotationType().getDeclaredMethods()){
+			try {
+				Object invoke = m.invoke(this.annotation);
+				Object defaultValue = m.getDefaultValue();
+				if (defaultValue!=null&&defaultValue.equals(invoke)){
+					continue;
+				}
+				result.put(m.getName(), invoke);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				throw new IllegalStateException();
+			}
+		}
+		return result;
 	}
 
 }

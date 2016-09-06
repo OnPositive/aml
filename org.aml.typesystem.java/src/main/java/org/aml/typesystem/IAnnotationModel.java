@@ -1,5 +1,7 @@
 package org.aml.typesystem;
 
+import java.util.Map;
+
 /**
  * <p>IAnnotationModel interface.</p>
  *
@@ -47,4 +49,6 @@ public interface IAnnotationModel {
 	IAnnotationModel[] getSubAnnotations(String pairName);
 
 	ITypeModel getType();
+
+	Map<String,Object> allValues();
 }

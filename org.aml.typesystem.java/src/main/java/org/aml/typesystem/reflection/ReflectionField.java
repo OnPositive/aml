@@ -86,5 +86,10 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 		return Map.class.isAssignableFrom(this.element.getType());
 	}
 
+	@Override
+	public Object defaultValue() {
+		return null;
+	}
+
 	
 }

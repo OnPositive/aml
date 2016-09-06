@@ -1,0 +1,12 @@
+#%RAML 1.0 Library
+annotationTypes:
+  Annotation3:
+    type: int
+    default: 10
+types:
+  int:
+    type: integer
+    format: int
+  CustomAnnotationTypes3:
+    type: object
+    ((Annotation3)): 14

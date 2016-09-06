@@ -53,8 +53,43 @@ public class BasicTest extends TestCase{
 			}
 		});
 		r0.add(CustomAnnotationTypes.class);		
-		compare(r0.flush(), "/t5.raml");		
-	}	
+		compare(r0.flush(), "/t6.raml");		
+	}
+	public void test6(){
+		Java2Raml r0=new Java2Raml();
+		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
+			
+			public boolean preserve(IAnnotationModel mdl) {
+				return true;
+			}
+		});
+		r0.add(CustomAnnotationTypes2.class);		
+		compare(r0.flush(), "/t7.raml");		
+	}
+	
+	public void test7(){
+		Java2Raml r0=new Java2Raml();
+		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
+			
+			public boolean preserve(IAnnotationModel mdl) {
+				return true;
+			}
+		});
+		r0.add(CustomAnnotationTypes3.class);		
+		compare(r0.flush(), "/t8.raml");		
+	}
+	
+	public void test8(){
+		Java2Raml r0=new Java2Raml();
+		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
+			
+			public boolean preserve(IAnnotationModel mdl) {
+				return true;
+			}
+		});
+		r0.add(NestedAnnotations.class);		
+		compare(r0.flush(), "/t9.raml");		
+	}
 	
 	
 	String normalizeWhiteSpace(String s){

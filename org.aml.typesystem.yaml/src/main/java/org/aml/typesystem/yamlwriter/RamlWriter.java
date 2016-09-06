@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.aml.typesystem.AbstractType;
@@ -28,6 +29,7 @@ import org.yaml.snakeyaml.Yaml;
 
 public class RamlWriter {
 
+	private static final String NOVALUE = "<<NOVALUE!!!";
 	private static final String ANNOTATION_TYPES = "annotationTypes";
 	private static final String RAML_1_0_LIBRARY = "#%RAML 1.0 Library";
 	private static final String ITEMS = "items";
@@ -67,9 +69,11 @@ public class RamlWriter {
 				}
 				dumpedProps.put(id, vl);
 			}
-			result.put(PROPERTIES, dumpedProps);
+			if (!dumpedProps.isEmpty()){
+				result.put(PROPERTIES, dumpedProps);
+			}
 		}
-		Set<TypeInformation> meta = t.meta();
+		Set<TypeInformation> meta = t.declaredMeta();
 		for (TypeInformation ti:meta){
 			if (ti instanceof PropertyIs){
 				continue;
@@ -81,9 +85,17 @@ public class RamlWriter {
 				ComponentShouldBeOfType cs=(ComponentShouldBeOfType) ti;
 				result.put(ITEMS, typeRespresentation(cs.range()));
 			}
+			
 			if (ti instanceof ISimpleFacet){
 				ISimpleFacet fs=(ISimpleFacet) ti;
-				result.put(fs.facetName(), fs.value());
+				Object value = fs.value();
+				if (value instanceof Map){
+					Map<?,?> mm=(Map<?,?>) value;
+					if (mm.isEmpty()){
+						value=NOVALUE;
+					}
+				}
+				result.put(fs.facetName(), value);
 			}
 			else{
 				if (ti instanceof XMLFacet){					
@@ -154,7 +166,7 @@ public class RamlWriter {
 		ws.write(RAML_1_0_LIBRARY);
 		ws.newLine();
 		rl.dump(toStore, ws);
-		return stringWriter.toString();
+		return stringWriter.toString().replaceAll(NOVALUE, "");
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}

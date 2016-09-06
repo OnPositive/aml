@@ -1,0 +1,29 @@
+#%RAML 1.0 Library
+annotationTypes:
+  Annotation2:
+    type: object
+    properties:
+      name: string
+      type:
+        type: boolean
+        default: true
+  AnotherAnnotation:
+    type: object
+    properties:
+      xx: Annotation2[]
+types:
+  Annotation2:
+    type: object
+    properties:
+      name: string
+      type:
+        type: boolean
+        default: true
+  NestedAnnotations:
+    type: object
+    ((AnotherAnnotation)):
+      xx:
+      - name: h
+      - name: b
+    ((Annotation2)):
+      name: Q

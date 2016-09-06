@@ -4,7 +4,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Annotation2 {
-	String name();
-	boolean type() default true;
+public @interface Annotation3 {
+
+	
+	 int value() default 10;
 }

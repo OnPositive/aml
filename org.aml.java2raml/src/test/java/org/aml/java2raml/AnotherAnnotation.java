@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Annotation2 {
-	String name();
-	boolean type() default true;
+public @interface AnotherAnnotation {
+
+	Annotation2[] xx();
 }

@@ -24,6 +24,8 @@ public class BuiltIns {
 	}
 	
 	public static final AbstractType ANY = new RootType("any");
+	
+	public static final AbstractType NIL = new RootType("nil");
 
 	public static final AbstractType SCALAR =TypeOps.derive("scalar", ANY);;
 
@@ -67,6 +69,8 @@ public class BuiltIns {
 		builtInsRegostry.registerType(FILE);
 		NUMBER.addMeta(BasicMeta.BUILTIN);
 		builtInsRegostry.registerType(DATE);
+		builtInsRegostry.registerType(NIL);
+		NIL.addMeta(BasicMeta.BUILTIN);
 		NUMBER.addMeta(new InstanceOfRestriction(Number.class));
 		builtInsRegostry.registerType(NUMBER);
 		INTEGER.addMeta(new InstanceOfRestriction(Integer.class));

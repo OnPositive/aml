@@ -52,4 +52,6 @@ public interface IMember extends IBasicModel{
 	 * @return whether the model type is map
 	 */
 	boolean isMap();
+	
+	Object defaultValue();
 }

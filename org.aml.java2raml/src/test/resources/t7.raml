@@ -1,0 +1,17 @@
+#%RAML 1.0 Library
+annotationTypes:
+  Annotation2:
+    type: object
+    properties:
+      name: string
+      type:
+        type: boolean
+        default: true
+types:
+  CustomAnnotationTypes2:
+    type: object
+    properties:
+      mm:
+        type: string
+        ((Annotation2)):
+          name: Another" Name

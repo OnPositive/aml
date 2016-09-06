@@ -1,7 +1,6 @@
 package org.aml.typesystem.meta.facets;
 
 import java.util.List;
-
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeRegistry;

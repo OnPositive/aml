@@ -54,4 +54,9 @@ public class UniqueItems extends BooleanRestriction {
 		return null;
 	}
 
+	@Override
+	public void setValue(Object vl) {
+		
+	}
+
 }

@@ -9,7 +9,7 @@ import org.aml.typesystem.values.ObjectAccess;
 
 public class Pattern extends FacetRestriction<String> {
 
-	private final String value;
+	private String value;
 
 	public Pattern(String pattern) {
 		super();
@@ -66,5 +66,10 @@ public class Pattern extends FacetRestriction<String> {
 		} catch (final PatternSyntaxException e) {
 			return e.getMessage();
 		}
+	}
+
+	@Override
+	public void setValue(Object vl) {
+		this.value=(String) vl;
 	}
 }

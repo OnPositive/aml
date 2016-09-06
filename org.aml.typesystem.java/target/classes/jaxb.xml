@@ -1,0 +1,22 @@
+<annotations>
+	<annotation name="javax.xml.bind.annotation.XmlElement">
+		<member name="required" target="required"/>
+		<member name="name" target="xml.name"/>
+		<member name="namespace" target="xml.namespace"/>
+		<member name="defaultValue" target="default"/>
+		<member name="nillable" target="nullable"/>			
+	</annotation>
+	<annotation name="javax.xml.bind.annotation.XmlAttribute">
+		<member name="required" target="required"/>
+		<member name="name" target="xml.name"/>
+		<member name="namespace" target="xml.namespace"/>
+		<member target="xml.attribute" value="true"/>		
+	</annotation>		
+	<annotation name="javax.xml.bind.annotation.XmlRootElement">
+		<member name="name" target="xml.name"/>
+		<member name="namespace" target="xml.namespace"/>
+	</annotation>
+	<annotation name="javax.xml.bind.annotation.XmlElementWrapper">
+		<member target="xml.wrapped" value="true"/>
+	</annotation>	
+</annotations>

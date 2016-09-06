@@ -22,5 +22,9 @@ public abstract class Facet<T> extends TypeInformation implements ISimpleFacet {
 		return value;
 	}
 
-	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setValue(Object vl) {
+		this.value=(T) vl;
+	}
 }

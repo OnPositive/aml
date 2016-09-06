@@ -131,4 +131,10 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 		return null;
 	}
 
+
+	@Override
+	public boolean isEnum() {
+		return element.isEnum();
+	}
+
 }

@@ -237,4 +237,13 @@ public class FacetRegistry {
 		}
 		return annotation.value();
 	}
+
+	public static TypeInformation facet(String facetName) {
+		for (FacetPrototype p:allPrototypes()){
+			if (p.name().equals(facetName)){
+				return p.newInstance();
+			}
+		}
+		return null;
+	}
 }

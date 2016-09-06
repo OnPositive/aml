@@ -1,0 +1,11 @@
+#%RAML 1.0 Library
+types:
+  SimpleEnum:
+    type: string
+    enum:
+    - HELLO
+    - GOODBUY
+  EnumTest:
+    type: object
+    properties:
+      myList: SimpleEnum[]

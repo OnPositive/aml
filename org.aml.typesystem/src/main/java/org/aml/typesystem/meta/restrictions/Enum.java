@@ -13,7 +13,7 @@ import org.aml.typesystem.values.ObjectAccess;
 
 public class Enum extends FacetRestriction<ArrayList<String>> {
 
-	private final ArrayList<String> values = new ArrayList<>();
+	private ArrayList<String> values = new ArrayList<>();
 
 	public Enum(Collection<String> vls) {
 		this.values.addAll(vls);
@@ -70,6 +70,12 @@ public class Enum extends FacetRestriction<ArrayList<String>> {
 			return "enum facet can only contain unique items";
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setValue(Object vl) {
+		this.values=(ArrayList<String>) vl;
 	}
 
 }

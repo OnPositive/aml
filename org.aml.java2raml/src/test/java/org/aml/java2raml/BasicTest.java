@@ -20,8 +20,29 @@ public class BasicTest extends TestCase{
 	public void test1(){
 		Java2Raml r0=new Java2Raml();
 		r0.add(NestedArray.class);		
-		compare(r0.flush(), "/t1.raml");
+		compare(r0.flush(), "/t2.raml");
 	}
+	
+	@Test
+	public void test2(){
+		Java2Raml r0=new Java2Raml();
+		r0.add(XMLSerialized.class);		
+		compare(r0.flush(), "/t3.raml");		
+	}
+	
+	@Test
+	public void test3(){
+		Java2Raml r0=new Java2Raml();
+		r0.add(XMLSerialized2.class);		
+		compare(r0.flush(), "/t4.raml");		
+	}
+	
+	public void test4(){
+		Java2Raml r0=new Java2Raml();
+		r0.add(EnumTest.class);		
+		compare(r0.flush(), "/t5.raml");		
+	}
+	
 	
 	
 	String normalizeWhiteSpace(String s){

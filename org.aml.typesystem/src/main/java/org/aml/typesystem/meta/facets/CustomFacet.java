@@ -25,7 +25,10 @@ public class CustomFacet extends TypeInformation implements ISimpleFacet {
 	public String facetName() {
 		return name;
 	}
-
+	@Override
+	public void setValue(Object vl) {
+		this.value=vl;
+	}
 	
 
 	@Override

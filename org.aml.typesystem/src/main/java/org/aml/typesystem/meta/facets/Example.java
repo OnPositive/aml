@@ -81,4 +81,9 @@ public class Example extends TypeInformation implements ISimpleFacet {
 		return BuiltIns.ANY;
 	}
 
+	@Override
+	public void setValue(Object vl) {
+		this.value=vl;
+	}
+
 }

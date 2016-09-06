@@ -1,0 +1,14 @@
+#%RAML 1.0 Library
+types:
+  XMLSerialized:
+    type: object
+    properties:
+      name:
+        type: string
+        xml:
+          name: Name
+      lastName:
+        type: string
+        xml:
+          attribute: true
+          name: LastName

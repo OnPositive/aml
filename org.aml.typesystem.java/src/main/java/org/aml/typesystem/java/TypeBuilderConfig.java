@@ -7,7 +7,16 @@ public class TypeBuilderConfig {
 	private OptionalityNullabilityChecker checkNullable=new AllRequired();
 	private IMemberFilter memberFilter=new FieldMemberFilter();
 	private IPropertyNameBuilder propertyNameBuilder=new OneTwoOneNameBuilder();
+	private AnnotationsProcessingConfig annotationsProcessingConfig=new AnnotationsProcessingConfig();
+	
+	public AnnotationsProcessingConfig getAnnotationsProcessingConfig() {
+		return annotationsProcessingConfig;
+	}
 
+	public TypeBuilderConfig() {
+		annotationsProcessingConfig.append(TypeBuilderConfig.class.getResourceAsStream("/jaxb.xml"));
+	}
+	
 	public IPropertyNameBuilder getPropertyNameBuilder() {
 		return propertyNameBuilder;
 	}

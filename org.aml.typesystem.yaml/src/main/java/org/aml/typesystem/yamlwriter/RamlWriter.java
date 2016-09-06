@@ -2,6 +2,7 @@ package org.aml.typesystem.yamlwriter;
 
 import java.io.BufferedWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,6 +17,7 @@ import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.beans.IPropertyView;
 import org.aml.typesystem.beans.ISimpleFacet;
 import org.aml.typesystem.meta.TypeInformation;
+import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
 import org.aml.typesystem.meta.restrictions.PropertyIs;
@@ -25,6 +27,9 @@ import org.yaml.snakeyaml.Yaml;
 
 public class RamlWriter {
 
+	private static final String RAML_1_0_LIBRARY = "#%RAML 1.0 Library";
+	private static final String ITEMS = "items";
+	private static final String PROPERTIES = "properties";
 	private static final String TYPES = "types";
 	private static final String TYPE = "type";
 
@@ -54,9 +59,13 @@ public class RamlWriter {
 			for (IProperty p:propertiesView.properties()){
 				Object vl=null;
 				vl = typeRespresentation(p.range());
-				dumpedProps.put(p.id(), vl);
+				String id = p.id();
+				if (!p.isRequired()){
+					id=id+"?";
+				}
+				dumpedProps.put(id, vl);
 			}
-			result.put("properties", dumpedProps);
+			result.put(PROPERTIES, dumpedProps);
 		}
 		Set<TypeInformation> meta = t.meta();
 		for (TypeInformation ti:meta){
@@ -68,14 +77,36 @@ public class RamlWriter {
 			}
 			if (ti instanceof ComponentShouldBeOfType){
 				ComponentShouldBeOfType cs=(ComponentShouldBeOfType) ti;
-				result.put("items", typeRespresentation(cs.range()));
+				result.put(ITEMS, typeRespresentation(cs.range()));
 			}
 			if (ti instanceof ISimpleFacet){
 				ISimpleFacet fs=(ISimpleFacet) ti;
 				result.put(fs.facetName(), fs.value());
 			}
+			else{
+				if (ti instanceof XMLFacet){					
+					result.put("xml",toMap(ti));
+				}
+			}
 		}
 		return result;		
+	}
+	
+	LinkedHashMap<String, Object> toMap(Object obj){
+		LinkedHashMap<String, Object>result=new LinkedHashMap<>();
+		Field[] declaredFields = obj.getClass().getDeclaredFields();
+		for (Field f:declaredFields){
+			f.setAccessible(true);
+			try {
+				Object object = f.get(obj);
+				if (object!=null&&!object.equals(Boolean.FALSE)){
+					result.put(f.getName(), object);
+				}
+			} catch (Exception e) {
+				throw new IllegalStateException();
+			}
+		}
+		return result;
 	}
 
 	private Object typeRespresentation(AbstractType p) {
@@ -134,7 +165,7 @@ public class RamlWriter {
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter ws=new BufferedWriter(stringWriter);
 		try{
-		ws.write("#%RAML 1.0 Library");
+		ws.write(RAML_1_0_LIBRARY);
 		ws.newLine();
 		rl.dump(toStore, ws);
 		return stringWriter.toString();

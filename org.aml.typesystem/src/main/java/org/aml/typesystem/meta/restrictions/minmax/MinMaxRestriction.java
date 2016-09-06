@@ -123,5 +123,10 @@ public abstract class MinMaxRestriction extends FacetRestriction<Number> {
 		}
 		return null;
 	}
+	
+	@Override
+	public void setValue(Object vl) {
+		this.value=(Number) vl;
+	}
 
 }

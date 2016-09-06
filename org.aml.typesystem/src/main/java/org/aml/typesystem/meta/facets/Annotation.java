@@ -11,11 +11,13 @@ public class Annotation extends TypeInformation implements ISimpleFacet {
 
 	protected String name;
 	protected Object value;
+	protected AbstractType type;
 
-	public Annotation(String annotationName, Object value) {
+	public Annotation(String annotationName, Object value, AbstractType type2) {
 		super(false);
 		this.name = annotationName;
 		this.value = value;
+		this.type=type2;
 	}
 
 	@Override
@@ -43,7 +45,6 @@ public class Annotation extends TypeInformation implements ISimpleFacet {
 
 	@Override
 	public Status validate(ITypeRegistry registry) {
-		final AbstractType type = registry.getType(this.name);
 		if (type == null) {
 			return new Status(Status.ERROR, 1231, "unknown annotation type " + name);
 		} else {

@@ -45,4 +45,6 @@ public interface IAnnotationModel {
 	 * @return an array of {@link org.aml.typesystem.IAnnotationModel} objects.
 	 */
 	IAnnotationModel[] getSubAnnotations(String pairName);
+
+	ITypeModel getType();
 }

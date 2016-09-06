@@ -13,11 +13,13 @@ import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.TypeRegistryImpl;
+import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 
 public class JavaTypeBuilder {
 
 	protected TypeRegistryImpl typeRegistry = new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
+	protected TypeRegistryImpl annotationsTypeRegistry = new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected TypeBuilderConfig config = new TypeBuilderConfig();
 
 	public TypeBuilderConfig getConfig() {
@@ -47,10 +49,12 @@ public class JavaTypeBuilder {
 			return BuiltIns.BOOLEAN;
 		}
 		String name = config.getNamingConvention().name(mdl);
+		TypeRegistryImpl typeRegistry = mdl.isAnnotation()?this.annotationsTypeRegistry:this.typeRegistry;
 		AbstractType existingType = typeRegistry.getType(name);
 		if (existingType != null) {
 			return existingType;
 		}
+		
 		AbstractType type = BuiltinsBuilder.getInstance().getType(mdl);
 		if (type != null) {
 			typeRegistry.registerType(type);
@@ -145,7 +149,17 @@ public class JavaTypeBuilder {
 	}
 
 	private AbstractType appendAnnotations(AbstractType type, ArrayList<IAnnotationModel> toProcess) {
+		for (IAnnotationModel m:toProcess){
+			ITypeModel at=m.getType();
+			AbstractType type2 = getType(at);
+			Object vl=dumpValue(toProcess);
+			type.addMeta(new Annotation("("+m.getName()+")",vl,type2));
+		}
 		return type;
+	}
+
+	private Object dumpValue(ArrayList<IAnnotationModel> toProcess) {
+		return "";
 	}
 
 	private AbstractType buildType(IMember iMember) {
@@ -159,5 +173,9 @@ public class JavaTypeBuilder {
 
 	public ITypeRegistry getRegistry() {
 		return this.typeRegistry;
+	}
+	
+	public ITypeRegistry getAnnotationTypeRegistry() {
+		return this.annotationsTypeRegistry;
 	}
 }

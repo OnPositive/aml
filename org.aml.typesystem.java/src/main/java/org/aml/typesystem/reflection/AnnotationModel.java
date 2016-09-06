@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>AnnotationModel class.</p>
@@ -109,6 +110,12 @@ public class AnnotationModel implements IAnnotationModel {
 
 	public String getCanonicalName() {
 		return this.annotation.annotationType().getCanonicalName();
+	}
+
+
+	@Override
+	public ITypeModel getType() {
+		return new ReflectionType(((Annotation)this.annotation).annotationType());
 	}
 
 }

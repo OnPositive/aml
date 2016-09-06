@@ -1,0 +1,10 @@
+<annotations>
+	<annotation name="java.lang.annotation.Documented" skipFromRaml="true"/>
+	<annotation name="java.lang.annotation.Retention" skipFromRaml="true"/>
+	<annotation name="java.lang.annotation.Target" skipFromRaml="true"/>
+	<annotation name="java.lang.annotation.Native" skipFromRaml="true"/>
+	<annotation name="java.lang.annotation.Inherited" skipFromRaml="true"/>
+	<annotation name="java.lang.annotation.Repeatable" skipFromRaml="true"/>
+	<annotation name="javax.annotation.Generated" skipFromRaml="true"/>
+	<annotation name="java.lang.Override" skipFromRaml="true"/>	
+</annotations>

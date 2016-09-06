@@ -3,6 +3,8 @@ package org.aml.java2raml;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.java.IAnnotationFilter;
 import org.junit.Test;
 
 import junit.framework.TestCase;
@@ -42,7 +44,17 @@ public class BasicTest extends TestCase{
 		r0.add(EnumTest.class);		
 		compare(r0.flush(), "/t5.raml");		
 	}
-	
+	public void test5(){
+		Java2Raml r0=new Java2Raml();
+		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
+			
+			public boolean preserve(IAnnotationModel mdl) {
+				return true;
+			}
+		});
+		r0.add(CustomAnnotationTypes.class);		
+		compare(r0.flush(), "/t5.raml");		
+	}	
 	
 	
 	String normalizeWhiteSpace(String s){

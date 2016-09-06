@@ -2,6 +2,7 @@ package org.aml.java2raml;
 
 import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.java.JavaTypeBuilder;
+import org.aml.typesystem.java.TypeBuilderConfig;
 import org.aml.typesystem.reflection.ReflectionType;
 import org.aml.typesystem.yamlwriter.RamlWriter;
 
@@ -20,6 +21,9 @@ public class Java2Raml {
 	
 	
 	public String flush(){
-		return writer.store(builder.getRegistry());		
+		return writer.store(builder.getRegistry(),builder.getAnnotationTypeRegistry());		
+	}
+	public TypeBuilderConfig getTypeBuilderConfig() {
+		return builder.getConfig();
 	}
 }

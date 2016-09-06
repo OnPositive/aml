@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.yaml.snakeyaml.Yaml;
 
 public class RamlWriter {
 
+	private static final String ANNOTATION_TYPES = "annotationTypes";
 	private static final String RAML_1_0_LIBRARY = "#%RAML 1.0 Library";
 	private static final String ITEMS = "items";
 	private static final String PROPERTIES = "properties";
@@ -133,13 +135,35 @@ public class RamlWriter {
 		return vl;
 	}
 
-	public String store(ITypeRegistry registry) {
+	public String store(ITypeRegistry registry,ITypeRegistry ar) {
 		DumperOptions dumperOptions = new DumperOptions();
 		dumperOptions.setDefaultFlowStyle(FlowStyle.BLOCK);
 		Yaml rl = new Yaml(dumperOptions);
 		LinkedHashMap<String, Object> toStore = new LinkedHashMap<>();
-		LinkedHashMap<String,Object> tps = new LinkedHashMap<>();
-		ArrayList<AbstractType>ts=new ArrayList<>(registry.types());
+		Collection<AbstractType> types2 = registry.types();
+		LinkedHashMap<String, Object> atps = fillRromList(ar.types());
+		if (!atps.isEmpty()){
+			toStore.put(ANNOTATION_TYPES, atps);
+		}
+		types2 = registry.types();		
+		LinkedHashMap<String, Object> tps = fillRromList(types2);
+		toStore.put(TYPES, tps);
+		StringWriter stringWriter = new StringWriter();
+		BufferedWriter ws=new BufferedWriter(stringWriter);
+		try{
+		ws.write(RAML_1_0_LIBRARY);
+		ws.newLine();
+		rl.dump(toStore, ws);
+		return stringWriter.toString();
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	private LinkedHashMap<String, Object> fillRromList(Collection<AbstractType> types2) {
+		LinkedHashMap<String,Object> tps = new LinkedHashMap<>();		
+		ArrayList<AbstractType>ts=new ArrayList<>(types2);
 		Collections.sort(ts,new Comparator<AbstractType>() {
 
 			@Override
@@ -161,17 +185,6 @@ public class RamlWriter {
 		for (AbstractType t : ts) {
 			tps.put(t.name(),dumpType(t));
 		}
-		toStore.put(TYPES, tps);
-		StringWriter stringWriter = new StringWriter();
-		BufferedWriter ws=new BufferedWriter(stringWriter);
-		try{
-		ws.write(RAML_1_0_LIBRARY);
-		ws.newLine();
-		rl.dump(toStore, ws);
-		return stringWriter.toString();
-		}catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		
+		return tps;
 	}
 }

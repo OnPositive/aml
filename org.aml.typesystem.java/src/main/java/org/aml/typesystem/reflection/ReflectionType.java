@@ -137,4 +137,10 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 		return element.isEnum();
 	}
 
+
+	@Override
+	public boolean isAnnotation() {
+		return element.isAnnotation();
+	}
+
 }

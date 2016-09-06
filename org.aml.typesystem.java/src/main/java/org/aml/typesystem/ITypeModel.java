@@ -61,4 +61,6 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	ITypeModel getComponentType();
 
 	boolean isEnum();
+	
+	boolean isAnnotation();
 }

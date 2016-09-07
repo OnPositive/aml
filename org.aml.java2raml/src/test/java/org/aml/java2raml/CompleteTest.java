@@ -17,6 +17,7 @@ public class CompleteTest extends TestCase{
 		cfg.pathToLookForClasses=file;
 		cfg.packageNamesToLook.add(CompleteTest.class.getPackage().getName());
 		cfg.classMasksToIgnore.add(".*Test");
+		cfg.classMasksToIgnore.add(".*XMLTransient");
 		cfg.ignoreUnreferencedAnnotationDeclarations=true;
 		ClassLoaderBasedCollector m=new ClassLoaderBasedCollector(CompleteTest.class.getClassLoader());
 		Collection<ITypeModel> gather = m.gather(cfg);
@@ -30,6 +31,7 @@ public class CompleteTest extends TestCase{
 		cfg.pathToLookForClasses=file;
 		cfg.packageNamesToLook.add(CompleteTest.class.getPackage().getName());
 		cfg.classMasksToIgnore.add(".*Test");
+		cfg.classMasksToIgnore.add(".*XMLTransient");
 		String str=new Java2Raml().processConfigToString(CompleteTest.class.getClassLoader(),cfg);
 		BasicTest.compare(str, "/t11.raml");
 	}

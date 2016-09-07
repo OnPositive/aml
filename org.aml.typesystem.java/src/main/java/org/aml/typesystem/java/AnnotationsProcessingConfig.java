@@ -130,4 +130,8 @@ public class AnnotationsProcessingConfig {
 		}
 		return false;
 	}
+
+	public void clear() {
+		this.config.clear();
+	}
 }

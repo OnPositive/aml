@@ -97,4 +97,9 @@ public class MaskedAnnotationType implements ITypeModel{
 	public IAnnotationModel getAnnotationByCanonicalName(String name) {
 		return mdl.getAnnotationByCanonicalName(name);
 	}
+
+	@Override
+	public String getPackageName() {
+		return mdl.getPackageName();
+	}
 }

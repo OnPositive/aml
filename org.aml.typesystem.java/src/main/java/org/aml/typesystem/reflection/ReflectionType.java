@@ -143,4 +143,10 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 		return element.isAnnotation();
 	}
 
+
+	@Override
+	public String getPackageName() {
+		return element.getPackage().getName();
+	}
+
 }

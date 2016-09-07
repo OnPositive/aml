@@ -63,4 +63,6 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	boolean isEnum();
 	
 	boolean isAnnotation();
+
+	String getPackageName();
 }

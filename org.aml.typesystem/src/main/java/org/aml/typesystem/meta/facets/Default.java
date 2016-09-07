@@ -20,6 +20,27 @@ public class Default extends Facet<Object>{
 	public Status validate(ITypeRegistry registry) {
 		return ownerType.validate(value);
 	}
+	
+	@Override
+	public Object value() {
+		Object value=super.value;
+		if (this.value instanceof String){
+			if (this.ownerType.isNumber()){
+				if (this.ownerType.isSubTypeOf(BuiltIns.INTEGER)){
+					value=Long.parseLong(value.toString());
+				}
+				else{
+					value=Double.parseDouble(value.toString());
+					
+				}
+			}
+			if (this.ownerType.isBoolean()){
+				value=Boolean.parseBoolean(value.toString());
+			}
+		}
+		return value;
+	}
+	
 
 	@Override
 	public AbstractType requiredType() {

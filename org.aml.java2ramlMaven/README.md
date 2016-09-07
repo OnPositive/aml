@@ -51,6 +51,16 @@ The following snippet shows a built-in annotation profile which we use to custom
 	</annotation>	
 </annotations>
 ```
+In addition to built in  RAML facets annotation profiles has following special targets:
+* `skipMember` - allows to skip member depending from annotation presense or member value
+* `required` - allows to configure if property is required depending from annotation presense or annotation member value
+* `nullable` - allows to configure if resulting property type should allow `null` value
+* `propName` - allows to configure resulting property name depending from member value
+
+At this moment project contains following annotation  profiles which are applied by default:
+  * `jaxb` - profile which customizes generation behavior depending from JAXB annotations
+  * `javax.validation` - this profile converts javax.validation annotation to corresponding RAML types constraints
+  * `lang` - settings to always ignore built-in java annotations
 
 ##Annotation Profiles related configuration parameters
 
@@ -58,3 +68,7 @@ The following snippet shows a built-in annotation profile which we use to custom
 * `ignoreDefaultAnnotationProfiles` - turns of default annotation profiles. By default following built in profiles are turned on javax.validaton, jaxb, lang
 
 ##Extensions
+
+Some times you need to do further customization of the generation process in this case you may pass a set of classNames into `extensions` plugin parameter. This classes should implement one of our extension interface, provide default constructor and be available on plugin class path.
+
+

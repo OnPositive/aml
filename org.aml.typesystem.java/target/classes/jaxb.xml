@@ -11,6 +11,9 @@
 		<member name="name" target="xml.name"/>
 		<member name="namespace" target="xml.namespace"/>
 		<member target="xml.attribute" value="true"/>		
+	</annotation>
+	<annotation name="javax.xml.bind.annotation.XmlTransient" skipFromRaml="true">
+		<member value="true" target="skipMember"/>	
 	</annotation>		
 	<annotation name="javax.xml.bind.annotation.XmlRootElement" skipFromRaml="true">
 		<member name="name" target="xml.name"/>

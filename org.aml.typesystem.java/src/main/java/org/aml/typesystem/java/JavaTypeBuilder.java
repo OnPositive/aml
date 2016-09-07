@@ -55,6 +55,8 @@ public class JavaTypeBuilder {
 		protected boolean nullable;
 		protected AbstractType type;
 		public boolean isProperty;
+		public boolean skipMember;
+		public String propName;
 	}
 
 	/**
@@ -188,6 +190,7 @@ public class JavaTypeBuilder {
 			cfg.isProperty = true;
 			cfg.type = buildType;
 			cfg.required = !optional;
+			cfg.propName=p;
 			cfg.nullable=config.getCheckNullable().isNullable(iMember);
 			for (IAnnotationModel annotation : iMember.getAnnotations()) {
 				if (!config.getAnnotationsProcessingConfig().process(cfg, annotation)) {
@@ -203,7 +206,9 @@ public class JavaTypeBuilder {
 				}
 				cfg.type.setNullable(true);
 			}
-			tp.declareProperty(p, cfg.type, !cfg.required);
+			if (!cfg.skipMember){
+				tp.declareProperty(cfg.propName, cfg.type, !cfg.required);
+			}
 		}
 		ArrayList<IAnnotationModel> toProcess = new ArrayList<>();
 		AnnotationsConfigInput cfg = new AnnotationsConfigInput();

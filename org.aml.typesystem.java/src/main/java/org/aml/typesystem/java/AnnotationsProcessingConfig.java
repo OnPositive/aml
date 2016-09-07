@@ -24,6 +24,8 @@ import org.aml.typesystem.meta.TypeInformation;
  */
 public class AnnotationsProcessingConfig {
 
+	private static final String PROP_NAME = "propName";
+	private static final String SKIP_MEMBER = "skipMember";
 	private static final String FALSE = "false";
 	private static final String TRUE = "true";
 	private static final String NULLABLE = "nullable";
@@ -109,6 +111,14 @@ public class AnnotationsProcessingConfig {
 				if (facetName.equals(NULLABLE)){
 				
 					cfg.nullable=Boolean.valueOf(""+value);
+				}
+				if (facetName.equals(SKIP_MEMBER)){
+					
+					cfg.skipMember=Boolean.valueOf(""+value);
+				}
+				if (facetName.equals(PROP_NAME)){
+					
+					cfg.propName=(""+value);
 				}
 				if (value==null||value.equals(false)||value.equals("")){
 					continue;

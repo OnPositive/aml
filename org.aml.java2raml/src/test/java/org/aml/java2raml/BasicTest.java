@@ -110,6 +110,12 @@ public class BasicTest extends TestCase{
 		r0.add(ValidationBean.class);		
 		compare(r0.flush(), "/t10.raml");		
 	}
+	public void test10(){
+		Java2Raml r0=new Java2Raml();
+		
+		r0.add(XMLTransient.class);		
+		compare(r0.flush(), "/t12.raml");		
+	}
 	
 	
 	static String normalizeWhiteSpace(String s){

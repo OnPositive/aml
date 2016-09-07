@@ -1,3 +1,3 @@
 # aml
 
-![Build Status](https://travis-ci.org/OnPositive/aml.gif)
+![Build Status](https://api.travis-ci.org/OnPositive/aml.svg)

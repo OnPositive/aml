@@ -38,7 +38,7 @@ public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 	protected MemberProcessingMode memberMode=MemberProcessingMode.FIELDS;
 	
 	@Parameter
-	protected JavaOptionalityMode optinalityMode=JavaOptionalityMode.EVERYTHING_IS_REQUIRED;
+	protected JavaOptionalityMode optionalityMode=JavaOptionalityMode.EVERYTHING_IS_REQUIRED;
 	
 	@Parameter
 	protected DefaultAnnotationBehavior annotationsBehavior=DefaultAnnotationBehavior.IGNORE_ALL_EXCEPT_EXPLICIT_PACKAGES;
@@ -80,7 +80,7 @@ public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 		URLClassLoader cl=new URLClassLoader(urls.toArray(new URL[urls.size()]));
 		Config cfg=new Config();
 		cfg.setMemberMode(this.memberMode);
-		cfg.setOptinalityMode(this.optinalityMode);
+		cfg.setOptinalityMode(this.optionalityMode);
 		cfg.setAnnotationsBehavior(this.annotationsBehavior);
 		if (this.annotationPackages!=null){
 			cfg.setAnnotationPackages(new ArrayList<>(this.annotationPackages));	

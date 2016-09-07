@@ -19,10 +19,20 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	private static final String VALUE = "value";
 	protected T element;
 
+	/**
+	 * <p>getParameterTypes.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<ITypeModel> getParameterTypes() {		
 		return Utils.getParameterTypes(this.element);
 	}
 	
+	/**
+	 * <p>getCollectionMemberType.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.ITypeModel} object.
+	 */
 	public ITypeModel getCollectionMemberType() {
 		List<ITypeModel> parameterTypes = getParameterTypes();
 		if(parameterTypes!=null&&parameterTypes.size()==1){
@@ -31,10 +41,11 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return null;
 	}
 	/**
-	 * <p>hashCode.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a int.
+	 * <p>hashCode.</p>
 	 */
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -44,6 +55,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -73,28 +85,31 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 
 	
 	/**
-	 * <p>getName.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getName.</p>
 	 */
+	@Override
 	public abstract String getName() ;
 
 	
 	/**
-	 * <p>getDocumentation.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getDocumentation.</p>
 	 */
+	@Override
 	public String getDocumentation() {
 		return "type some documentation here";
 	}
 
 	
 	/**
-	 * <p>getAnnotations.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return an array of {@link org.aml.typesystem.IAnnotationModel} objects.
+	 * <p>getAnnotations.</p>
 	 */
+	@Override
 	public IAnnotationModel[] getAnnotations() {
 		Annotation[] annotations = element.getAnnotations();
 		IAnnotationModel[] ml=new IAnnotationModel[annotations.length];
@@ -106,6 +121,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -126,6 +142,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -138,6 +155,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -149,6 +167,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -160,6 +179,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public boolean hasAnnotationWithCanonicalName(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -171,6 +191,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public IAnnotationModel getAnnotationByCanonicalName(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){

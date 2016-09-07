@@ -9,10 +9,22 @@ import org.aml.typesystem.meta.facets.internal.ANDRestricton;
 import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 import org.aml.typesystem.meta.restrictions.KnownPropertyRestricton;
 
+/**
+ * <p>Abstract DerivedType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class DerivedType extends AbstractType {
 
 	protected final LinkedHashSet<AbstractType> options = new LinkedHashSet<>();
 
+	/**
+	 * <p>Constructor for DerivedType.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param options an array of {@link org.aml.typesystem.AbstractType} objects.
+	 */
 	protected DerivedType(String name, AbstractType[] options) {
 		super(name);
 		for (final AbstractType o : options) {
@@ -20,6 +32,11 @@ public abstract class DerivedType extends AbstractType {
 		}
 	}
 
+	/**
+	 * <p>allOptions.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public final Set<AbstractType> allOptions() {
 		final LinkedHashSet<AbstractType> results = new LinkedHashSet<>();
 		final LinkedHashSet<DerivedType> visited = new LinkedHashSet<>();
@@ -27,8 +44,15 @@ public abstract class DerivedType extends AbstractType {
 		return results;
 	}
 
+	/**
+	 * <p>createRestricton.</p>
+	 *
+	 * @param rs an array of {@link org.aml.typesystem.meta.restrictions.AbstractRestricton} objects.
+	 * @return a {@link org.aml.typesystem.meta.TypeInformation} object.
+	 */
 	protected abstract TypeInformation createRestricton(AbstractRestricton[] rs);
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -51,6 +75,7 @@ public abstract class DerivedType extends AbstractType {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void fillDependencies(LinkedHashSet<AbstractType> ts) {
 		super.fillDependencies(ts);
@@ -75,6 +100,7 @@ public abstract class DerivedType extends AbstractType {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -83,6 +109,7 @@ public abstract class DerivedType extends AbstractType {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<TypeInformation> meta() {
 		final Set<TypeInformation> result = super.meta();
@@ -119,6 +146,11 @@ public abstract class DerivedType extends AbstractType {
 		return result;
 	}
 
+	/**
+	 * <p>options.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<AbstractType> options() {
 		return new LinkedHashSet<>(this.options);
 	}

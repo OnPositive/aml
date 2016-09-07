@@ -35,7 +35,7 @@ public class BasicTests {
 		IProperty property = new PropertyViewImpl(type).getProperty("managed");
 		AbstractType range = property.range();
 		ComponentShouldBeOfType meta = range.oneMeta(ComponentShouldBeOfType.class);
-		TestCase.assertTrue(meta.range().name().equals("Person"));
+		junit.framework.Assert.assertTrue(meta.range().name().equals("Person"));
 	}
 	
 	@Test
@@ -46,7 +46,7 @@ public class BasicTests {
 		AbstractType range = property.range();
 		ComponentShouldBeOfType meta = range.oneMeta(ComponentShouldBeOfType.class);
 		meta=meta.range().oneMeta(ComponentShouldBeOfType.class);
-		TestCase.assertTrue(meta.range().name().equals("double"));
+		junit.framework.Assert.assertTrue(meta.range().name().equals("double"));
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ public class BasicTests {
 		IProperty property = new PropertyViewImpl(type).getProperty("teamMembers");
 		AbstractType range = property.range();
 		ComponentShouldBeOfType meta = range.oneMeta(ComponentShouldBeOfType.class);
-		TestCase.assertTrue(meta.range().name().equals("Person"));
+		junit.framework.Assert.assertTrue(meta.range().name().equals("Person"));
 	}
 	
 	@Test

@@ -25,27 +25,60 @@ import org.aml.typesystem.java.TypeBuilderConfig;
 import org.aml.typesystem.reflection.ReflectionType;
 import org.aml.typesystem.yamlwriter.RamlWriter;
 
+/**
+ * <p>Java2Raml class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Java2Raml {
 
 	private JavaTypeBuilder builder = new JavaTypeBuilder();
 	private RamlWriter writer = new RamlWriter();
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param model a {@link org.aml.typesystem.ITypeModel} object.
+	 */
 	public void add(ITypeModel model) {
 		builder.getType(model);
 	}
 
+	/**
+	 * <p>add.</p>
+	 *
+	 * @param model a {@link java.lang.Class} object.
+	 */
 	public void add(Class<?> model) {
 		builder.getType(new ReflectionType(model));
 	}
 
+	/**
+	 * <p>flush.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String flush() {
 		return writer.store(builder.getRegistry(), builder.getAnnotationTypeRegistry());
 	}
 
+	/**
+	 * <p>getTypeBuilderConfig.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.java.TypeBuilderConfig} object.
+	 */
 	public TypeBuilderConfig getTypeBuilderConfig() {
 		return builder.getConfig();
 	}
 
+	/**
+	 * <p>processConfigToString.</p>
+	 *
+	 * @param classLoader a {@link java.lang.ClassLoader} object.
+	 * @param cfg a {@link org.aml.java2raml.Config} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String processConfigToString(ClassLoader classLoader, Config cfg) {
 		Collection<ITypeModel> gather = new ClassLoaderBasedCollector(classLoader).gather(cfg);
 

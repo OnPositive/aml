@@ -6,8 +6,20 @@ import java.util.Set;
 
 import org.aml.typesystem.meta.facets.internal.ANDRestricton;
 
+/**
+ * <p>RestrictionsOptimizer class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RestrictionsOptimizer {
 
+	/**
+	 * <p>optimize.</p>
+	 *
+	 * @param restrictions a {@link java.util.Set} object.
+	 * @return a {@link java.util.Set} object.
+	 */
 	public static Set<AbstractRestricton> optimize(Set<AbstractRestricton> restrictions) {
 		Set<AbstractRestricton> restrs = restrictions;
 		LinkedHashSet<AbstractRestricton> result = new LinkedHashSet<>();

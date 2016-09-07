@@ -8,16 +8,28 @@ import org.aml.typesystem.Status;
 import org.aml.typesystem.internal.annotations.Name;
 import org.aml.typesystem.values.ObjectAccess;
 
+/**
+ * <p>ComponentShouldBeOfType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 @Name("items")
 public class ComponentShouldBeOfType extends IntersectRequires  {
 
 	protected final AbstractType type;
 
+	/**
+	 * <p>Constructor for ComponentShouldBeOfType.</p>
+	 *
+	 * @param type a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public ComponentShouldBeOfType(AbstractType type) {
 		super();
 		this.type = type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
 		final int length = ObjectAccess.length(o);
@@ -56,6 +68,7 @@ public class ComponentShouldBeOfType extends IntersectRequires  {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected AbstractRestricton composeWith(AbstractRestricton restriction) {
 		if (restriction instanceof ComponentShouldBeOfType) {
@@ -65,21 +78,25 @@ public class ComponentShouldBeOfType extends IntersectRequires  {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return "items";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType range() {
 		return this.type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "items should be of type " + this.type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		if (!ownerType.allSuperTypes().contains(BuiltIns.ARRAY)) {
@@ -91,6 +108,7 @@ public class ComponentShouldBeOfType extends IntersectRequires  {
 		return Status.OK_STATUS;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType requiredType() {
 		return BuiltIns.ARRAY;

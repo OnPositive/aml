@@ -9,10 +9,22 @@ import org.aml.typesystem.meta.facets.Polymorphic;
 import org.aml.typesystem.meta.facets.internal.OriginalName;
 import org.aml.typesystem.meta.restrictions.KnownPropertyRestricton;
 
+/**
+ * <p>InheritedType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class InheritedType extends AbstractType {
 
 	protected final LinkedHashSet<AbstractType> superTypes = new LinkedHashSet<>();
 
+	/**
+	 * <p>Constructor for InheritedType.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param types a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	protected InheritedType(String name, AbstractType... types) {
 		super(name);
 		for (final AbstractType t : types) {
@@ -20,6 +32,11 @@ public class InheritedType extends AbstractType {
 		}
 	}
 
+	/**
+	 * <p>addSuperType.</p>
+	 *
+	 * @param t a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	protected void addSuperType(AbstractType t) {
 		this.superTypes.add(t);
 		if (!t.metaInfo.contains(BasicMeta.BUILTIN)) {
@@ -27,6 +44,7 @@ public class InheritedType extends AbstractType {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void fillDependencies(LinkedHashSet<AbstractType> ts) {
 		super.fillDependencies(ts);
@@ -35,6 +53,7 @@ public class InheritedType extends AbstractType {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<TypeInformation> meta() {
 		LinkedHashSet<TypeInformation>result=new LinkedHashSet<>();
@@ -50,11 +69,14 @@ public class InheritedType extends AbstractType {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<AbstractType> superTypes() {
 		return new LinkedHashSet<>(superTypes);
 	}
 	
+	/** {@inheritDoc} */
+	@Override
 	public AbstractType noPolymorph(){
 		if (this.oneMeta(Polymorphic.class)==null){
 			return this;

@@ -30,16 +30,18 @@ public class AnnotationModel implements IAnnotationModel {
 
 	
 	/**
-	 * <p>getName.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getName.</p>
 	 */
+	@Override
 	public String getName() {
 		return annotation.annotationType().getSimpleName();
 	}
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public String getValue(String pairName) {
 		try {
 			Method method = annotation.getClass().getMethod(pairName);
@@ -68,6 +70,7 @@ public class AnnotationModel implements IAnnotationModel {
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public String[] getValues(String value) {
 		try {
 			Method method = annotation.getClass().getMethod(value);
@@ -87,6 +90,7 @@ public class AnnotationModel implements IAnnotationModel {
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public IAnnotationModel[] getSubAnnotations(String pairName) {
 		try {
 		Method method = annotation.getClass().getMethod(pairName);
@@ -110,17 +114,21 @@ public class AnnotationModel implements IAnnotationModel {
 	}
 
 
+	/** {@inheritDoc} */
+	@Override
 	public String getCanonicalName() {
 		return this.annotation.annotationType().getCanonicalName();
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getType() {
-		return new ReflectionType(((Annotation)this.annotation).annotationType());
+		return new ReflectionType(this.annotation.annotationType());
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Map<String, Object> allValues() {
 		LinkedHashMap<String, Object>result=new LinkedHashMap<>();

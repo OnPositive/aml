@@ -15,6 +15,12 @@ import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
 import org.aml.typesystem.meta.restrictions.IMatchesProperty;
 import org.aml.typesystem.meta.restrictions.MapPropertyIs;
 
+/**
+ * <p>PropertyViewImpl class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class PropertyViewImpl implements IPropertyView {
 
 	protected AbstractType original;
@@ -26,31 +32,45 @@ public class PropertyViewImpl implements IPropertyView {
 	protected LinkedHashMap<String, PropertyBean> facets = new LinkedHashMap<>();
 	protected LinkedHashMap<String, PropertyBean> allFacets = new LinkedHashMap<>();
 
+	/** {@inheritDoc} */
 	@Override
 	public List<IProperty> properties() {
 		return new ArrayList<IProperty>(props.values());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<IProperty> allProperties() {
 		return new ArrayList<IProperty>(allprops.values());
 	}
 	
 	
+	/**
+	 * <p>superProperties.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<IProperty> superProperties() {
 		return new ArrayList<IProperty>(superProperties.values());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<IProperty> facets() {
 		return new ArrayList<IProperty>(facets.values());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<IProperty> allFacets() {
 		return new ArrayList<IProperty>(allFacets.values());
 	}
 
+	/**
+	 * <p>Constructor for PropertyViewImpl.</p>
+	 *
+	 * @param t a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public PropertyViewImpl(AbstractType t) {
 		this.original=t;
 		buildProperties(t.meta(), allprops);
@@ -62,9 +82,19 @@ public class PropertyViewImpl implements IPropertyView {
 		buildFacetDeclarations(t.meta(), allFacets);
 	}
 	
+	/**
+	 * <p>getDeclaredFacetsMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<String,PropertyBean>getDeclaredFacetsMap(){
 		return facets;
 	}
+	/**
+	 * <p>getDeclaredPropertiesMap.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<String,PropertyBean>getDeclaredPropertiesMap(){
 		return props;
 	}
@@ -127,10 +157,21 @@ public class PropertyViewImpl implements IPropertyView {
 		props.put(pr.id(), value2);
 	}
 
+	/**
+	 * <p>getXMLHints.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.beans.XMLHints} object.
+	 */
 	public XMLHints getXMLHints() {
 		return new XMLHints(null, this.original);
 	}
 
+	/**
+	 * <p>getProperty.</p>
+	 *
+	 * @param s a {@link java.lang.String} object.
+	 * @return a {@link org.aml.typesystem.beans.IProperty} object.
+	 */
 	public IProperty getProperty(String s) {
 		return allprops.get(s);
 	}

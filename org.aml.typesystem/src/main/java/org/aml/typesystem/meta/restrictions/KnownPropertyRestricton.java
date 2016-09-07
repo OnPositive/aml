@@ -10,17 +10,32 @@ import org.aml.typesystem.meta.ITransientMeta;
 import org.aml.typesystem.meta.facets.internal.InternalRestriction;
 import org.aml.typesystem.values.ObjectAccess;
 
+/**
+ * <p>KnownPropertyRestricton class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class KnownPropertyRestricton extends InternalRestriction implements ITransientMeta {
 
 
+	/**
+	 * <p>Constructor for KnownPropertyRestricton.</p>
+	 */
 	public KnownPropertyRestricton() {
 		super();
 	}
 
+	/**
+	 * <p>base.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public AbstractType base() {
 		return this.ownerType;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
 		final Set<IMatchesProperty> meta = this.ownerType.meta(IMatchesProperty.class);
@@ -39,6 +54,7 @@ public class KnownPropertyRestricton extends InternalRestriction implements ITra
 		return Status.OK_STATUS;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected AbstractRestricton composeWith(AbstractRestricton restriction) {
 		if (restriction instanceof KnownPropertyRestricton) {
@@ -58,16 +74,19 @@ public class KnownPropertyRestricton extends InternalRestriction implements ITra
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return "knownProperties";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "should not have unmatched properties";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		return Status.OK_STATUS;

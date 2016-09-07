@@ -2,6 +2,12 @@ package org.aml.typesystem.beans;
 
 import org.aml.typesystem.AbstractType;
 
+/**
+ * <p>PropertyBean class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class PropertyBean implements IProperty {
 
 	protected boolean additional;
@@ -15,6 +21,7 @@ public class PropertyBean implements IProperty {
 	
 	protected AbstractType type;
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -43,14 +50,19 @@ public class PropertyBean implements IProperty {
 		return true;
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public AbstractType getDeclaredAt() {
 		return declaredAt;
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public XMLHints getXMLHints(){
 		return new XMLHints(this.id, type);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -63,52 +75,89 @@ public class PropertyBean implements IProperty {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String id() {
 		return id;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isAdditional() {
 		return additional;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isMap() {
 		return isMap;
 	}
+	/** {@inheritDoc} */
 	@Override
 	public boolean isRequired() {
 		return required;
 	}
+	/** {@inheritDoc} */
+	@Override
 	public AbstractType range() {
 		return type;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>additional</code>.</p>
+	 *
+	 * @param additional a boolean.
+	 */
 	public void setAdditional(boolean additional) {
 		this.additional = additional;
 	}
 
+	/**
+	 * <p>Setter for the field <code>declaredAt</code>.</p>
+	 *
+	 * @param declaredAt a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public void setDeclaredAt(AbstractType declaredAt) {
 		this.declaredAt = declaredAt;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>id</code>.</p>
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * <p>setMap.</p>
+	 *
+	 * @param isMap a boolean.
+	 */
 	public void setMap(boolean isMap) {
 		this.isMap = isMap;
 	}
 
+	/**
+	 * <p>Setter for the field <code>required</code>.</p>
+	 *
+	 * @param required a boolean.
+	 */
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
 
+	/**
+	 * <p>Setter for the field <code>type</code>.</p>
+	 *
+	 * @param type a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public void setType(AbstractType type) {
 		this.type = type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return id+":"+type.name();

@@ -35,25 +35,35 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 		return element.getName();
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public ITypeModel getType() {
 		Class<?> returnType = element.getType();
 		return new ReflectionType(returnType);
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public boolean isStatic() {
 		return Modifier.isStatic(element.getModifiers());
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public boolean isPublic() {
 		return Modifier.isPublic(element.getModifiers());		
 	}
 
 	
 
+	/** {@inheritDoc} */
+	@Override
 	public Class<?> getJavaType() {
 		return element.getType();
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public boolean isGeneric() {
 		Type gType = element.getGenericType();
 		String typeName = this.element.getType().getName();
@@ -78,14 +88,19 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 		return false;
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public boolean isCollection() {
 		return Collection.class.isAssignableFrom(this.element.getType());
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public boolean isMap() {
 		return Map.class.isAssignableFrom(this.element.getType());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object defaultValue() {
 		return null;

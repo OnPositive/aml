@@ -28,10 +28,11 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 
 	
 	/**
-	 * <p>getMethods.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return an array of {@link org.aml.typesystem.IMethodModel} objects.
+	 * <p>getMethods.</p>
 	 */
+	@Override
 	public IMethodModel[] getMethods() {
 		Method[] declaredMethods = element.getDeclaredMethods();
 		IMethodModel[] methods=new IMethodModel[declaredMethods.length];
@@ -44,20 +45,22 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 
 	
 	/**
-	 * <p>getName.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getName.</p>
 	 */
+	@Override
 	public String getName() {
 		return element.getSimpleName();
 	}
 
 	
 	/**
-	 * <p>getFullyQualifiedName.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getFullyQualifiedName.</p>
 	 */
+	@Override
 	public String getFullyQualifiedName() {
 		return element.getCanonicalName();
 	}
@@ -76,6 +79,7 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getSuperClass() {
 		Class<?> superClass = this.element.getSuperclass();		
@@ -83,6 +87,7 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel[] getImplementedInterfaces() {
 		Class<?>[] interfaces = this.element.getInterfaces();
@@ -97,6 +102,7 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel resolveClass(String qualifiedName) {
 		try {
@@ -111,6 +117,7 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isCollection() {
 		if (this.element.isArray()){
@@ -123,6 +130,7 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getComponentType() {
 		if (this.element.isArray()){
@@ -132,18 +140,21 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEnum() {
 		return element.isEnum();
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isAnnotation() {
 		return element.isAnnotation();
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String getPackageName() {
 		return element.getPackage().getName();

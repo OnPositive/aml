@@ -185,6 +185,18 @@ public class Path implements  Cloneable {
 	 * @see #setDevice(String)
 	 * @see #isValidPath(String)
 	 * @see #setDevice(String)
+	 * @see #isValidPath(String)
+	 * @see #setDevice(String)
+	 * @see #isValidPath(String)
+	 * @see #setDevice(String)
+	 * @see #isValidPath(String)
+	 * @see #setDevice(String)
+	 * @see #isValidPath(String)
+	 * @see #setDevice(String)
+	 * @see #isValidPath(String)
+	 * @see #setDevice(String)
+	 * @see #isValidPath(String)
+	 * @see #setDevice(String)
 	 */
 	public Path(String device, String path) {
 		if (WINDOWS) {
@@ -342,10 +354,11 @@ public class Path implements  Cloneable {
 	 * Clones this object.
 	 */
 	/**
-	 * <p>clone.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.Object} object.
+	 * <p>clone.</p>
 	 */
+	@Override
 	public Object clone() {
 		try {
 			return super.clone();
@@ -547,6 +560,7 @@ public class Path implements  Cloneable {
 	 * Compares objects for equality.
 	 */
 	/** {@inheritDoc} */
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -608,10 +622,11 @@ public class Path implements  Cloneable {
 	 * Computes the hash code for this object.
 	 */
 	/**
-	 * <p>hashCode.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a int.
+	 * <p>hashCode.</p>
 	 */
+	@Override
 	public int hashCode() {
 		return separators & HASH_MASK;
 	}
@@ -1142,10 +1157,11 @@ public class Path implements  Cloneable {
 	 * @see Path#toString()
 	 */
 	/**
-	 * <p>toString.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>toString.</p>
 	 */
+	@Override
 	public String toString() {
 		int resultSize = computeLength();
 		if (resultSize <= 0)

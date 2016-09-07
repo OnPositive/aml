@@ -43,15 +43,24 @@ public interface IMember extends IBasicModel{
 	
 	
 	/**
+	 * <p>isCollection.</p>
+	 *
 	 * @return whether the model type is collection
 	 */
 	boolean isCollection();
 	
 	
 	/**
+	 * <p>isMap.</p>
+	 *
 	 * @return whether the model type is map
 	 */
 	boolean isMap();
 	
+	/**
+	 * <p>defaultValue.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
+	 */
 	Object defaultValue();
 }

@@ -5,9 +5,16 @@ import org.aml.typesystem.Status;
 import org.aml.typesystem.meta.IHasType;
 import org.aml.typesystem.meta.facets.internal.NothingRestrictionWithLocation;
 
+/**
+ * <p>Abstract TypedRestriction class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class  TypedRestriction extends AbstractRestricton implements IHasType{
 
 	
+	/** {@inheritDoc} */
 	@Override
 	protected AbstractRestricton innerOptimize() {
 		if (this.range()==null){

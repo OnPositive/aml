@@ -7,6 +7,12 @@ import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.facets.internal.OriginalName;
 
+/**
+ * <p>XMLHints class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class XMLHints implements IXMLHints {
 
 	public boolean attribute;
@@ -21,6 +27,11 @@ public class XMLHints implements IXMLHints {
 
 	private List<String> order = new ArrayList<>();
 
+	/**
+	 * <p>Constructor for XMLHints.</p>
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 */
 	public XMLHints(String id) {
 		String v = id;
 		if (v.charAt(0) == '@') {
@@ -40,6 +51,12 @@ public class XMLHints implements IXMLHints {
 		this.name = v;
 	}
 
+	/**
+	 * <p>Constructor for XMLHints.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param tp a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public XMLHints(String name, AbstractType tp) {
 		this.name = name;
 
@@ -66,6 +83,7 @@ public class XMLHints implements IXMLHints {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -105,6 +123,7 @@ public class XMLHints implements IXMLHints {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -116,6 +135,8 @@ public class XMLHints implements IXMLHints {
 		return result;
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public String qualifiedName() {
 		if (prefix != null) {
 			return prefix + ":" + name;
@@ -123,6 +144,7 @@ public class XMLHints implements IXMLHints {
 		return name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder bld = new StringBuilder();
@@ -141,21 +163,26 @@ public class XMLHints implements IXMLHints {
 		return bld.toString();
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public List<String> order() {
 
 		return order;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isAttribute() {
 		return attribute;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String localName() {
 		return name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean wrapped() {
 		return wrapped;

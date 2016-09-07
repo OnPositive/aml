@@ -10,6 +10,12 @@ import org.aml.typesystem.RestrictionsConflict;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.values.ObjectAccess;
 
+/**
+ * <p>MapPropertyIs class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MapPropertyIs extends IntersectRequires implements IMatchesProperty {
 
 	private AbstractType baseType;
@@ -17,23 +23,42 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 
 	private AbstractType requirement;
 
+	/**
+	 * <p>Constructor for MapPropertyIs.</p>
+	 *
+	 * @param regexp a {@link java.lang.String} object.
+	 */
 	public MapPropertyIs(String regexp) {
 		super();
 		this.requirement = BuiltIns.ANY;
 		this.regexp = regexp;
 	}
 	
+	/**
+	 * <p>Constructor for MapPropertyIs.</p>
+	 *
+	 * @param requirement a {@link org.aml.typesystem.AbstractType} object.
+	 * @param regexp a {@link java.lang.String} object.
+	 */
 	public MapPropertyIs(AbstractType requirement, String regexp) {
 		super();
 		this.requirement = requirement;
 		this.regexp = regexp;
 	}
+	/** {@inheritDoc} */
 	@Override
 	public void setOwnerType(AbstractType ownerType) {
 		this.baseType=ownerType;
 		super.setOwnerType(ownerType);
 	}
 	
+	/**
+	 * <p>Constructor for MapPropertyIs.</p>
+	 *
+	 * @param requirement a {@link org.aml.typesystem.AbstractType} object.
+	 * @param base a {@link org.aml.typesystem.AbstractType} object.
+	 * @param regexp a {@link java.lang.String} object.
+	 */
 	public MapPropertyIs(AbstractType requirement, AbstractType base, String regexp) {
 		super();
 		this.requirement = requirement;
@@ -41,6 +66,7 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 		this.baseType = base;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
 		final Status status = new Status(Status.OK, 0, "");
@@ -59,6 +85,7 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 		return status;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected AbstractRestricton composeWith(AbstractRestricton restriction) {
 		if (restriction instanceof MapPropertyIs) {
@@ -91,39 +118,56 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return "patternProperty";
 	}
 
+	/**
+	 * <p>getRegExp.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRegExp() {
 		return this.regexp;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String id() {
 		return "[" + this.regexp + "]";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String name) {
 		return name.matches(this.regexp);
 	}
 
+	/**
+	 * <p>psetCompatible.</p>
+	 *
+	 * @param anotherType a {@link org.aml.typesystem.meta.restrictions.MapPropertyIs} object.
+	 * @return a boolean.
+	 */
 	protected boolean psetCompatible(MapPropertyIs anotherType) {
 		return this.baseType.propertySet().equals(anotherType.baseType.propertySet());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType range() {
 		return requirement;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "pattern property " + this.regexp + " should be of type " + this.requirement;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		try {
@@ -140,6 +184,7 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType requiredType() {
 		return BuiltIns.OBJECT;

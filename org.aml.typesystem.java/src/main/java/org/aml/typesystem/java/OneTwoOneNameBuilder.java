@@ -3,8 +3,15 @@ package org.aml.typesystem.java;
 import org.aml.typesystem.IFieldModel;
 import org.aml.typesystem.IMember;
 
+/**
+ * <p>OneTwoOneNameBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class OneTwoOneNameBuilder implements IPropertyNameBuilder{
 
+	/** {@inheritDoc} */
 	@Override
 	public String buildName(IMember memb) {
 		if (memb instanceof IFieldModel){

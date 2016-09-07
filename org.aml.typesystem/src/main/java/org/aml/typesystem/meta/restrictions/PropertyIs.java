@@ -7,24 +7,42 @@ import org.aml.typesystem.RestrictionsConflict;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.values.ObjectAccess;
 
+/**
+ * <p>PropertyIs class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class PropertyIs extends IntersectRequires implements IMatchesProperty {
 
 	private final String name;
 
 	private final AbstractType requirement;
 
+	/**
+	 * <p>Constructor for PropertyIs.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public PropertyIs(String name) {
 		super();
 		this.requirement = BuiltIns.ANY;
 		this.name = name;
 	}
 	
+	/**
+	 * <p>Constructor for PropertyIs.</p>
+	 *
+	 * @param requirement a {@link org.aml.typesystem.AbstractType} object.
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public PropertyIs(AbstractType requirement, String name) {
 		super();
 		this.requirement = requirement;
 		this.name = name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
 		final Object propertyValue = ObjectAccess.propertyValue(name, o);
@@ -61,6 +79,7 @@ public class PropertyIs extends IntersectRequires implements IMatchesProperty {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected AbstractRestricton composeWith(AbstractRestricton restriction) {
 		if (restriction instanceof PropertyIs) {
@@ -70,31 +89,37 @@ public class PropertyIs extends IntersectRequires implements IMatchesProperty {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return this.name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String id() {
 		return this.name;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean matches(String name) {
 		return this.name.equals(name);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType range() {
 		return requirement;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.name + ":" + this.requirement.name();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		if (!ownerType.allSuperTypes().contains(BuiltIns.OBJECT)) {
@@ -106,6 +131,7 @@ public class PropertyIs extends IntersectRequires implements IMatchesProperty {
 		return Status.OK_STATUS;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType requiredType() {
 		return BuiltIns.OBJECT;

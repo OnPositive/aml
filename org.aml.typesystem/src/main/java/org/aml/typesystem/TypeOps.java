@@ -7,8 +7,21 @@ import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.RestrictionsOptimizer;
 
+/**
+ * <p>TypeOps class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TypeOps {
 
+	/**
+	 * <p>derive.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param ankestors a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public static AbstractType derive(String name, AbstractType... ankestors) {
 		if (ankestors.length == 0) {
 			throw new IllegalArgumentException("At least one ancestor is needed");
@@ -16,10 +29,23 @@ public class TypeOps {
 		return new InheritedType(name, ankestors);
 	}
 	
+	/**
+	 * <p>deriveObjectType.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public static AbstractType deriveObjectType(String name) {
 		return derive(name, BuiltIns.OBJECT);
 	}
 
+	/**
+	 * <p>intersect.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param option a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public static AbstractType intersect(String name, AbstractType... option) {
 		if (option.length == 0) {
 			throw new IllegalArgumentException("At least one option is needed");
@@ -44,6 +70,13 @@ public class TypeOps {
 		return new IntersectionType(name, option);
 	}
 
+	/**
+	 * <p>union.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param option a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a {@link org.aml.typesystem.UnionType} object.
+	 */
 	public static UnionType union(String name, AbstractType... option) {
 		if (option.length == 0) {
 			throw new IllegalArgumentException("At least one option is needed");
@@ -51,6 +84,12 @@ public class TypeOps {
 		return new UnionType(name, option);
 	}
 
+	/**
+	 * <p>array.</p>
+	 *
+	 * @param componentType a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public static AbstractType array(AbstractType componentType) {
 		AbstractType derive = TypeOps.derive("", BuiltIns.ARRAY);
 		derive.addMeta(new ComponentShouldBeOfType(componentType));

@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.aml.typesystem.ITypeModel;
 import org.junit.Test;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class CompleteTest extends TestCase{
@@ -19,7 +20,7 @@ public class CompleteTest extends TestCase{
 		cfg.ignoreUnreferencedAnnotationDeclarations=true;
 		ClassLoaderBasedCollector m=new ClassLoaderBasedCollector(CompleteTest.class.getClassLoader());
 		Collection<ITypeModel> gather = m.gather(cfg);
-		TestCase.assertEquals(gather.size(),11);
+		Assert.assertEquals(gather.size(),11);
 	}
 	
 	@Test

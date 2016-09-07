@@ -9,7 +9,7 @@
   </properties>
   <dependencies>
 		<dependency>
-			<groupId>org.aml</groupId>
+			<groupId>com.onpositive.aml</groupId>
 			<artifactId>org.aml.java2raml</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -41,7 +41,7 @@
   <parent>
   	<groupId> com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
   	<relativePath>..</relativePath>
   </parent>
 </project>

@@ -8,17 +8,30 @@ import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.meta.restrictions.PropertyIs;
 
+/**
+ * <p>Discriminator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Discriminator extends Facet<String> {
 
+	/**
+	 * <p>Constructor for Discriminator.</p>
+	 *
+	 * @param value a {@link java.lang.String} object.
+	 */
 	public Discriminator(String value) {
 		super(value);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return "discriminator";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		if (!ownerType.allSuperTypes().contains(BuiltIns.OBJECT)) {
@@ -46,6 +59,7 @@ public class Discriminator extends Facet<String> {
 		return Status.OK_STATUS;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType requiredType() {
 		return BuiltIns.OBJECT;

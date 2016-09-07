@@ -7,6 +7,12 @@ import java.util.Collection;
 import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.reflection.ReflectionType;
 
+/**
+ * <p>ClassLoaderBasedCollector class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ClassLoaderBasedCollector {
 
 	
@@ -15,11 +21,22 @@ public class ClassLoaderBasedCollector {
 	
 	private ClassLoader loader;
 	
+	/**
+	 * <p>Constructor for ClassLoaderBasedCollector.</p>
+	 *
+	 * @param loader a {@link java.lang.ClassLoader} object.
+	 */
 	public ClassLoaderBasedCollector(ClassLoader loader) {
 		super();
 		this.loader=loader;
 	}
 
+	/**
+	 * <p>gather.</p>
+	 *
+	 * @param cfg a {@link org.aml.java2raml.Config} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<ITypeModel> gather(Config cfg){
 		ArrayList<Class<?>>classesToProcess=new ArrayList<>();
 		File fl=new File(cfg.pathToLookForClasses);

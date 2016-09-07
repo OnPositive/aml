@@ -3,19 +3,19 @@
   <artifactId>org.aml.java2raml</artifactId>
   <dependencies>
   	<dependency>
-  		<groupId>org.aml</groupId>
+  		<groupId>com.onpositive.aml</groupId>
   		<artifactId>org.aml.typesystem</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.aml</groupId>
+  		<groupId>com.onpositive.aml</groupId>
   		<artifactId>org.aml.typesystem.java</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.aml</groupId>
+  		<groupId>com.onpositive.aml</groupId>
   		<artifactId>org.aml.typesystem.yaml</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>junit</groupId>
@@ -33,7 +33,7 @@
   <parent>
   	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
   	<relativePath>..</relativePath>
   </parent>
   <distributionManagement>

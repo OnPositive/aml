@@ -8,15 +8,27 @@ import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 
+/**
+ * <p>ANDRestricton class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ANDRestricton extends InternalRestriction {
 
 	protected AbstractRestricton[] options;
 
+	/**
+	 * <p>Constructor for ANDRestricton.</p>
+	 *
+	 * @param options a {@link org.aml.typesystem.meta.restrictions.AbstractRestricton} object.
+	 */
 	public ANDRestricton(AbstractRestricton... options) {
 		super();
 		this.options = options;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
 		for (final AbstractRestricton r : this.options) {
@@ -28,6 +40,7 @@ public class ANDRestricton extends InternalRestriction {
 		return Status.OK_STATUS;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected AbstractRestricton composeWith(AbstractRestricton restriction) {
 		if (restriction instanceof ANDRestricton) {
@@ -50,11 +63,13 @@ public class ANDRestricton extends InternalRestriction {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return "&";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setOwnerType(AbstractType ownerType) {
 		super.setOwnerType(ownerType);
@@ -63,6 +78,7 @@ public class ANDRestricton extends InternalRestriction {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder bld = new StringBuilder();
@@ -77,6 +93,7 @@ public class ANDRestricton extends InternalRestriction {
 		return bld.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		final Status okStatus = new Status(Status.OK, 0, "");
@@ -86,6 +103,11 @@ public class ANDRestricton extends InternalRestriction {
 		return okStatus;
 	}
 
+	/**
+	 * <p>options.</p>
+	 *
+	 * @return an array of {@link org.aml.typesystem.meta.restrictions.AbstractRestricton} objects.
+	 */
 	public AbstractRestricton[] options() {
 		return this.options;
 	}

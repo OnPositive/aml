@@ -21,6 +21,7 @@ import org.aml.typesystem.meta.restrictions.minmax.Minimum;
 import org.aml.typesystem.values.ArrayImpl;
 import org.aml.typesystem.values.ObjectImpl;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class InstanceValidationTest extends TestCase {
@@ -32,7 +33,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test1() {
@@ -42,7 +43,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", 2);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test10() {
@@ -53,7 +54,7 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("name", "Pavel");
 		obj.putProperty("d", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test11() {
@@ -63,7 +64,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test12() {
@@ -74,7 +75,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test13() {
@@ -85,7 +86,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test14() {
@@ -96,7 +97,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test15() {
@@ -107,7 +108,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test16() {
@@ -115,7 +116,7 @@ public class InstanceValidationTest extends TestCase {
 		person.addMeta(new MinItems(0));
 		final ArrayImpl obj = new ArrayImpl();
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test17() {
@@ -123,7 +124,7 @@ public class InstanceValidationTest extends TestCase {
 		person.addMeta(new MinItems(1));
 		final ArrayImpl obj = new ArrayImpl();
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test18() {
@@ -131,7 +132,7 @@ public class InstanceValidationTest extends TestCase {
 		person.addMeta(new MaxItems(0));
 		final ArrayImpl obj = new ArrayImpl();
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test19() {
@@ -140,7 +141,7 @@ public class InstanceValidationTest extends TestCase {
 		final ArrayImpl obj = new ArrayImpl();
 		obj.add(3);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test2() {
@@ -150,7 +151,7 @@ public class InstanceValidationTest extends TestCase {
 		final ObjectImpl obj = new ObjectImpl();
 		obj.putProperty("name", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test20() {
@@ -160,7 +161,7 @@ public class InstanceValidationTest extends TestCase {
 		obj.add(3);
 		obj.add(3);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test21() {
@@ -170,58 +171,58 @@ public class InstanceValidationTest extends TestCase {
 		obj.add(3);
 		obj.add(4);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test22() {
 		final AbstractType string = TypeOps.derive("MyString", BuiltIns.STRING);
 		string.addMeta(new MinLength(3));
 		Status validateDirect = string.validateDirect("1234");
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 		validateDirect = string.validateDirect("12");
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test24() {
 		final AbstractType string = TypeOps.derive("MyString", BuiltIns.STRING);
 		string.addMeta(new MaxLength(3));
 		Status validateDirect = string.validateDirect("1234");
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 		validateDirect = string.validateDirect("12");
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test25() {
 		final AbstractType string = TypeOps.derive("MyString", BuiltIns.STRING);
 		string.addMeta(new Pattern("."));
 		Status validateDirect = string.validateDirect("12");
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 		validateDirect = string.validateDirect("1");
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test27() {
 		final AbstractType string = TypeOps.derive("MyNumber", BuiltIns.NUMBER);
 		string.addMeta(new Minimum(1));
 		Status validateDirect = string.validateDirect(0);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 		validateDirect = string.validateDirect(2);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test28() {
 		final AbstractType string = TypeOps.derive("MyNumber", BuiltIns.NUMBER);
 		string.addMeta(new Maximum(1));
 		Status validateDirect = string.validateDirect(0);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 		validateDirect = string.validateDirect(2);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test29() {
 		final AbstractType string = TypeOps.derive("MyNumber", BuiltIns.ARRAY);
 		final Status validateDirect = string.validateDirect(0);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test3() {
@@ -232,36 +233,36 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("name", "Pavel");
 		obj.putProperty("d", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test30() {
 		final AbstractType strings = TypeOps.derive("MyNumber", BuiltIns.ARRAY);
 		strings.addMeta(new ComponentShouldBeOfType(BuiltIns.STRING));
 		Status validateDirect = strings.validateDirect(0);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 		ArrayImpl at = new ArrayImpl();
 		at.add(3);
 		validateDirect = strings.validateDirect(at);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 		at = new ArrayImpl();
 		at.add("3");
 		validateDirect = strings.validateDirect(at);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test31() {
 		final AbstractType person = TypeOps.derive("Person", BuiltIns.STRING);
 		person.addMeta(new Enum(Arrays.asList(new String[] { "a", "b" })));
 		final Status validateDirect = person.validateDirect("c");
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test32() {
 		final AbstractType person = TypeOps.derive("Person", BuiltIns.STRING);
 		person.addMeta(new Enum(Arrays.asList(new String[] { "a", "b" })));
 		final Status validateDirect = person.validateDirect("a");
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test4() {
@@ -272,7 +273,7 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("name", "Pavel");
 		obj.putProperty("d", "Pavel");
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test5() {
@@ -283,7 +284,7 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("name", "Pavel");
 		obj.putProperty("d", 5);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test6() {
@@ -294,7 +295,7 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("name", "Pavel");
 		obj.putProperty("d", 5);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test7() {
@@ -305,7 +306,7 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("name", "Pavel");
 		obj.putProperty("d", false);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 
 	public void test8() {
@@ -318,7 +319,7 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("d", false);
 		obj.putProperty("dd", 5);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(validateDirect.isOk());
+		Assert.assertTrue(validateDirect.isOk());
 	}
 
 	public void test9() {
@@ -331,6 +332,6 @@ public class InstanceValidationTest extends TestCase {
 		obj.putProperty("d", false);
 		obj.putProperty("dd", false);
 		final Status validateDirect = person.validateDirect(obj);
-		TestCase.assertTrue(!validateDirect.isOk());
+		Assert.assertTrue(!validateDirect.isOk());
 	}
 }

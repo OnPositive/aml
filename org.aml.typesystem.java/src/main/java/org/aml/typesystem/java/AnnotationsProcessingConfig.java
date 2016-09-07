@@ -16,6 +16,12 @@ import org.aml.typesystem.java.JavaTypeBuilder.AnnotationsConfigInput;
 import org.aml.typesystem.meta.FacetRegistry;
 import org.aml.typesystem.meta.TypeInformation;
 
+/**
+ * <p>AnnotationsProcessingConfig class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class AnnotationsProcessingConfig {
 
 	private static final String FALSE = "false";
@@ -50,6 +56,11 @@ public class AnnotationsProcessingConfig {
 
 	protected HashMap<String, AnnotationConfig> config = new HashMap<>();
 
+	/**
+	 * <p>append.</p>
+	 *
+	 * @param str a {@link java.io.InputStream} object.
+	 */
 	public void append(InputStream str) {
 		AnnotationsConfig unmarshal = JAXB.unmarshal(str, AnnotationsConfig.class);
 		for (AnnotationConfig c : unmarshal.config) {
@@ -57,6 +68,13 @@ public class AnnotationsProcessingConfig {
 		}
 	}
 
+	/**
+	 * <p>process.</p>
+	 *
+	 * @param cfg a {@link org.aml.typesystem.java.JavaTypeBuilder.AnnotationsConfigInput} object.
+	 * @param annotation a {@link org.aml.typesystem.IAnnotationModel} object.
+	 * @return a boolean.
+	 */
 	public boolean process(AnnotationsConfigInput cfg, IAnnotationModel annotation) {
 		if (config.containsKey(annotation.getCanonicalName())) {
 			AnnotationConfig annotationConfig = config.get(annotation.getCanonicalName());
@@ -86,11 +104,11 @@ public class AnnotationsProcessingConfig {
 				}
 				if (facetName.equals(REQUIRED)){
 					
-					cfg.required=(boolean) Boolean.valueOf(""+value);
+					cfg.required=Boolean.valueOf(""+value);
 				}
 				if (facetName.equals(NULLABLE)){
 				
-					cfg.nullable=(boolean) Boolean.valueOf(""+value);
+					cfg.nullable=Boolean.valueOf(""+value);
 				}
 				if (value==null||value.equals(false)||value.equals("")){
 					continue;
@@ -131,6 +149,9 @@ public class AnnotationsProcessingConfig {
 		return false;
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		this.config.clear();
 	}

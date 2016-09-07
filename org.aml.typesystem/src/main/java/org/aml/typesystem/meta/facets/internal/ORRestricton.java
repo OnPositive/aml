@@ -48,11 +48,13 @@ public class ORRestricton extends InternalRestriction {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return "or";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setOwnerType(AbstractType ownerType) {
 		super.setOwnerType(ownerType);
@@ -61,6 +63,7 @@ public class ORRestricton extends InternalRestriction {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder bld = new StringBuilder();
@@ -75,6 +78,7 @@ public class ORRestricton extends InternalRestriction {
 		return bld.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		final Status okStatus = new Status(Status.OK, 0, "");
@@ -83,7 +87,5 @@ public class ORRestricton extends InternalRestriction {
 		}
 		return okStatus;
 	}
-
-	
 
 }

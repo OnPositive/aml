@@ -26,6 +26,12 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactsFilter;
 
+/**
+ * <p>Java2RamlMojo class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 @Mojo(name = "generateRaml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 
@@ -66,6 +72,7 @@ public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 	@Parameter(property = "extensions")
 	private List<String> extensions;
 	
+	/** {@inheritDoc} */
 	@SuppressWarnings({ "deprecation", "rawtypes" })
 	@Override
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
@@ -122,14 +129,17 @@ public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 		
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected ArtifactsFilter getMarkedArtifactFilter() {
 		return new ArtifactsFilter() {
 			
+			@Override
 			public boolean isArtifactIncluded(Artifact artifact) throws ArtifactFilterException {
 				return true;
 			}
 			
+			@Override
 			@SuppressWarnings("rawtypes")
 			public Set filter(Set artifacts) throws ArtifactFilterException {
 				return artifacts;

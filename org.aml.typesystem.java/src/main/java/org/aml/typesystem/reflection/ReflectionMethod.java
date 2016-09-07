@@ -33,10 +33,11 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 
 	
 	/**
-	 * <p>getParameters.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return an array of {@link org.aml.typesystem.IParameterModel} objects.
+	 * <p>getParameters.</p>
 	 */
+	@Override
 	public IParameterModel[] getParameters() {
 		Class<?>[] parameterTypes = element.getParameterTypes();
 		Annotation[][] parameterAnnotations = element.getParameterAnnotations();
@@ -50,24 +51,28 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 
 	
 	/**
-	 * <p>getBasicDocInfo.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link org.aml.typesystem.IDocInfo} object.
+	 * <p>getBasicDocInfo.</p>
 	 */
+	@Override
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
 			
 			
+			@Override
 			public String getReturnInfo() {
 				return "";
 			}
 			
 			
+			@Override
 			public String getDocumentation(String pName) {
 				return "";
 			}
 			
 			
+			@Override
 			public String getDocumentation() {
 				return "";
 			}
@@ -76,10 +81,11 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 
 	
 	/**
-	 * <p>getReturnedType.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link org.aml.typesystem.ITypeModel} object.
+	 * <p>getReturnedType.</p>
 	 */
+	@Override
 	public ITypeModel getReturnedType() {
 		Class<?> returnType = element.getReturnType();
 		return new ReflectionType(returnType);
@@ -87,20 +93,22 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 
 	
 	/**
-	 * <p>getName.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getName.</p>
 	 */
+	@Override
 	public String getName() {
 		return element.getName();
 	}
 
 	
 	/**
-	 * <p>getBodyType.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link org.aml.typesystem.ITypeModel} object.
+	 * <p>getBodyType.</p>
 	 */
+	@Override
 	public ITypeModel getBodyType() {
 		return null;
 	}
@@ -136,6 +144,8 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 		return element.getReturnType();
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public boolean hasGenericReturnType() {
 
 		Type gType = this.element.getGenericReturnType();
@@ -161,15 +171,20 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 		return false;
 	}
 	
+	/** {@inheritDoc} */
+	@Override
 	public boolean isCollection() {
 		return Collection.class.isAssignableFrom(this.element.getReturnType());
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public boolean isMap() {
 		return Map.class.isAssignableFrom(this.element.getReturnType());
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Object defaultValue() {
 		return this.element.getDefaultValue();

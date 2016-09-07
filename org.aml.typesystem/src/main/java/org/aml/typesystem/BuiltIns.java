@@ -8,6 +8,12 @@ import org.aml.typesystem.meta.facets.internal.ORRestricton;
 import org.aml.typesystem.meta.restrictions.IsArrayRestriction;
 import org.aml.typesystem.meta.restrictions.IsObjectRestriction;
 
+/**
+ * <p>BuiltIns class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class BuiltIns {
 
 	private static class RootType extends AbstractType{
@@ -23,34 +29,49 @@ public class BuiltIns {
 		
 	}
 	
+	/** Constant <code>ANY</code> */
 	public static final AbstractType ANY = new RootType("any");
 	
+	/** Constant <code>NIL</code> */
 	public static final AbstractType NIL = new RootType("nil");
 
+	/** Constant <code>SCALAR</code> */
 	public static final AbstractType SCALAR =TypeOps.derive("scalar", ANY);;
 
+	/** Constant <code>ARRAY</code> */
 	public static final AbstractType ARRAY = TypeOps.derive("array", ANY);
 
+	/** Constant <code>OBJECT</code> */
 	public static final AbstractType OBJECT = TypeOps.derive("object", ANY);
 
 	
+	/** Constant <code>BOOLEAN</code> */
 	public static final AbstractType BOOLEAN = TypeOps.derive("boolean", SCALAR);
 	
+	/** Constant <code>NOTHING</code> */
 	public static final AbstractType NOTHING = new RootType("nothing");
 
+	/** Constant <code>NUMBER</code> */
 	public static final AbstractType NUMBER = TypeOps.derive("number", SCALAR);
 
+	/** Constant <code>INTEGER</code> */
 	public static final AbstractType INTEGER = TypeOps.derive("integer", NUMBER);
 
+	/** Constant <code>DATE</code> */
 	public static final AbstractType DATE = TypeOps.derive("date", SCALAR);
 
+	/** Constant <code>FILE</code> */
 	public static final AbstractType FILE = TypeOps.derive("file", SCALAR);
 	
+	/** Constant <code>POLYMORPH</code> */
 	public static final AbstractType POLYMORPH = TypeOps.derive("polymorphic", OBJECT);
 
+	/** Constant <code>RECURRENT_TYPE</code> */
 	public static final AbstractType RECURRENT_TYPE = new RootType("<rec>");
+	/** Constant <code>UNKNOWN_TYPE</code> */
 	public static final AbstractType UNKNOWN_TYPE = new RootType("<rec>");
 
+	/** Constant <code>STRING</code> */
 	public static final AbstractType STRING = TypeOps.derive("string", SCALAR);
 
 	private static final TypeRegistryImpl builtInsRegostry = new TypeRegistryImpl(null);
@@ -92,6 +113,11 @@ public class BuiltIns {
 		builtInsRegostry.registerType(POLYMORPH);
 	}
 
+	/**
+	 * <p>getBuiltInTypes.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.ITypeRegistry} object.
+	 */
 	public static ITypeRegistry getBuiltInTypes() {
 		return builtInsRegostry;
 	}

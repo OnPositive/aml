@@ -27,6 +27,12 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Yaml;
 
+/**
+ * <p>RamlWriter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RamlWriter {
 
 	private static final String NOVALUE = "<<NOVALUE!!!";
@@ -37,6 +43,12 @@ public class RamlWriter {
 	private static final String TYPES = "types";
 	private static final String TYPE = "type";
 
+	/**
+	 * <p>store.</p>
+	 *
+	 * @param deriveObjectType a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String store(AbstractType deriveObjectType) {
 		
 		return null;
@@ -158,6 +170,13 @@ public class RamlWriter {
 		return vl;
 	}
 
+	/**
+	 * <p>store.</p>
+	 *
+	 * @param registry a {@link org.aml.typesystem.ITypeRegistry} object.
+	 * @param ar a {@link org.aml.typesystem.ITypeRegistry} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String store(ITypeRegistry registry,ITypeRegistry ar) {
 		DumperOptions dumperOptions = new DumperOptions();
 		dumperOptions.setDefaultFlowStyle(FlowStyle.BLOCK);

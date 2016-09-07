@@ -35,6 +35,12 @@ import org.aml.typesystem.meta.restrictions.RestrictionStackEntry;
 import org.aml.typesystem.meta.restrictions.RestrictionsOptimizer;
 import org.aml.typesystem.values.ObjectAccess;
 
+/**
+ * <p>Abstract AbstractType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class AbstractType implements IType {
 
 	protected boolean computeConfluent;
@@ -49,24 +55,48 @@ public abstract class AbstractType implements IType {
 
 	protected final LinkedHashSet<AbstractType> subTypes = new LinkedHashSet<>();
 
+	/**
+	 * <p>Constructor for AbstractType.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public AbstractType(String name) {
 		super();
 		this.name = name;
 	}
 	
+	/**
+	 * <p>isSubTypeOf.</p>
+	 *
+	 * @param t a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a boolean.
+	 */
 	public final boolean isSubTypeOf(AbstractType t){
 		return this.equals(t)||this.allSuperTypes().contains(t);
 	}
 	
+	/**
+	 * <p>isSuperType.</p>
+	 *
+	 * @param t a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a boolean.
+	 */
 	public final boolean isSuperType(AbstractType t){
 		return this.equals(t)||this.allSubTypes().contains(t);
 	}
 	
+	/**
+	 * <p>toPropertiesView.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.beans.IPropertyView} object.
+	 */
 	public IPropertyView toPropertiesView(){
 		return new PropertyViewImpl(this);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * performs automatic classification of object against type family
 	 */
 	@Override
@@ -126,6 +156,11 @@ public abstract class AbstractType implements IType {
 		}
 	}
 
+	/**
+	 * <p>addMeta.</p>
+	 *
+	 * @param m a {@link org.aml.typesystem.meta.TypeInformation} object.
+	 */
 	public final void addMeta(TypeInformation m) {
 		if (this.locked) {
 			throw new IllegalArgumentException("type is locked for modification");
@@ -134,6 +169,12 @@ public abstract class AbstractType implements IType {
 		this.metaInfo.add(m);
 	}
 
+	/**
+	 * <p>addPotentialDependency.</p>
+	 *
+	 * @param ts a {@link java.util.LinkedHashSet} object.
+	 * @param range a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	protected void addPotentialDependency(LinkedHashSet<AbstractType> ts, AbstractType range) {
 		if (!range.declaredMeta().contains(BasicMeta.BUILTIN)) {
 			if (range.isAnonimous()){
@@ -144,6 +185,7 @@ public abstract class AbstractType implements IType {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<AbstractType> allDependencies() {
 		final LinkedHashSet<AbstractType> ts = new LinkedHashSet<>();
@@ -157,6 +199,11 @@ public abstract class AbstractType implements IType {
 	 *
 	 * @see org.raml.typesystem.IType#allSubTypes()
 	 */
+	/**
+	 * <p>allSubTypes.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public final Set<AbstractType> allSubTypes() {
 		final LinkedHashSet<AbstractType> results = new LinkedHashSet<>();
 		fillSubTypes(results);
@@ -168,12 +215,22 @@ public abstract class AbstractType implements IType {
 	 *
 	 * @see org.raml.typesystem.IType#allSuperTypes()
 	 */
+	/**
+	 * <p>allSuperTypes.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public final Set<AbstractType> allSuperTypes() {
 		final LinkedHashSet<AbstractType> results = new LinkedHashSet<>();
 		fillSuperTypes(results);
 		return results;
 	}
 
+	/**
+	 * <p>calculateACStatus.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.Status} object.
+	 */
 	public Status calculateACStatus() {
 
 		final Set<AbstractType> typeFamily = this.typeFamily();
@@ -189,15 +246,28 @@ public abstract class AbstractType implements IType {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean canDoAC() {
 		return calculateACStatus().isOk();
 	}
 
+	/**
+	 * <p>checkConfluent.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.Status} object.
+	 */
 	public Status checkConfluent() {
 		return innerCheckConfluent();
 	}
 
+	/**
+	 * <p>checkDiscriminator.</p>
+	 *
+	 * @param t1 a {@link org.aml.typesystem.AbstractType} object.
+	 * @param t2 a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a {@link org.aml.typesystem.Status} object.
+	 */
 	protected Status checkDiscriminator(final AbstractType t1, final AbstractType t2) {
 		Status found = new Status(Status.ERROR, 0,
 				"can not discriminate types " + t1.toString() + " and " + t2.toString() + " without discriminator");
@@ -260,6 +330,12 @@ public abstract class AbstractType implements IType {
 
 	}
 
+	/**
+	 * <p>declareAdditionalProperty.</p>
+	 *
+	 * @param type a {@link org.aml.typesystem.AbstractType} object.
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public final AbstractType declareAdditionalProperty(AbstractType type) {
 		if (type != null) {
 			this.addMeta(new AdditionalProperties(type, this));
@@ -267,6 +343,7 @@ public abstract class AbstractType implements IType {
 		return type;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<TypeInformation> declaredMeta() {
 		return new LinkedHashSet<>(this.metaInfo);
@@ -276,9 +353,10 @@ public abstract class AbstractType implements IType {
 	 * declares a pattern property on this type,
 	 * note if type is not inherited from an object type this will move
 	 * type to inconsistent state
-	 * @param name - regexp 
+	 *
+	 * @param name - regexp
 	 * @param type - type of the property
-	 * @return
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
 	 */
 	public final AbstractType declareMapProperty(String name, AbstractType type) {
 		if (type != null) {
@@ -290,6 +368,7 @@ public abstract class AbstractType implements IType {
 	/**
 	 * adds new property declaration to this type, note if type is not inherited from an object type this will move
 	 * type to inconsistent state
+	 *
 	 * @param name - name of the property
 	 * @param type - type of the property
 	 * @param optional true if property is optinal
@@ -305,6 +384,7 @@ public abstract class AbstractType implements IType {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Set<AbstractType> dependencies() {
 		final LinkedHashSet<AbstractType> ts = new LinkedHashSet<>();
@@ -318,6 +398,11 @@ public abstract class AbstractType implements IType {
 		return ts;
 	}
 
+	/**
+	 * <p>directPropertySet.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<String> directPropertySet() {
 		final LinkedHashSet<String> rs = new LinkedHashSet<>();
 		for (final IMatchesProperty p : this.meta(PropertyIs.class)) {
@@ -326,6 +411,13 @@ public abstract class AbstractType implements IType {
 		return rs;
 	}
 
+	/**
+	 * <p>discriminate.</p>
+	 *
+	 * @param obj a {@link java.lang.Object} object.
+	 * @param opts a {@link java.util.LinkedHashSet} object.
+	 * @return a {@link java.util.LinkedHashSet} object.
+	 */
 	protected LinkedHashSet<AbstractType> discriminate(Object obj, LinkedHashSet<AbstractType> opts) {
 		LinkedHashSet<AbstractType> options = opts;
 		LinkedHashSet<AbstractType> newoptions = new LinkedHashSet<>(options);
@@ -364,6 +456,13 @@ public abstract class AbstractType implements IType {
 		return Status.OK_STATUS;
 	}
 
+	/**
+	 * <p>facetValue.</p>
+	 *
+	 * @param facet a {@link java.lang.Class} object.
+	 * @param <T> a T object.
+	 * @return a T object.
+	 */
 	@SuppressWarnings("unchecked")
 	public final <T> T facetValue(Class<? extends Facet<T>> facet) {
 		final Set<TypeInformation> meta = this.meta();
@@ -387,6 +486,11 @@ public abstract class AbstractType implements IType {
 		}
 	}
 
+	/**
+	 * <p>fillDependencies.</p>
+	 *
+	 * @param ts a {@link java.util.LinkedHashSet} object.
+	 */
 	protected void fillDependencies(LinkedHashSet<AbstractType> ts) {
 		
 		for (final TypeInformation i : this.declaredMeta()) {
@@ -419,6 +523,11 @@ public abstract class AbstractType implements IType {
 		}
 	}
 
+	/**
+	 * <p>innerCheckConfluent.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.Status} object.
+	 */
 	protected Status innerCheckConfluent() {
 		if (computeConfluent) {
 			return Status.OK_STATUS;
@@ -472,7 +581,8 @@ public abstract class AbstractType implements IType {
 		return null;
 	}
 	/**
-	 * 
+	 * <p>isAnonimous.</p>
+	 *
 	 * @return true if type is an inplace type and has no name
 	 */
 	public boolean isAnonimous() {
@@ -480,7 +590,8 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
-	 * 
+	 * <p>isArray.</p>
+	 *
 	 * @return true if type is an array or extends from an array
 	 */
 	public boolean isArray() {
@@ -488,7 +599,8 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
-	 * 
+	 * <p>isBoolean.</p>
+	 *
 	 * @return true if type is an boolean type or extends from boolean
 	 */
 	public boolean isBoolean() {
@@ -496,7 +608,8 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
-	 * 
+	 * <p>isBuiltIn.</p>
+	 *
 	 * @return true if type is an built-in type
 	 */
 	public boolean isBuiltIn() {
@@ -505,7 +618,8 @@ public abstract class AbstractType implements IType {
 
 
 	/**
-	 * 
+	 * <p>isEmpty.</p>
+	 *
 	 * @return true if type has no associated meta information of restrictions
 	 */
 	public boolean isEmpty() {
@@ -513,7 +627,8 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
-	 * 
+	 * <p>isNumber.</p>
+	 *
 	 * @return true if type is number or inherited from number
 	 */
 	public boolean isNumber() {
@@ -521,7 +636,8 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
-	 * 
+	 * <p>isObject.</p>
+	 *
 	 * @return true if type is object or inherited from object
 	 */
 	public boolean isObject() {
@@ -529,20 +645,27 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
-	 * 
+	 * <p>isScalar.</p>
+	 *
 	 * @return true if type is scalar or inherited from scalar
 	 */
 	public boolean isScalar() {
 		return this.allSuperTypes().contains(BuiltIns.SCALAR) || this == BuiltIns.SCALAR;
 	}
 	/**
-	 * 
+	 * <p>isString.</p>
+	 *
 	 * @return true if type is string or inherited from string
 	 */
 	public boolean isString() {
 		return this.allSuperTypes().contains(BuiltIns.STRING) || this == BuiltIns.STRING;
 	}
 	
+	/**
+	 * <p>isUnion.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isUnion() {
 		if (this instanceof UnionType) {
 			return true;
@@ -556,6 +679,7 @@ public abstract class AbstractType implements IType {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isConfluent() {
 		return !checkConfluent().isOk();
@@ -563,11 +687,16 @@ public abstract class AbstractType implements IType {
 	
 	
 
+	/**
+	 * <p>lock.</p>
+	 */
 	public void lock() {
 		this.locked = true;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * return all type information associated with type
 	 */
 	@Override
@@ -575,6 +704,13 @@ public abstract class AbstractType implements IType {
 		return new LinkedHashSet<>(this.metaInfo);
 	}
 
+	/**
+	 * <p>meta.</p>
+	 *
+	 * @param clazz a {@link java.lang.Class} object.
+	 * @param <T> a T object.
+	 * @return a {@link java.util.Set} object.
+	 */
 	public final <T> Set<T> meta(Class<T> clazz) {
 		final LinkedHashSet<T> result = new LinkedHashSet<>();
 		for (final TypeInformation i : this.meta()) {
@@ -585,14 +721,21 @@ public abstract class AbstractType implements IType {
 		return result;
 	}
 
+	/**
+	 * <p>name.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String name() {
 		return this.name;
 	}
 	
 	/**
-	 * 
-	 * @param clazz
+	 * <p>oneMeta.</p>
+	 *
+	 * @param clazz a {@link java.lang.Class} object.
 	 * @return instance of meta information of particular class
+	 * @param <T> a T object.
 	 */
 	public final <T> T oneMeta(Class<T> clazz) {
 		for (final TypeInformation i : this.meta()) {
@@ -602,6 +745,12 @@ public abstract class AbstractType implements IType {
 		}
 		return null;
 	}
+	/**
+	 * <p>hasDirectMeta.</p>
+	 *
+	 * @param clazz a {@link java.lang.Class} object.
+	 * @return a boolean.
+	 */
 	public final boolean hasDirectMeta(Class<? extends TypeInformation> clazz) {
 		for (final TypeInformation i : this.declaredMeta()) {
 			if (clazz.isInstance(i)) {
@@ -611,6 +760,12 @@ public abstract class AbstractType implements IType {
 		return false;
 	}
 
+	/**
+	 * <p>passesDiscrimination.</p>
+	 *
+	 * @param o a {@link java.lang.Object} object.
+	 * @return a boolean.
+	 */
 	public final boolean passesDiscrimination(Object o) {
 		final String discriminator = this.facetValue(Discriminator.class);
 		if (discriminator == null) {
@@ -625,6 +780,11 @@ public abstract class AbstractType implements IType {
 
 	}
 
+	/**
+	 * <p>propertySet.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<String> propertySet() {
 		final LinkedHashSet<String> rs = new LinkedHashSet<>();
 		for (final IMatchesProperty p : this.meta(IMatchesProperty.class)) {
@@ -633,9 +793,7 @@ public abstract class AbstractType implements IType {
 		return rs;
 	}
 
-	/**
-	 * @return all restrictions associated with type
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<AbstractRestricton> restrictions() {
 		final LinkedHashSet<AbstractRestricton> r = new LinkedHashSet<>();
@@ -649,6 +807,8 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * direct sub types
 	 */
 	@Override
@@ -657,6 +817,8 @@ public abstract class AbstractType implements IType {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * direct super types
 	 */
 	@Override
@@ -664,6 +826,7 @@ public abstract class AbstractType implements IType {
 		return new LinkedHashSet<>();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		OriginalName oneMeta = this.oneMeta(OriginalName.class);
@@ -678,6 +841,7 @@ public abstract class AbstractType implements IType {
 	 *
 	 * @see org.raml.typesystem.IType#typeFamily()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public Set<AbstractType> typeFamily() {
 		if (this.isUnion()) {
@@ -703,12 +867,15 @@ public abstract class AbstractType implements IType {
 		return results;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public final Status validate(Object obj) {
 		return ac(obj).validateDirect(obj);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * validates object against this type without performing AC
 	 */
 	@Override
@@ -721,6 +888,7 @@ public abstract class AbstractType implements IType {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validateMeta(ITypeRegistry annotationTypes) {
 		final Status result = new Status(Status.OK, 0, "");
@@ -786,10 +954,16 @@ public abstract class AbstractType implements IType {
 		return result;
 	}
 
+	/**
+	 * <p>noPolymorph.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public abstract AbstractType noPolymorph() ;
 
 	/**
-	 * 
+	 * <p>isPolymorphic.</p>
+	 *
 	 * @return true if this type is a polymorhpic
 	 */
 	public boolean isPolymorphic() {
@@ -802,10 +976,20 @@ public abstract class AbstractType implements IType {
 		return false;
 	}
 
+	/**
+	 * <p>Setter for the field <code>nullable</code>.</p>
+	 *
+	 * @param nullable a boolean.
+	 */
 	public void setNullable(boolean nullable) {
 		this.nullable=nullable;
 	}
 	
+	/**
+	 * <p>isNullable.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isNullable(){
 		return this.nullable;
 	}

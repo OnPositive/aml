@@ -8,6 +8,12 @@ import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.meta.facets.Format;
 
+/**
+ * <p>BuiltinsBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class BuiltinsBuilder implements IJavaTypeBuilder {
 
 	protected HashMap<String, IJavaTypeBuilder> bldrs = new HashMap<>();
@@ -55,6 +61,9 @@ public class BuiltinsBuilder implements IJavaTypeBuilder {
 
 	}
 
+	/**
+	 * <p>Constructor for BuiltinsBuilder.</p>
+	 */
 	public BuiltinsBuilder() {
 		bldrs.put(int.class.getName(), new SimpleBuilder(BuiltIns.INTEGER, false, int.class.getName()));
 		bldrs.put(long.class.getName(), new SimpleBuilder(BuiltIns.INTEGER, false, long.class.getName()));
@@ -76,10 +85,16 @@ public class BuiltinsBuilder implements IJavaTypeBuilder {
 
 	private static BuiltinsBuilder bld = new BuiltinsBuilder();
 
+	/**
+	 * <p>getInstance.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.java.BuiltinsBuilder} object.
+	 */
 	public static BuiltinsBuilder getInstance() {
 		return bld;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType getType(ITypeModel mdl) {
 		if (bldrs.containsKey(mdl.getFullyQualifiedName())) {

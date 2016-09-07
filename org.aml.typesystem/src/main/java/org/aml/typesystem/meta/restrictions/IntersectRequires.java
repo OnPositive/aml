@@ -6,6 +6,12 @@ import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.IntersectionType;
 import org.aml.typesystem.TypeOps;
 
+/**
+ * <p>Abstract IntersectRequires class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class IntersectRequires extends TypedRestriction {
 
 	static class CountingPointer {

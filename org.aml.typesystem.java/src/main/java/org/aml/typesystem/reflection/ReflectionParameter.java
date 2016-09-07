@@ -21,6 +21,7 @@ public class ReflectionParameter implements IParameterModel{
 	 *
 	 * @param type a {@link org.aml.typesystem.reflection.ReflectionType} object.
 	 * @param model an array of {@link org.aml.typesystem.reflection.AnnotationModel} objects.
+	 * @param name a {@link java.lang.String} object.
 	 */
 	public ReflectionParameter(ReflectionType type, AnnotationModel[] model,String name) {
 		super();
@@ -34,7 +35,7 @@ public class ReflectionParameter implements IParameterModel{
 	 *
 	 * @param cl a {@link java.lang.Class} object.
 	 * @param annotations an array of {@link java.lang.annotation.Annotation} objects.
-	 * @param name 
+	 * @param name a {@link java.lang.String} object.
 	 */
 	public ReflectionParameter(Class<?> cl, Annotation[] annotations, String name) {
 		this.type=new ReflectionType(cl);
@@ -50,16 +51,18 @@ public class ReflectionParameter implements IParameterModel{
 
 	
 	/**
-	 * <p>getDocumentation.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getDocumentation.</p>
 	 */
+	@Override
 	public String getDocumentation() {
 		return "";
 	}
 	
 	
 	/** {@inheritDoc} */
+	@Override
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -72,6 +75,7 @@ public class ReflectionParameter implements IParameterModel{
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -84,6 +88,7 @@ public class ReflectionParameter implements IParameterModel{
 
 	
 	/** {@inheritDoc} */
+	@Override
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -102,6 +107,7 @@ public class ReflectionParameter implements IParameterModel{
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public boolean hasAnnotationWithCanonicalName(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -113,6 +119,7 @@ public class ReflectionParameter implements IParameterModel{
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public IAnnotationModel getAnnotationByCanonicalName(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -124,6 +131,7 @@ public class ReflectionParameter implements IParameterModel{
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -135,38 +143,42 @@ public class ReflectionParameter implements IParameterModel{
 	}
 	
 	/**
-	 * <p>getName.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>getName.</p>
 	 */
+	@Override
 	public String getName() {
 		return this.name;
 	}
 	
 	/**
-	 * <p>Getter for the field <code>type</code>.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a {@link java.lang.String} object.
+	 * <p>Getter for the field <code>type</code>.</p>
 	 */
+	@Override
 	public String getParameterType() {
 		String name = type.getName();		
 		return name;
 	}
 	
 	/**
-	 * <p>required.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a boolean.
+	 * <p>required.</p>
 	 */
+	@Override
 	public boolean required() {
 		return type.element.isPrimitive();
 	}
 	
 	/**
-	 * <p>getAnnotations.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return an array of {@link org.aml.typesystem.IAnnotationModel} objects.
+	 * <p>getAnnotations.</p>
 	 */
+	@Override
 	public IAnnotationModel[] getAnnotations() {
 		return model;
 	}

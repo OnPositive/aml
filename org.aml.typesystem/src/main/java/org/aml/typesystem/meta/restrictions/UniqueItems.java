@@ -7,8 +7,15 @@ import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.values.IArray;
 
+/**
+ * <p>UniqueItems class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class UniqueItems extends BooleanRestriction {
 
+	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
 		if (o instanceof IArray) {
@@ -25,6 +32,8 @@ public class UniqueItems extends BooleanRestriction {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * nothing to compose with
 	 */
 	@Override
@@ -39,21 +48,25 @@ public class UniqueItems extends BooleanRestriction {
 		return item.toString();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Items should be unique";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType requiredType() {
 		return BuiltIns.ARRAY;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected String checkValue() {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setValue(Object vl) {
 		

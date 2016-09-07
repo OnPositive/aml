@@ -9,13 +9,26 @@ import java.util.List;
 import org.aml.typesystem.IGenericElement;
 import org.aml.typesystem.ITypeParameter;
 
+/**
+ * <p>Abstract ReflectionGenericElement class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 abstract public class ReflectionGenericElement<T extends AnnotatedElement>
 		extends BasicReflectionMember<T> implements IGenericElement {
 
+	/**
+	 * <p>Constructor for ReflectionGenericElement.</p>
+	 *
+	 * @param element a T object.
+	 */
 	public ReflectionGenericElement(T element) {
 		super(element);
 	}
 	
+	/** {@inheritDoc} */
+	@Override
 	public List<ITypeParameter> getTypeParameters() {
 		
 		ArrayList<ITypeParameter> list = new ArrayList<ITypeParameter>();

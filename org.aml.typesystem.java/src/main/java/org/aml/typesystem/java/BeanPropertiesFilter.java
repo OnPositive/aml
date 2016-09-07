@@ -4,8 +4,15 @@ import org.aml.typesystem.IFieldModel;
 import org.aml.typesystem.IMember;
 import org.aml.typesystem.IMethodModel;
 
+/**
+ * <p>BeanPropertiesFilter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class BeanPropertiesFilter implements IMemberFilter{
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean accept(IMember member) {
 		if (!member.isPublic()){

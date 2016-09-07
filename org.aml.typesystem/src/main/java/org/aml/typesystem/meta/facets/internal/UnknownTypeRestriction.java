@@ -4,12 +4,22 @@ import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 
+/**
+ * <p>UnknownTypeRestriction class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class UnknownTypeRestriction extends InternalRestriction {
 
 	
+	/**
+	 * <p>Constructor for UnknownTypeRestriction.</p>
+	 */
 	public UnknownTypeRestriction() {
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
 		if (o == null) {
@@ -18,6 +28,7 @@ public class UnknownTypeRestriction extends InternalRestriction {
 		return new Status(Status.ERROR, Status.NOTHING_CAN_PASS, message());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractRestricton composeWith(AbstractRestricton restriction) {		
 		return nothing(restriction, message());
@@ -25,6 +36,7 @@ public class UnknownTypeRestriction extends InternalRestriction {
 	
 	
 
+	/** {@inheritDoc} */
 	@Override
 	protected AbstractRestricton innerOptimize() {
 		return nothing(null, message());
@@ -34,6 +46,7 @@ public class UnknownTypeRestriction extends InternalRestriction {
 		return "Type "+this.ownerType.name()+" is unknown";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -48,20 +61,24 @@ public class UnknownTypeRestriction extends InternalRestriction {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
 		return "unknown";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return 31;
 	}
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return message();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		return new Status(Status.ERROR, 0, message());

@@ -19,16 +19,32 @@ import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.reflection.AnnotationModel;
 
+/**
+ * <p>JavaTypeBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JavaTypeBuilder {
 
 	protected TypeRegistryImpl typeRegistry = new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected TypeRegistryImpl annotationsTypeRegistry = new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected TypeBuilderConfig config = new TypeBuilderConfig();
 
+	/**
+	 * <p>Getter for the field <code>config</code>.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.java.TypeBuilderConfig} object.
+	 */
 	public TypeBuilderConfig getConfig() {
 		return config;
 	}
 
+	/**
+	 * <p>Setter for the field <code>config</code>.</p>
+	 *
+	 * @param config a {@link org.aml.typesystem.java.TypeBuilderConfig} object.
+	 */
 	public void setConfig(TypeBuilderConfig config) {
 		this.config = config;
 	}
@@ -41,6 +57,12 @@ public class JavaTypeBuilder {
 		public boolean isProperty;
 	}
 
+	/**
+	 * <p>getType.</p>
+	 *
+	 * @param mdl a {@link org.aml.typesystem.ITypeModel} object.
+	 * @return a {@link org.aml.typesystem.AbstractType} object.
+	 */
 	public AbstractType getType(ITypeModel mdl) {
 		if (mdl.getFullyQualifiedName().equals(Object.class.getName())) {
 			return BuiltIns.OBJECT;
@@ -263,10 +285,20 @@ public class JavaTypeBuilder {
 		return type;
 	}
 
+	/**
+	 * <p>getRegistry.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.ITypeRegistry} object.
+	 */
 	public ITypeRegistry getRegistry() {
 		return this.typeRegistry;
 	}
 
+	/**
+	 * <p>getAnnotationTypeRegistry.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.ITypeRegistry} object.
+	 */
 	public ITypeRegistry getAnnotationTypeRegistry() {
 		return this.annotationsTypeRegistry;
 	}

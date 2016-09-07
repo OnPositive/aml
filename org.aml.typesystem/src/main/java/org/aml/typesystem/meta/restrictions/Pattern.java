@@ -7,6 +7,13 @@ import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.values.ObjectAccess;
 
+/**
+ * <p>Pattern class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
+
 public class Pattern extends FacetRestriction<String> {
 
 	private String value;
@@ -27,7 +34,6 @@ public class Pattern extends FacetRestriction<String> {
 		}
 		return Status.OK_STATUS;
 	}
-
 	@Override
 	/**
 	 * patterns can not be unified with anything
@@ -43,20 +49,25 @@ public class Pattern extends FacetRestriction<String> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String value() {
 		return value;
 	}
 
+	/** {@inheritDoc} */
+	@Override
 	public String toString(){
 		return "should pass reg exp:"+this.value;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AbstractType requiredType() {
 		return BuiltIns.STRING;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected String checkValue() {
 		try {
@@ -68,6 +79,7 @@ public class Pattern extends FacetRestriction<String> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setValue(Object vl) {
 		this.value=(String) vl;

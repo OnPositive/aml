@@ -38,16 +38,18 @@ public interface IMethodModel extends IBasicModel,IMember, IGenericElement {
 	ITypeModel getBodyType();
 
 	/**
-	 * <p>isStatic.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a boolean.
+	 * <p>isStatic.</p>
 	 */
+	@Override
 	boolean isStatic();
 	/**
-	 * <p>isPublic.</p>
+	 * {@inheritDoc}
 	 *
-	 * @return a boolean.
+	 * <p>isPublic.</p>
 	 */
+	@Override
 	boolean isPublic();
 	/**
 	 * <p>isPublic.</p>

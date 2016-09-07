@@ -38,6 +38,12 @@ import org.aml.typesystem.meta.restrictions.minmax.MinLength;
 import org.aml.typesystem.meta.restrictions.minmax.MinProperties;
 import org.aml.typesystem.meta.restrictions.minmax.Minimum;
 
+/**
+ * <p>FacetRegistry class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class FacetRegistry {
 
 	private FacetRegistry() {
@@ -174,16 +180,31 @@ public class FacetRegistry {
 	static Class<? extends TypeInformation>[] metaInfo = new Class[] { Description.class,Format.class, DisplayName.class,
 			Discriminator.class, DiscriminatorValue.class, Default.class, Example.class, XMLFacet.class, Abstract.class, Polymorphic.class };
 
+	/**
+	 * <p>allRestrictionsNames.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public static Collection<String> allRestrictionsNames() {
 		Class<? extends TypeInformation>[] restr = allRestrictions;
 		return names(restr);
 	}
 
+	/**
+	 * <p>allMetaNames.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public static Collection<String> allMetaNames() {
 		Class<? extends TypeInformation>[] restr = metaInfo;
 		return names(restr);
 	}
 
+	/**
+	 * <p>allFacetNames.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public static Collection<String> allFacetNames() {
 		Class<? extends TypeInformation>[] restr = metaInfo;
 		Collection<String> s = names(restr);
@@ -191,6 +212,12 @@ public class FacetRegistry {
 		return s;
 	}
 
+	/**
+	 * <p>names.</p>
+	 *
+	 * @param restr an array of {@link java.lang.Class} objects.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	protected static Collection<String> names(Class<? extends TypeInformation>[] restr) {
 		ArrayList<String> str = new ArrayList<>();
 		for (Class<? extends TypeInformation> c : restr) {
@@ -200,8 +227,9 @@ public class FacetRegistry {
 	}
 
 	/**
-	 * 
-	 * @param t0
+	 * <p>applyableTo.</p>
+	 *
+	 * @param t0 a {@link org.aml.typesystem.AbstractType} object.
 	 * @return all facets potentially applyable to t0
 	 */
 	public static Collection<FacetPrototype> applyableTo(AbstractType t0) {
@@ -214,8 +242,9 @@ public class FacetRegistry {
 		return rs;
 	}
 	
-	/***
-	 * 
+	/**
+	 * <p>allPrototypes.</p>
+	 *
 	 * @return collection of all facet prototypes
 	 */
 	public static Collection<FacetPrototype> allPrototypes() {
@@ -229,6 +258,12 @@ public class FacetRegistry {
 		return ps;
 	}
 
+	/**
+	 * <p>getFacetName.</p>
+	 *
+	 * @param clazz a {@link java.lang.Class} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getFacetName(Class<? extends TypeInformation> clazz) {
 		final Name annotation = clazz.getAnnotation(Name.class);
 		if (annotation == null) {
@@ -238,6 +273,12 @@ public class FacetRegistry {
 		return annotation.value();
 	}
 
+	/**
+	 * <p>facet.</p>
+	 *
+	 * @param facetName a {@link java.lang.String} object.
+	 * @return a {@link org.aml.typesystem.meta.TypeInformation} object.
+	 */
 	public static TypeInformation facet(String facetName) {
 		for (FacetPrototype p:allPrototypes()){
 			if (p.name().equals(facetName)){

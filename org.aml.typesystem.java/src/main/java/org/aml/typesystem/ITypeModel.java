@@ -33,7 +33,7 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	
 	/**
 	 * <p>getSuperClass.</p>
-	 * 
+	 *
 	 * @return a {@link org.aml.typesystem.ITypeModel} object.
 	 */
 	ITypeModel getSuperClass();
@@ -41,7 +41,7 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	
 	/**
 	 * <p>getImplementedInterfaces</p>
-	 * 
+	 *
 	 * @return an array of {@link org.aml.typesystem.ITypeModel} objects.
 	 */
 	ITypeModel[] getImplementedInterfaces();
@@ -49,20 +49,45 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	
 	/**
 	 * <p>resolveClass</p>
-	 * 
+	 *
 	 * @param qualifiedName class qualified name
 	 * @return class model object
 	 */
 	ITypeModel resolveClass(String qualifiedName);
 	
 	
+	/**
+	 * <p>isCollection.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean isCollection();
 	
+	/**
+	 * <p>getComponentType.</p>
+	 *
+	 * @return a {@link org.aml.typesystem.ITypeModel} object.
+	 */
 	ITypeModel getComponentType();
 
+	/**
+	 * <p>isEnum.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean isEnum();
 	
+	/**
+	 * <p>isAnnotation.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean isAnnotation();
 
+	/**
+	 * <p>getPackageName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	String getPackageName();
 }

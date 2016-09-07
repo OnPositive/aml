@@ -8,6 +8,7 @@ import org.aml.typesystem.java.AllObjectsAreNullable;
 import org.aml.typesystem.java.IAnnotationFilter;
 import org.junit.Test;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class BasicTest extends TestCase{
@@ -49,6 +50,7 @@ public class BasicTest extends TestCase{
 		Java2Raml r0=new Java2Raml();
 		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
 			
+			@Override
 			public boolean preserve(IAnnotationModel mdl) {
 				return true;
 			}
@@ -60,6 +62,7 @@ public class BasicTest extends TestCase{
 		Java2Raml r0=new Java2Raml();
 		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
 			
+			@Override
 			public boolean preserve(IAnnotationModel mdl) {
 				return true;
 			}
@@ -72,6 +75,7 @@ public class BasicTest extends TestCase{
 		Java2Raml r0=new Java2Raml();
 		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
 			
+			@Override
 			public boolean preserve(IAnnotationModel mdl) {
 				return true;
 			}
@@ -84,6 +88,7 @@ public class BasicTest extends TestCase{
 		Java2Raml r0=new Java2Raml();
 		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
 			
+			@Override
 			public boolean preserve(IAnnotationModel mdl) {
 				return true;
 			}
@@ -96,6 +101,7 @@ public class BasicTest extends TestCase{
 		Java2Raml r0=new Java2Raml();
 		r0.getTypeBuilderConfig().setAnnotationsFilter(new IAnnotationFilter() {
 			
+			@Override
 			public boolean preserve(IAnnotationModel mdl) {
 				return true;
 			}
@@ -125,6 +131,6 @@ public class BasicTest extends TestCase{
 				throw new IllegalStateException();
 			}			
 		}
-		TestCase.assertEquals(normalizeWhiteSpace(bld.toString()), normalizeWhiteSpace(s));
+		Assert.assertEquals(normalizeWhiteSpace(bld.toString()), normalizeWhiteSpace(s));
 	}
 }

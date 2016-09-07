@@ -12,6 +12,12 @@ import org.aml.typesystem.meta.restrictions.minmax.MinLength;
 import org.aml.typesystem.meta.restrictions.minmax.MinProperties;
 import org.aml.typesystem.meta.restrictions.minmax.Minimum;
 
+/**
+ * <p>RestrictionsList class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RestrictionsList {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -19,6 +25,13 @@ public class RestrictionsList {
 			MaxItems.class, MaxLength.class, MaxProperties.class, Minimum.class, MinItems.class, MinLength.class,
 			MinProperties.class, Pattern.class, Enum.class, };
 
+	/**
+	 * <p>build.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param value a {@link java.lang.Object} object.
+	 * @return a {@link org.aml.typesystem.meta.restrictions.FacetRestriction} object.
+	 */
 	@SuppressWarnings("rawtypes")
 	public static FacetRestriction build(String name, Object value) {
 
@@ -64,18 +77,38 @@ public class RestrictionsList {
 		return value;
 	}
 
+	/**
+	 * <p>getArrayRestrictions.</p>
+	 *
+	 * @return an array of {@link java.lang.Class} objects.
+	 */
 	public static Class<?>[] getArrayRestrictions() {
 		return new Class[] { MinItems.class, MaxItems.class, UniqueItems.class };
 	}
 
+	/**
+	 * <p>getNumberRestrictions.</p>
+	 *
+	 * @return an array of {@link java.lang.Class} objects.
+	 */
 	public static Class<?>[] getNumberRestrictions() {
 		return new Class[] { Maximum.class, Minimum.class, Enum.class };
 	}
 
+	/**
+	 * <p>getObjectRestrictions.</p>
+	 *
+	 * @return an array of {@link java.lang.Class} objects.
+	 */
 	public static Class<?>[] getObjectRestrictions() {
 		return new Class[] { MinProperties.class, MaxProperties.class };
 	}
 
+	/**
+	 * <p>getStringRestrictions.</p>
+	 *
+	 * @return an array of {@link java.lang.Class} objects.
+	 */
 	public static Class<?>[] getStringRestrictions() {
 		return new Class[] { MinLength.class, MaxLength.class, Enum.class, Pattern.class };
 	}

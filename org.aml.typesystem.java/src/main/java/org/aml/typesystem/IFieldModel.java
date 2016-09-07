@@ -8,5 +8,10 @@ package org.aml.typesystem;
  */
 public interface IFieldModel extends IBasicModel,IMember{
 	
+	/**
+	 * <p>isGeneric.</p>
+	 *
+	 * @return a boolean.
+	 */
 	boolean isGeneric();
 }

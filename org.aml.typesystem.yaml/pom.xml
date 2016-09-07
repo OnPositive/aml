@@ -14,15 +14,15 @@
   		<scope>test</scope>
   	</dependency>
   	<dependency>
-  		<groupId>org.aml</groupId>
+  		<groupId>com.onpositive.aml</groupId>
   		<artifactId>org.aml.typesystem</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   </dependencies>
   <parent>
   	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
   	<relativePath>..</relativePath>
   </parent>
   <distributionManagement>

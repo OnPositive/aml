@@ -20,6 +20,20 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.7</version>
@@ -79,4 +93,24 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
+	<name>AML Tools</name>
+	<description>Set of the JAVA tools for RAML and a bit more</description>
+	<organization>
+		<name>OnPositive</name>
+		<url>http://onpositive.com</url>
+	</organization>
+	<scm>
+		<url>https://github.com/OnPositive/aml.git</url>
+		<developerConnection>OnPositive</developerConnection>
+	</scm>
+	<url>https://github.com/OnPositive/aml</url>
+	<licenses>
+		<license> <name>The Apache License, Version 2.0</name>
+    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url></license>
+	</licenses>
+	<developers>
+		<developer><name>Pavel Petrochenko</name><organization>OnPositive</organization><email>pavel@onpositive.com</email>
+		<organizationUrl>http://onpositive.com</organizationUrl></developer>
+	</developers>
+	
 </project>

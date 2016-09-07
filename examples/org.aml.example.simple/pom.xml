@@ -15,8 +15,9 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			
 			<plugin>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>0.0.1</version>
 				<groupId>com.onpositive.aml</groupId>
 				<configuration><packagesToProcess><value>org.aml.example.simple</value></packagesToProcess>
 				<memberMode>FIELDS</memberMode>

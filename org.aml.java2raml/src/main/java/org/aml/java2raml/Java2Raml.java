@@ -9,6 +9,8 @@ import java.util.Collection;
 import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.java.AcceptAllAnnotations;
 import org.aml.typesystem.java.AcceptAllAnnotationsFromPackages;
+import org.aml.typesystem.java.AllObjectsAreNullable;
+import org.aml.typesystem.java.AllObjectsAreOptional;
 import org.aml.typesystem.java.AllRequired;
 import org.aml.typesystem.java.BeanPropertiesFilter;
 import org.aml.typesystem.java.FieldMemberFilter;

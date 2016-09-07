@@ -1,47 +1,11 @@
 #%RAML 1.0 Library
 types:
-  SimpleEnum:
-    type: string
-    enum:
-    - HELLO
-    - GOODBUY
   double:
     type: number
     format: double
   long:
     type: integer
     format: long
-  AllObjectsAreNullable:
-    type: object
-  AllObjectsAreOptional:
-    type: object
-  CustomAnnotationTypes:
-    type: object
-    properties:
-      mm: string
-  CustomAnnotationTypes2:
-    type: object
-    properties:
-      mm: string
-  CustomAnnotationTypes3:
-    type: object
-  Manager:
-    type: Person
-    properties:
-      managed: Person[]
-      title: string
-  NestedAnnotations:
-    type: object
-  NestedArray:
-    type: object
-    properties:
-      items: double[][]
-  Person:
-    type: object
-    properties:
-      name: string
-      lastName: string
-      age: double
   ValidationBean:
     type: object
     properties:
@@ -54,38 +18,9 @@ types:
         maximum: 3.0
         minimum: 2.0
       mmm:
-        type: string
+        type: string | nil
         pattern: ..
       anotherString:
         type: string
         minLength: 8
         maxLength: 9
-  XMLSerialized:
-    type: object
-    properties:
-      name:
-        type: string
-        xml:
-          name: Name
-      lastName:
-        type: string
-        xml:
-          attribute: true
-          name: LastName
-  XMLSerialized2:
-    type: object
-    properties:
-      name?:
-        type: string
-        xml:
-          name: Name
-      lastName?:
-        type: string
-        xml:
-          attribute: true
-          name: LastName
-      salary?:
-        type: double
-        default: 100.0
-    xml:
-      name: element

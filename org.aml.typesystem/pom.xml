@@ -11,4 +11,10 @@
   		<scope>test</scope>
   	</dependency>  	
   </dependencies>
+  <parent>
+  	<groupId>org.aml</groupId>
+	<artifactId>org.aml.parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+  	<relativePath>..</relativePath>
+  </parent>
 </project>

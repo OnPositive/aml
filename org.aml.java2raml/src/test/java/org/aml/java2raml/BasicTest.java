@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.java.AllObjectsAreNullable;
 import org.aml.typesystem.java.IAnnotationFilter;
 import org.junit.Test;
 

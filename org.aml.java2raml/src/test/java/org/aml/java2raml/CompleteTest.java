@@ -19,7 +19,7 @@ public class CompleteTest extends TestCase{
 		cfg.ignoreUnreferencedAnnotationDeclarations=true;
 		ClassLoaderBasedCollector m=new ClassLoaderBasedCollector(CompleteTest.class.getClassLoader());
 		Collection<ITypeModel> gather = m.gather(cfg);
-		TestCase.assertEquals(gather.size(),13);
+		TestCase.assertEquals(gather.size(),11);
 	}
 	
 	@Test

@@ -1,9 +1,8 @@
-package org.aml.java2raml;
+package org.aml.typesystem.java;
 
 import org.aml.typesystem.IMember;
-import org.aml.typesystem.java.OptionalityNullabilityChecker;
 
-final class AllObjectsAreOptional implements OptionalityNullabilityChecker {
+public final class AllObjectsAreOptional implements OptionalityNullabilityChecker {
 	@Override
 	public boolean isOptional(IMember f) {
 		if (f.isCollection()){

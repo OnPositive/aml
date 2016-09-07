@@ -58,14 +58,14 @@ In addition to built in  RAML facets annotation profiles has following special t
 * `propName` - allows to configure resulting property name depending from member value
 
 At this moment project contains following annotation  profiles which are applied by default:
-  * `jaxb` - profile which customizes generation behavior depending from JAXB annotations
-  * `javax.validation` - this profile converts javax.validation annotation to corresponding RAML types constraints
+  * `jaxb` - profile which customizes generation behavior depending from JAXB annotations (`javax.xml.bind`)
+  * `javax.validation` - this profile converts `javax.validation` annotation to corresponding RAML types constraints
   * `lang` - settings to always ignore built-in java annotations
 
 ##Annotation Profiles related configuration parameters
 
 * `annotationProfiles` - this parameter allows to path list of files containing profiles for a custom handling of Java annotations. Alternatively you may pass names of built in annotation profiles to it. 
-* `ignoreDefaultAnnotationProfiles` - turns of default annotation profiles. By default following built in profiles are turned on javax.validaton, jaxb, lang
+* `ignoreDefaultAnnotationProfiles` - turns of default annotation profiles. By default following built in profiles are turned on `javax.validaton`, `jaxb`, `lang`
 
 ##Extensions
 

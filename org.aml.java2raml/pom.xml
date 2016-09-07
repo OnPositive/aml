@@ -31,9 +31,20 @@
 	</dependency>
   </dependencies>
   <parent>
-  	<groupId>org.aml</groupId>
+  	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
   	<relativePath>..</relativePath>
   </parent>
+  <distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		
+		<repository>
+    		<id>ossrh</id>
+    		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  		</repository>
+	</distributionManagement>
 </project>

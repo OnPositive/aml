@@ -16,6 +16,8 @@ import org.apache.maven.shared.artifact.filter.collection.ArtifactsFilter;
 @Mojo(name = "generateRaml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 
+	//settings!!!
+	
 	@Override
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
 		Set<Artifact> resolvedDependencies = getResolvedDependencies(true);

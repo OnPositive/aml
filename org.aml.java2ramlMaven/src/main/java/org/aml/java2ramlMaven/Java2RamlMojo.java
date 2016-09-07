@@ -7,13 +7,15 @@ import java.io.FileWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.aml.java2raml.Config;
-import org.aml.java2raml.Java2Raml;
 import org.aml.java2raml.Config.DefaultAnnotationBehavior;
 import org.aml.java2raml.Config.JavaOptionalityMode;
 import org.aml.java2raml.Config.MemberProcessingMode;
+import org.aml.java2raml.Java2Raml;
+import org.aml.typesystem.java.IConfiguarionExtension;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -24,13 +26,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactsFilter;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-
 @Mojo(name = "generateRaml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 
-	@Parameter(required=true)
-	String packagesToProcess;
+	
 	
 	@Parameter(property = "outputFile", defaultValue = "${project.build.directory}/generated-sources/raml/types.raml")
     private File outputFile;
@@ -45,30 +44,29 @@ public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 	protected DefaultAnnotationBehavior annotationsBehavior=DefaultAnnotationBehavior.IGNORE_ALL_EXCEPT_EXPLICIT_PACKAGES;
 	
 	@Parameter
-	protected ArrayList<String>annotationPackages=new ArrayList<>();
+	protected List<String> annotationPackages;
 	
-	
-	//Collector related (all supported)
-	@Parameter
-	protected ArrayList<String>packageNamesToLook=new ArrayList<>();
-	
-	
+	@Parameter(required=true)
+	List<String> packagesToProcess;
 	
 	@Parameter
-	protected ArrayList<String>classMasksToIgnore=new ArrayList<>();
+	protected List<String> classMasksToIgnore;
 	
 	@Parameter
 	protected boolean ignoreUnreferencedAnnotationDeclarations=true;
 	
 	//Annotation profiles related settings
 	@Parameter
-	protected ArrayList<String>annotationProfiles=new ArrayList<>();
+	protected List<String> annotationProfiles;
 	
 	@Parameter
-	boolean ignoreDefaultProfiles=false;
+	boolean ignoreDefaultAnnotationProfiles=false;
 	//settings!!!
 	
-	@SuppressWarnings({ "deprecation", "unchecked" })
+	@Parameter(property = "extensions")
+	private List<String> extensions;
+	
+	@SuppressWarnings({ "deprecation", "rawtypes" })
 	@Override
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
 		try{
@@ -81,7 +79,37 @@ public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 		urls.add(new File(outputDirectory).toURL());
 		URLClassLoader cl=new URLClassLoader(urls.toArray(new URL[urls.size()]));
 		Config cfg=new Config();
-		cfg.getPackageNamesToLook().addAll(Arrays.asList(this.packagesToProcess.split(";")));
+		cfg.setMemberMode(this.memberMode);
+		cfg.setOptinalityMode(this.optinalityMode);
+		cfg.setAnnotationsBehavior(this.annotationsBehavior);
+		if (this.annotationPackages!=null){
+			cfg.setAnnotationPackages(new ArrayList<>(this.annotationPackages));	
+		}
+		cfg.getPackageNamesToLook().addAll(this.packagesToProcess);
+		if (this.classMasksToIgnore!=null){
+			cfg.getClassMasksToIgnore().addAll(this.classMasksToIgnore);	
+		}
+		cfg.setIgnoreUnreferencedAnnotationDeclarations(this.ignoreUnreferencedAnnotationDeclarations);
+		if (this.annotationProfiles!=null){
+			cfg.getAnnotationProfiles().addAll(this.annotationProfiles);	
+		}
+		if (extensions != null) {
+			for (String className : extensions) {
+				try{
+					Class c = Class.forName(className);
+					if (c == null) {
+						throw new MojoExecutionException("generatorExtensionClass " + className
+								+ " cannot be loaded."
+								+ "Have you installed the correct dependency in the plugin configuration?");
+					}
+					Object newInstance = c.newInstance();
+					cfg.addExtension((IConfiguarionExtension) newInstance);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 		cfg.setPathToLookForClasses(project.getModel().getBuild().getOutputDirectory());
 		String processConfigToString = new Java2Raml().processConfigToString(cl, cfg);
 		outputFile.getParentFile().mkdirs();
@@ -102,6 +130,7 @@ public class Java2RamlMojo extends AbstractDependencyFilterMojo{
 				return true;
 			}
 			
+			@SuppressWarnings("rawtypes")
 			public Set filter(Set artifacts) throws ArtifactFilterException {
 				return artifacts;
 			}

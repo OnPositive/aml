@@ -2,6 +2,8 @@ package org.aml.java2raml;
 
 import java.util.ArrayList;
 
+import org.aml.typesystem.java.IConfiguarionExtension;
+
 public class Config {
 
 	public static enum MemberProcessingMode{
@@ -141,6 +143,13 @@ public class Config {
 	protected ArrayList<String>annotationProfiles=new ArrayList<>();
 	
 	boolean ignoreDefaultProfiles=false;
+	
+	
+	protected ArrayList<IConfiguarionExtension>extensions=new ArrayList<>();
+
+	public void addExtension(IConfiguarionExtension newInstance) {
+		this.extensions.add(newInstance);
+	}
 	
 	
 }

@@ -18,8 +18,8 @@
 			<plugin>
 				<version>0.0.1-SNAPSHOT</version>
 				<groupId>org.aml</groupId>
-				<configuration><packagesToProcess>org.aml.example.simple</packagesToProcess>
-				<memberMode>PROPERTIES</memberMode>
+				<configuration><packagesToProcess><value>org.aml.example.simple</value></packagesToProcess>
+				<memberMode>FIELDS</memberMode>
 				</configuration>
 				<artifactId>org.aml.java2ramlMaven</artifactId>
 			</plugin>

@@ -14,8 +14,13 @@ import org.aml.typesystem.java.AllObjectsAreOptional;
 import org.aml.typesystem.java.AllRequired;
 import org.aml.typesystem.java.BeanPropertiesFilter;
 import org.aml.typesystem.java.FieldMemberFilter;
+import org.aml.typesystem.java.IAnnotationFilter;
+import org.aml.typesystem.java.IMemberFilter;
+import org.aml.typesystem.java.IPropertyNameBuilder;
+import org.aml.typesystem.java.ITypeNamingConvention;
 import org.aml.typesystem.java.JavaTypeBuilder;
 import org.aml.typesystem.java.NoneFilter;
+import org.aml.typesystem.java.OptionalityNullabilityChecker;
 import org.aml.typesystem.java.TypeBuilderConfig;
 import org.aml.typesystem.reflection.ReflectionType;
 import org.aml.typesystem.yamlwriter.RamlWriter;
@@ -73,6 +78,24 @@ public class Java2Raml {
 		}
 		if (cfg.ignoreDefaultProfiles){
 			builder.getConfig().getAnnotationsProcessingConfig().clear();
+		}
+		
+		for (Object o:cfg.extensions){
+			if (o instanceof IAnnotationFilter){
+				builder.getConfig().setAnnotationsFilter((IAnnotationFilter) o);
+			}
+			if (o instanceof IMemberFilter){
+				builder.getConfig().setMemberFilter((IMemberFilter) o);
+			}
+			if (o instanceof OptionalityNullabilityChecker){
+				builder.getConfig().setCheckNullable(((OptionalityNullabilityChecker) o));
+			}
+			if (o instanceof ITypeNamingConvention){
+				builder.getConfig().setNamingConvention(((ITypeNamingConvention) o));
+			}
+			if (o instanceof IPropertyNameBuilder){
+				builder.getConfig().setPropertyNameBuilder(((IPropertyNameBuilder) o));
+			}
 		}
 		for (String s:cfg.annotationProfiles){
 			File f=new File(s);

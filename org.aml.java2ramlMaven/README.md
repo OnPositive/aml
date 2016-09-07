@@ -15,8 +15,46 @@
 * `annotationsBehavior` - this parameter allows to configure how Java annotations should be represented. Allowed values: IGNORE_ALL_EXCEPT_EXPLICIT_PACKAGES , GENERATE_ALL. Defaults to IGNORE_ALL_EXCEPT_EXPLICIT_PACKAGES.
 * `annotationPackages` - this parameter allows to set a list of packages which contains declarations of annotations which should be converted to RAML.
 
+
+##Annotation Profiles
+
+Java annotations may oftenly affect on desired RAML types representation of Java types. This effects depends from used frameworks as well from developer preference and style. 
+
+We support customization of this effects with `Annotation Profiles` feature which allows you to customize conversion behavior depending from set of Java member annotations. Annotations Profile are  xml configuration files which contains mappings of Java annotation parameters to RAML types facets as well as providing control on nullability, optionality, name and presense of generated RAML property in containing type.
+
+The following snippet shows a built-in annotation profile which we use to customize generation of members depending from JAXB annotations present.
+
+```xml
+<annotations>
+	<annotation name="javax.xml.bind.annotation.XmlElement" skipFromRaml="true">
+		<member name="required" target="required"/>
+		<member name="name" target="xml.name"/>
+		<member name="namespace" target="xml.namespace"/>
+		<member name="defaultValue" target="default"/>
+		<member name="nillable" target="nullable"/>			
+	</annotation>
+	<annotation name="javax.xml.bind.annotation.XmlAttribute" skipFromRaml="true">
+		<member name="required" target="required"/>
+		<member name="name" target="xml.name"/>
+		<member name="namespace" target="xml.namespace"/>
+		<member target="xml.attribute" value="true"/>		
+	</annotation>
+	<annotation name="javax.xml.bind.annotation.XmlTransient" skipFromRaml="true">
+		<member value="true" target="skipMember"/>	
+	</annotation>		
+	<annotation name="javax.xml.bind.annotation.XmlRootElement" skipFromRaml="true">
+		<member name="name" target="xml.name"/>
+		<member name="namespace" target="xml.namespace"/>
+	</annotation>
+	<annotation name="javax.xml.bind.annotation.XmlElementWrapper" skipFromRaml="true">
+		<member target="xml.wrapped" value="true"/>
+	</annotation>	
+</annotations>
+```
+
+##Annotation Profiles related configuration parameters
+
 * `annotationProfiles` - this parameter allows to path list of files containing profiles for a custom handling of Java annotations. Alternatively you may pass names of built in annotation profiles to it. 
 * `ignoreDefaultAnnotationProfiles` - turns of default annotation profiles. By default following built in profiles are turned on javax.validaton, jaxb, lang
 
-
-
+##Extensions

@@ -135,3 +135,4 @@ Some times you need to do further customization of the generation process in thi
 #Examples
 
 [Simple Example](/examples/org.aml.example.simple)  
+[Using Annotation Profile to configure optinality and default values](/examples/org.aml.example.simple.customannotationprofile)  

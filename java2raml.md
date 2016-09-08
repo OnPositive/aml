@@ -134,6 +134,6 @@ Some times you need to do further customization of the generation process in thi
 
 #Examples
 
-[Simple Example](/examples/org.aml.example.simple)  
-[Java Annotations moving to RAML](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.ramlannotations)
-[Using Annotation Profile to configure optinality and default values](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.customannotationprofile)  
+* [Simple Example](/examples/org.aml.example.simple) 
+* [Java Annotations moving to RAML](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.ramlannotations)
+* [Using Annotation Profile to configure optinality and default values](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.customannotationprofile)  

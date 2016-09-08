@@ -2,7 +2,7 @@
 
 #Programmatic conversion
 
-Look in `org.aml.java2raml.Java2Raml` and `org.aml.java2raml.Config` classes to get the idea of how you may use `org.aml.java2raml` to convert java class definitions to RAML programmatically
+Look in [`org.aml.java2raml.Java2Raml`](https://github.com/OnPositive/aml/blob/master/org.aml.java2raml/src/main/java/org/aml/java2raml/Java2Raml.java) and [`org.aml.java2raml.Config`](https://github.com/OnPositive/aml/blob/master/org.aml.java2raml/src/main/java/org/aml/java2raml/Config.java) classes to get the idea of how you may use `org.aml.java2raml` to convert java class definitions to RAML programmatically
 
 #Using as maven plugin
 

@@ -8,7 +8,7 @@ The goal of this project is to provide a set of tools making work with RAML 1.0 
 
 #Currently supported
 
-* Conversion of Java classes and Annotations to RAML Library.
+* [Conversion of Java classes and Annotations to RAML Library](java2raml.md).
 
 
 #Maven artifacts

@@ -18,7 +18,7 @@ Simply add plugin configuration to your maven build:
 </plugin>
 ```
 
-type `mvn java2raml:generateRaml` from command line and you will see generated library in  `${project.build.directory}/generated-sources/raml/` directory
+Execute `mvn java2raml:generateRaml` from command line and you will see generated library in  `${project.build.directory}/generated-sources/raml/` directory
 
 #Configuration Options
 

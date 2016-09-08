@@ -237,7 +237,7 @@ public class JavaTypeBuilder {
 
 			AbstractType type2 = getType(at);
 			Object vl = dumpValue(m);
-			type.addMeta(new Annotation("(" + m.getName() + ")", vl, type2));
+			type.addMeta(new Annotation(m.getName(), vl, type2));
 		}
 		return type;
 	}

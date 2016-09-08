@@ -1,8 +1,24 @@
 #Java Classes to RAML types conversion
 
 
-Using from maven plugin:
+#Using as maven plugin
 
+Simply add plugin configuration to your maven build: 
+```xml
+<plugin>
+	<version>0.0.1</version>
+	<groupId>com.onpositive.aml</groupId>
+	<configuration>
+	   <packagesToProcess>
+		<value>com.some.package.to.process</value><!-- replace this with your own package names  -->
+		<value>com.another.package.to.process</value>
+	  </packagesToProcess>
+	</configuration>
+	<artifactId>java2raml-maven-plugin</artifactId>
+</plugin>
+```
+
+type `mvn java2raml:generateRaml` from command line and you will see generated library in  `${project.build.directory}/generated-sources/raml/` directory
 
 #Configuration Options
 

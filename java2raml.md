@@ -138,6 +138,6 @@ There are following example projects at this moment:
 
 * [Simple Example](/examples/org.aml.example.simple) 
 * [Java Annotations moving to RAML](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.ramlannotations)
-* [Using Annotation Profile to configure optinality and default values](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.customannotationprofile)  
+* [Using Annotation Profile to configure optionality and default values](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.customannotationprofile)  
 
 To run example project you should go to project directory and execute `mvn compile` from command line, raml library will be generated to `target/generated-sources/raml/types.raml` 

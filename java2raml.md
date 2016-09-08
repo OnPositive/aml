@@ -79,7 +79,7 @@ Some times you need to do further customization of the generation process in thi
 
 #Limitations
 
-* At this moment only annotations with runtime retention policy can be converted.
+* At this moment only annotations with runtime retention policy will be represented in generated raml library.
 * conversion to date types as well as to file type is not supported yet.
 
 

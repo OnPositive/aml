@@ -1,5 +1,10 @@
 #Java Classes to RAML types conversion
 
+
+
+Using from maven plugin:
+
+
 #Configuration Options
 
 ##Input and output related options

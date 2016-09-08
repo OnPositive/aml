@@ -6,5 +6,4 @@
 
 #Examples
 
-### Java => RAML
-- [Simple Example](/examples/org.aml.example.simple)  
+[Simple Example](/examples/org.aml.example.simple)  

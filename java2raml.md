@@ -1,7 +1,6 @@
 #Java Classes to RAML types conversion
 
 
-
 Using from maven plugin:
 
 
@@ -78,7 +77,10 @@ At this moment project contains following annotation  profiles which are applied
 
 Some times you need to do further customization of the generation process in this case you may pass a set of classNames into `extensions` plugin parameter. This classes should implement one of our extension interface, provide default constructor and be available on plugin class path.
 
+#Limitations
 
+* At this moment only annotations with runtime retention policy can be converted.
+* conversion to date types as well as to file type is not supported yet.
 
 
 #Examples

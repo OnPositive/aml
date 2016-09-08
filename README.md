@@ -16,5 +16,7 @@ Maven artifacts are available at:
  - [Maven Central](http://search.maven.org/#search|ga|1|com.onpositive.aml) - release repository
  - https://oss.sonatype.org/content/repositories/snapshots/ - snaphots repository
 
+#Configuration Options
 
+[Configuration Settings](https://github.com/OnPositive/aml/blob/master/org.aml.java2ramlMaven/README.md)
  

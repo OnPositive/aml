@@ -1,0 +1,8 @@
+<annotations>
+    <annotation name="org.aml.example.simple.Optional" skipFromRaml="true">
+        <member value="false" target="required"/>               
+    </annotation>       
+    <annotation name="org.aml.example.simple.Default" skipFromRaml="true">
+        <member name="value" target="default"/>               
+    </annotation>
+</annotations>

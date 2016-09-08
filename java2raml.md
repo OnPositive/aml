@@ -11,17 +11,47 @@ Simply add plugin configuration to your maven build:
 <plugin>
 	<version>0.0.1</version>
 	<groupId>com.onpositive.aml</groupId>
+	<artifactId>java2raml-maven-plugin</artifactId>
 	<configuration>
 	   <packagesToProcess>
 		<value>com.some.package.to.process</value><!-- replace this with your own package names  -->
 		<value>com.another.package.to.process</value>
 	  </packagesToProcess>
 	</configuration>
-	<artifactId>java2raml-maven-plugin</artifactId>
+        <executions>
+         <execution>
+            <goals>
+                <goal>generateRaml</goal>
+            </goals>
+            <phase>compile</phase>
+         </execution>
+       </executions>
 </plugin>
 ```
 
-Execute `mvn java2raml:generateRaml` from command line and you will see generated library in  `${project.build.directory}/generated-sources/raml/` directory
+The RAML definition will be processed and the code will be generated when running `mvn compile` or `mvn package`.
+
+####Eclipse usage
+
+When developing in Eclipse, you must manage lifecycle mapping. For this purpose your `pom.xml` must have following child element in `pluginExecutions` section:
+``` xml
+<pluginExecution>
+	<pluginExecutionFilter>
+		<groupId>org.raml.plugins</groupId>
+		<artifactId>jaxrs-raml-maven-plugin</artifactId>
+		<versionRange>1.3.4</versionRange>
+		<goals>
+			<goal>generate-raml</goal>
+		</goals>
+	</pluginExecutionFilter>
+	<action>
+		<execute>
+			<runOnIncremental>false</runOnIncremental>
+		</execute>
+	</action>
+</pluginExecution>
+```
+
 
 #Configuration Options
 

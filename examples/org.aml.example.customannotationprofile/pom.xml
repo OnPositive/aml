@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.onpositive.aml</groupId>
-	<artifactId>org.aml.example.simple.java2raml</artifactId>
+	<artifactId>org.aml.example.simple.java2raml.annotationProfile</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<build>
 		<plugins>
@@ -14,6 +14,9 @@
 					<packagesToProcess>
 						<value>org.aml.example.simple</value>
 					</packagesToProcess>
+					<annotationProfiles>
+						<value>${project.basedir}/annotations.xml</value>
+					</annotationProfiles>
 					<memberMode>FIELDS</memberMode>
 				</configuration>
 				<artifactId>java2raml-maven-plugin</artifactId>

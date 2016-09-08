@@ -1,6 +1,7 @@
 package org.aml.typesystem;
 
 import org.aml.typesystem.meta.BasicMeta;
+import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.Polymorphic;
 import org.aml.typesystem.meta.facets.internal.InstanceOfRestriction;
 import org.aml.typesystem.meta.facets.internal.NothingRestriction;
@@ -53,12 +54,22 @@ public class BuiltIns {
 
 	/** Constant <code>NUMBER</code> */
 	public static final AbstractType NUMBER = TypeOps.derive("number", SCALAR);
+	
+	
 
 	/** Constant <code>INTEGER</code> */
 	public static final AbstractType INTEGER = TypeOps.derive("integer", NUMBER);
 
-	/** Constant <code>DATE</code> */
-	public static final AbstractType DATE = TypeOps.derive("date", SCALAR);
+	/** Constant <code>DATETIME</code> */
+	public static final AbstractType DATETIME = TypeOps.derive("datetime", SCALAR);
+	/** Constant <code>TIME</code> */
+	public static final AbstractType TIMEONLY = TypeOps.derive("time-only", SCALAR);
+	
+	/** Constant <code>TIME</code> */
+	public static final AbstractType DATEONLY = TypeOps.derive("date-only", SCALAR);
+	
+	/** Constant <code>TIME</code> */
+	public static final AbstractType DATETIMEONLY = TypeOps.derive("datetime-only", SCALAR);
 
 	/** Constant <code>FILE</code> */
 	public static final AbstractType FILE = TypeOps.derive("file", SCALAR);
@@ -89,9 +100,17 @@ public class BuiltIns {
 		builtInsRegostry.registerType(SCALAR);
 		builtInsRegostry.registerType(FILE);
 		NUMBER.addMeta(BasicMeta.BUILTIN);
-		builtInsRegostry.registerType(DATE);
+		builtInsRegostry.registerType(DATETIME);
+		builtInsRegostry.registerType(TIMEONLY);
+		builtInsRegostry.registerType(DATEONLY);
+		builtInsRegostry.registerType(DATETIMEONLY);
 		builtInsRegostry.registerType(NIL);
 		NIL.addMeta(BasicMeta.BUILTIN);
+		DATEONLY.addMeta(BasicMeta.BUILTIN);
+		TIMEONLY.addMeta(BasicMeta.BUILTIN);
+		DATETIMEONLY.addMeta(BasicMeta.BUILTIN);
+		DATETIME.addMeta(BasicMeta.BUILTIN);
+		DATETIME.addMeta(new FacetDeclaration("format", BuiltIns.STRING));
 		NUMBER.addMeta(new InstanceOfRestriction(Number.class));
 		builtInsRegostry.registerType(NUMBER);
 		INTEGER.addMeta(new InstanceOfRestriction(Integer.class));

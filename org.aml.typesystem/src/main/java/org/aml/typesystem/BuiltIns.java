@@ -76,11 +76,13 @@ public class BuiltIns {
 	
 	/** Constant <code>POLYMORPH</code> */
 	public static final AbstractType POLYMORPH = TypeOps.derive("polymorphic", OBJECT);
+	
+	public static final AbstractType EXTERNAL = TypeOps.derive("<ext>", OBJECT);
 
 	/** Constant <code>RECURRENT_TYPE</code> */
 	public static final AbstractType RECURRENT_TYPE = new RootType("<rec>");
 	/** Constant <code>UNKNOWN_TYPE</code> */
-	public static final AbstractType UNKNOWN_TYPE = new RootType("<rec>");
+	public static final AbstractType UNKNOWN_TYPE = new RootType("<unk>");
 
 	/** Constant <code>STRING</code> */
 	public static final AbstractType STRING = TypeOps.derive("string", SCALAR);
@@ -129,6 +131,7 @@ public class BuiltIns {
 		builtInsRegostry.registerType(ARRAY);
 		POLYMORPH.addMeta(new Polymorphic(true));
 		POLYMORPH.addMeta(BasicMeta.BUILTIN);
+		EXTERNAL.addMeta(BasicMeta.BUILTIN);
 		builtInsRegostry.registerType(POLYMORPH);
 	}
 

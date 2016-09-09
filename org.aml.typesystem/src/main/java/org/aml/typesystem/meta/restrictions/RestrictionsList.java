@@ -69,7 +69,7 @@ public class RestrictionsList {
 		}
 		if (arg == Number.class) {
 			try{
-			value = Double.parseDouble((String) value); // NOSONAR
+			value = Double.parseDouble((String) value.toString()); // NOSONAR
 			} catch (NumberFormatException e){
 				return 0;
 			}

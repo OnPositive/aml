@@ -60,4 +60,8 @@ public class TypeRegistryImpl implements ITypeRegistry {
 	public Collection<AbstractType> types() {
 		return map.values();
 	}
+
+	public boolean hasDeclaration(String typeName) {
+		return map.containsKey(typeName);
+	}
 }

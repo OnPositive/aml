@@ -1,0 +1,12 @@
+#%RAML 1.0 Library
+types:
+  Dog: string
+  Animal:
+    maxProperties: 3
+    properties:
+      name: string
+      localName: string
+  SuperAnimal:
+     type: Animal
+     properties:
+       super: string    

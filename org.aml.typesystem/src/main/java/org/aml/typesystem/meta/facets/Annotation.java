@@ -95,4 +95,12 @@ public class Annotation extends TypeInformation implements ISimpleFacet {
 	public AbstractType requiredType() {
 		return BuiltIns.ANY;
 	}
+
+	public void setAnnotationType(AbstractType t) {
+		this.type=t;
+	}
+
+	public AbstractType annotationType() {
+		return type;
+	}
 }

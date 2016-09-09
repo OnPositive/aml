@@ -8,7 +8,7 @@ import java.util.Collection;
  * @author kor
  * @version $Id: $Id
  */
-public interface ITypeRegistry {
+public interface ITypeRegistry extends Iterable<AbstractType>{
 
 	/**
 	 * <p>getType.</p>

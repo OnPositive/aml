@@ -77,7 +77,7 @@ public class BuiltIns {
 	/** Constant <code>POLYMORPH</code> */
 	public static final AbstractType POLYMORPH = TypeOps.derive("polymorphic", OBJECT);
 	
-	public static final AbstractType EXTERNAL = TypeOps.derive("<ext>", OBJECT);
+	public static final AbstractType EXTERNAL = TypeOps.derive("<ext>", ANY);
 
 	/** Constant <code>RECURRENT_TYPE</code> */
 	public static final AbstractType RECURRENT_TYPE = new RootType("<rec>");

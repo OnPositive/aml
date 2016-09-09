@@ -1,6 +1,7 @@
 package org.aml.typesystem;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
@@ -63,5 +64,10 @@ public class TypeRegistryImpl implements ITypeRegistry {
 
 	public boolean hasDeclaration(String typeName) {
 		return map.containsKey(typeName);
+	}
+
+	@Override
+	public Iterator<AbstractType> iterator() {
+		return map.values().iterator();
 	}
 }

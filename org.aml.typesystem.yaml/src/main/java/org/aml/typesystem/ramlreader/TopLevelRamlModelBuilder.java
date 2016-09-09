@@ -3,6 +3,7 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import org.aml.typesystem.meta.FacetRegistry;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
+import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.FacetRestriction;
 import org.aml.typesystem.meta.restrictions.RestrictionsList;
 import org.raml.v2.internal.impl.commons.nodes.AnnotationNode;
@@ -38,6 +40,14 @@ import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
 import org.raml.yagi.framework.nodes.ObjectNode;
 import org.raml.yagi.framework.nodes.SimpleTypeNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYArrayNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYBooleanNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYFloatingNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYIntegerNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYNullNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYObjectNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYStringNode;
+import org.yaml.snakeyaml.Yaml;
 
 public class TopLevelRamlModelBuilder {
 
@@ -75,7 +85,7 @@ public class TopLevelRamlModelBuilder {
 		}));
 		value = getValue(node, ANNOTATIONTYPES);
 		value.ifPresent(x -> x.getChildren().forEach(l -> {
-			AnnotationTypeNode t = (AnnotationTypeNode) l;			
+			AnnotationTypeNode t = (AnnotationTypeNode) l;
 			result.atypeDecls.put(t.getName(), (TypeDeclarationNode) t.getValue());
 
 		}));
@@ -85,29 +95,29 @@ public class TopLevelRamlModelBuilder {
 	protected void buildTypes(TopLevelRamlImpl node) {
 		node.usesMap.values().forEach(x -> buildTypes(x));
 		node.typeDecls.keySet().forEach(x -> resolveType(node, x));
-		node.atypeDecls.keySet().forEach(x -> buildType(node, x,node.atypeDecls.get(x)));
-		for (AbstractType t: node.types()){
+		node.atypeDecls.keySet().forEach(x -> buildType(node, x, node.atypeDecls.get(x)));
+		for (AbstractType t : node.types()) {
 			finishAnnotationBinding(node, t);
 		}
-		for (AbstractType t: node.annotationTypes()){
+		for (AbstractType t : node.annotationTypes()) {
 			finishAnnotationBinding(node, t);
 		}
 	}
 
 	private void finishAnnotationBinding(TopLevelRamlImpl node, AbstractType t) {
-		for (TypeInformation i:t.declaredMeta()){
-			if (i instanceof Annotation){
-				Annotation a=(Annotation) i;
+		for (TypeInformation i : t.declaredMeta()) {
+			if (i instanceof Annotation) {
+				Annotation a = (Annotation) i;
 				String name = a.getName();
-				String namespace=null;
+				String namespace = null;
 				int indexOf = name.indexOf('.');
-				if (indexOf!=-1){
-					namespace=name.substring(0, indexOf);
-					name=name.substring(indexOf+1);
+				if (indexOf != -1) {
+					namespace = name.substring(0, indexOf);
+					name = name.substring(indexOf + 1);
 				}
-				TopLevelRamlImpl ti=node;
-				if (namespace!=null){
-					ti=node.usesMap.get(namespace);
+				TopLevelRamlImpl ti = node;
+				if (namespace != null) {
+					ti = node.usesMap.get(namespace);
 				}
 				a.setAnnotationType(ti.annotationTypes().getType(name));
 			}
@@ -173,16 +183,15 @@ public class TopLevelRamlModelBuilder {
 			superTypes.add(superType);
 		}
 		AbstractType result = TypeOps.derive(typeName, superTypes.toArray(new AbstractType[superTypes.size()]));
-		if (ts.getParent() instanceof AnnotationTypeNode){
+		if (ts.getParent() instanceof AnnotationTypeNode) {
 			topLevelRamlImpl.annotationTypes.registerType(result);
-		}
-		else{
+		} else {
 			topLevelRamlImpl.topLevelTypes.registerType(result);
 		}
 		List<Node> facets = ts.getChildren();
 		for (Node node : facets) {
 			if (node instanceof FacetNode) {
-				FacetNode n=(FacetNode) node;
+				FacetNode n = (FacetNode) node;
 				if (n.getName().equals(PROPERTIES)) {
 					Node value = n.getValue();
 					List<Node> ps = value.getChildren();
@@ -195,26 +204,21 @@ public class TopLevelRamlModelBuilder {
 					}
 					continue;
 				}
-				
+
 				Node value = n.getValue();
 				if (value instanceof SimpleTypeNode<?>) {
 					SimpleTypeNode<?> stn = (SimpleTypeNode<?>) value;
 					FacetRestriction<?> build = RestrictionsList.build(n.getName(), stn.getValue());
 					result.addMeta(build);
 				}
-			}
-			else{				
-				KeyValueNode kv=(KeyValueNode) node;
-				SimpleTypeNode b=(SimpleTypeNode) kv.getKey();
+			} else {
+				KeyValueNode kv = (KeyValueNode) node;
+				SimpleTypeNode b = (SimpleTypeNode) kv.getKey();
 				String literalValue = b.getLiteralValue();
-				if (kv instanceof AnnotationNode){
+				if (kv instanceof AnnotationNode) {
 					Node value = kv.getValue();
-					Object val=value;
-					if (value instanceof SimpleTypeNode<?>){
-						SimpleTypeNode<?>si=(SimpleTypeNode<?>) value;
-						val=si.getValue();
-					}
-					Annotation as=new Annotation(literalValue.substring(1, literalValue.length()-1), val, null);
+					Object val = toObject(value);
+					Annotation as = new Annotation(literalValue.substring(1, literalValue.length() - 1), val, null);
 					result.addMeta(as);
 				}
 				if (literalValue.equals(FACETS)) {
@@ -224,31 +228,99 @@ public class TopLevelRamlModelBuilder {
 						CustomFacetDefinitionNode pn = (CustomFacetDefinitionNode) p;
 						TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
 						AbstractType buildType = buildType(topLevelRamlImpl, "", td);
-						FacetDeclaration fd=new FacetDeclaration(pn.getFacetName(), buildType);
+						FacetDeclaration fd = new FacetDeclaration(pn.getFacetName(), buildType);
 						result.addMeta(fd);
 					}
 					continue;
 				}
 				TypeInformation facet = FacetRegistry.facet(literalValue);
-				if (facet instanceof ISimpleFacet){
-					ISimpleFacet sf=(ISimpleFacet) facet;					
+				if (facet instanceof ISimpleFacet) {
+					ISimpleFacet sf = (ISimpleFacet) facet;
 					Node value = kv.getValue();
-					ObjectNode on=(ObjectNode) value;
-					if (on.getChildren().size()==1){
+					ObjectNode on = (ObjectNode) value;
+					if (on.getChildren().size() == 1) {
 						Node n2 = on.getChildren().get(0);
-						if (n2 instanceof KeyValueNode){
-							KeyValueNode kv2=(KeyValueNode) n2;
-							if (kv2.getValue() instanceof SimpleTypeNode<?>){
-								SimpleTypeNode<?>vl=(SimpleTypeNode<?>) kv2.getValue();
+						if (n2 instanceof KeyValueNode) {
+							KeyValueNode kv2 = (KeyValueNode) n2;
+							if (kv2.getValue() instanceof SimpleTypeNode<?>) {
+								SimpleTypeNode<?> vl = (SimpleTypeNode<?>) kv2.getValue();
 								sf.setValue(vl.getValue());
 								result.addMeta(facet);
 							}
 						}
-					}					
-				}				
+					}
+				}
+				if (facet instanceof XMLFacet) {
+					Object object = toObject(kv.getValue());
+					XMLFacet xml = (XMLFacet) facet;
+					if (object instanceof HashMap<?, ?>) {
+						HashMap<String, Object> rs = (HashMap<String, Object>) object;
+						xml.setName((String) rs.get("name"));
+						if (rs.containsKey("attribute")) {
+							xml.setAttribute((Boolean) rs.get("attribute"));
+						}
+						if (rs.containsKey("wrapped")) {
+							xml.setWrapped(((Boolean) rs.get("wrapped")));
+						}
+						if (rs.containsKey("namespace")) {
+							xml.setNamespace((((String) rs.get("namespace"))));
+						}
+						if (rs.containsKey("prefix")) {
+							xml.setNamespace((((String) rs.get("prefix"))));
+						}
+						if (rs.containsKey("order")) {
+							xml.setOrder(((List) rs.get("order")));
+						}
+					}
+					result.addMeta(xml);
+				}
 			}
 		}
 		return result;
+	}
+
+	Object toObject(Node n) {
+		if (n instanceof SimpleTypeNode<?>) {
+			SimpleTypeNode<?> si = (SimpleTypeNode<?>) n;
+			return si.getValue();
+		}
+		if (n instanceof SYObjectNode) {
+			SYObjectNode mm = (SYObjectNode) n;
+			LinkedHashMap<String, Object> vals = new LinkedHashMap<>();
+			mm.getChildren().forEach(x -> {
+				KeyValueNode kv = (KeyValueNode) x;
+				SimpleTypeNode key = (SimpleTypeNode) kv.getKey();
+				String pName = key.getLiteralValue();
+				vals.put(pName, toObject(kv.getValue()));
+
+			});
+			return vals;
+		}
+		if (n instanceof SYBooleanNode) {
+			SYBooleanNode b = (SYBooleanNode) n;
+			return b.getValue();
+		}
+		if (n instanceof SYFloatingNode) {
+			SYFloatingNode b = (SYFloatingNode) n;
+			return b.getValue().doubleValue();
+		}
+		if (n instanceof SYIntegerNode) {
+			SYIntegerNode b = (SYIntegerNode) n;
+			return b.getValue();
+		}
+		if (n instanceof SYNullNode) {
+			return null;
+		}
+		if (n instanceof SYStringNode) {
+			return ((SYStringNode) n).getValue();
+		}
+		if (n instanceof SYArrayNode) {
+			SYArrayNode an = (SYArrayNode) n;
+			ArrayList<Object> result = new ArrayList<>();
+			an.getChildren().forEach(x -> result.add(toObject(x)));
+			return result;
+		}
+		return n;
 	}
 
 	private TypeDeclarationNode findDeclaration(TopLevelRamlImpl topLevelRamlImpl, String typeName) {

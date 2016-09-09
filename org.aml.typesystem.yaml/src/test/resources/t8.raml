@@ -1,0 +1,19 @@
+#%RAML 1.0 Library
+annotationTypes:
+  MM:
+    properties:
+      x: number
+      y: number 
+  VV: string
+  QQ: string[]    
+types:
+  Z: 
+   (MM): 
+     x: 3
+     y: 5
+   (VV): ddd
+   (QQ):  [ A, B ] 
+   type: number
+   xml:
+     name: ZZ    
+     

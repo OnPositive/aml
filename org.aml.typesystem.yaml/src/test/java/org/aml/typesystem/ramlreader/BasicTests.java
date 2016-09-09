@@ -1,5 +1,6 @@
 package org.aml.typesystem.ramlreader;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.Description;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
+import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.minmax.MaxProperties;
 import org.aml.typesystem.meta.restrictions.minmax.Minimum;
 import org.aml.typesystem.raml.model.TopLevelRaml;
@@ -93,6 +95,36 @@ public class BasicTests extends TestCase{
 			TestCase.assertEquals(a.value(), 7);
 			TestCase.assertEquals(a.annotationType(), raml.uses().get("t5").annotationTypes().getType("Hello"));
 		}		
+	}
+	
+	@Test
+	public void test9() {
+		TopLevelRaml raml = parse("/t7.raml");
+		AbstractType type = raml.types().getType("Z");
+		XMLFacet meta = type.oneMeta(XMLFacet.class);
+		TestCase.assertEquals(meta.getName(),"ZZ");	
+	}
+	
+	@Test	
+	public void test10() {
+		TopLevelRaml raml = parse("/t8.raml");
+		AbstractType type = raml.types().getType("Z");
+		TestCase.assertEquals(type.meta(Annotation.class).size(), 3);
+		type.declaredMeta().forEach(x->{
+			if (x instanceof Annotation){
+				Annotation zz=(Annotation) x;
+				if (zz.getName().equals("MM")){
+					HashMap<String,Object>val=(HashMap<String, Object>) zz.getValue();
+					TestCase.assertEquals(val.get("x"), 3);
+				}
+				if (zz.getName().equals("VV")){					
+					TestCase.assertEquals(zz.getValue(), "ddd");
+				}
+				if (zz.getName().equals("QQ")){					
+					TestCase.assertEquals(zz.getValue().toString(), "[A, B]");
+				}
+			}
+		});	
 	}
 	
 	private TopLevelRaml parse(String res) {

@@ -12,7 +12,7 @@ import org.aml.typesystem.raml.model.TopLevelRaml;
 import org.raml.v2.internal.impl.commons.nodes.TypeDeclarationNode;
 import org.raml.yagi.framework.nodes.Node;
 
-public class TopLevelRamlImpl implements TopLevelRaml{
+public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelRaml{
 
 	
 	protected transient Node original;
@@ -23,6 +23,13 @@ public class TopLevelRamlImpl implements TopLevelRaml{
 	public TopLevelRamlImpl(Node original) {
 		super();
 		this.original = original;
+	}
+	public TopLevelRamlImpl(TopLevelRamlImpl n) {
+		this.original=n.original;
+		this.typeDecls=n.typeDecls;
+		this.atypeDecls=n.atypeDecls;
+		this.topLevelTypes=n.topLevelTypes;
+		this.annotationTypes=n.annotationTypes;
 	}
 	protected LinkedHashMap<String,LibraryImpl>usesMap=new LinkedHashMap<>();
 	
@@ -44,4 +51,5 @@ public class TopLevelRamlImpl implements TopLevelRaml{
 	public Map<String, ? extends Library> uses() {
 		return usesMap;
 	}
+	
 }

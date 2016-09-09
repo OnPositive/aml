@@ -1,5 +1,6 @@
 package org.aml.typesystem.ramlreader;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +21,11 @@ import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.FacetRestriction;
 import org.aml.typesystem.meta.restrictions.RestrictionsList;
+import org.raml.v2.api.loader.ResourceLoader;
+import org.raml.v2.api.model.v10.RamlFragment;
+import org.raml.v2.internal.impl.RamlBuilder;
+import org.raml.v2.internal.impl.commons.RamlHeader;
+import org.raml.v2.internal.impl.commons.RamlHeader.InvalidHeaderException;
 import org.raml.v2.internal.impl.commons.nodes.AnnotationNode;
 import org.raml.v2.internal.impl.commons.nodes.AnnotationTypeNode;
 import org.raml.v2.internal.impl.commons.nodes.CustomFacetDefinitionNode;
@@ -36,6 +42,7 @@ import org.raml.v2.internal.impl.v10.nodes.NamedTypeExpressionNode;
 import org.raml.v2.internal.impl.v10.nodes.NativeTypeExpressionNode;
 import org.raml.v2.internal.impl.v10.nodes.PropertyNode;
 import org.raml.v2.internal.impl.v10.nodes.UnionTypeExpressionNode;
+import org.raml.v2.internal.utils.StreamUtils;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
 import org.raml.yagi.framework.nodes.ObjectNode;
@@ -58,6 +65,8 @@ public class TopLevelRamlModelBuilder {
 	private static final String ANNOTATIONTYPES = "annotationTypes";
 
 	protected Map<Object, LibraryImpl> ramlGraph = new HashMap<>();
+	
+	RamlHeader header;
 
 	public LibraryImpl buildUsesMaps(Node node) {
 		if (ramlGraph.containsKey(id(node))) {
@@ -326,10 +335,25 @@ public class TopLevelRamlModelBuilder {
 	private TypeDeclarationNode findDeclaration(TopLevelRamlImpl topLevelRamlImpl, String typeName) {
 		return topLevelRamlImpl.typeDecls.get(typeName);
 	}
+	public TopLevelRamlImpl build(InputStream c,ResourceLoader loader,String path){
+		String string = StreamUtils.toString(c);
+		Node build = new RamlBuilder().build(string,loader,path);
+		RamlHeader header=null;
+		try {
+			header= RamlHeader.parse(string);
+		} catch (InvalidHeaderException e) {
+			return null;
+		}
+		return build(build, header);
+	}
 
-	public TopLevelRamlImpl build(Node node) {
+	public TopLevelRamlImpl build(Node node, RamlHeader header) {		
 		TopLevelRamlImpl n = buildUsesMaps(node);
 		buildTypes(n);
+		if (header.getFragment()!=RamlFragment.Library){
+			ApiImpl impl=new ApiImpl(n);
+			return  impl;
+		}
 		return n;
 	}
 

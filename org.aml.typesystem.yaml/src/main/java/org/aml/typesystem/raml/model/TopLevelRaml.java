@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.aml.typesystem.ITypeRegistry;
 
-public interface TopLevelRaml {
+public interface TopLevelRaml extends Annotable{
 	
 	ITypeRegistry types();
 	

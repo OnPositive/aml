@@ -8,4 +8,8 @@ public class ApiImpl extends TopLevelRamlImpl{
 		super(original);
 	}
 
+	protected ApiImpl(TopLevelRamlImpl n) {
+		super(n);
+	}
+
 }

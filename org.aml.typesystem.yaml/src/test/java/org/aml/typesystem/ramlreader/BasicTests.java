@@ -16,6 +16,8 @@ import org.aml.typesystem.meta.restrictions.minmax.Minimum;
 import org.aml.typesystem.raml.model.TopLevelRaml;
 import org.junit.Test;
 import org.raml.v2.internal.impl.RamlBuilder;
+import org.raml.v2.internal.impl.commons.RamlHeader;
+import org.raml.v2.internal.impl.commons.RamlHeader.InvalidHeaderException;
 import org.raml.v2.internal.utils.StreamUtils;
 import org.raml.yagi.framework.nodes.Node;
 
@@ -130,7 +132,14 @@ public class BasicTests extends TestCase{
 	private TopLevelRaml parse(String res) {
 		String string = StreamUtils.toString(BasicTests.class.getResourceAsStream(res));
 		Node build = new RamlBuilder().build(string);
-		TopLevelRaml raml = new TopLevelRamlModelBuilder().build(build);
+		RamlHeader header=null;
+		try {
+			header= RamlHeader.parse(string);
+		} catch (InvalidHeaderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		TopLevelRaml raml = new TopLevelRamlModelBuilder().build(build,header);
 		return raml;
 	}
 

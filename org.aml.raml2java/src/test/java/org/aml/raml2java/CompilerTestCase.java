@@ -143,7 +143,7 @@ public abstract class CompilerTestCase extends TestCase {
 				
 			});
 		} catch (IOException e) {
-			throw new IllegalStateException();
+			//throw new IllegalStateException();
 		}
 	}
 

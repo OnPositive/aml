@@ -54,7 +54,6 @@ import org.raml.yagi.framework.nodes.snakeyaml.SYIntegerNode;
 import org.raml.yagi.framework.nodes.snakeyaml.SYNullNode;
 import org.raml.yagi.framework.nodes.snakeyaml.SYObjectNode;
 import org.raml.yagi.framework.nodes.snakeyaml.SYStringNode;
-import org.yaml.snakeyaml.Yaml;
 
 public class TopLevelRamlModelBuilder {
 

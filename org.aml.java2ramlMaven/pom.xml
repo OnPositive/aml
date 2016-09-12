@@ -5,7 +5,7 @@
   <name>Java2RAML Maven Plugin</name>
   <description>Converts POJOS to RAML type definitions</description>
   <properties>
-		<org.apache.maven.plugin-tools.version>3.2</org.apache.maven.plugin-tools.version>
+		<org.apache.maven.plugin-tools.version>3.3</org.apache.maven.plugin-tools.version>
   </properties>
   <dependencies>
 		<dependency>
@@ -38,6 +38,25 @@
             <scope>test</scope>
         </dependency>		
 	</dependencies>
+	<build>
+
+		<plugins>
+	<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <version>3.3</version>
+      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<encoding>UTF-8</encoding>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+</plugins></build>
   <parent>
   	<groupId> com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

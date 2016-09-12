@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -493,5 +494,60 @@ public class BasicTests extends CompilerTestCase {
 		}
 		//TestCase.assertTrue(class1.getDeclaredMethods()[0].getName().equals("value"));
 	}
+	
+	@Test
+	public void test22() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t9.raml"),
+				new ClassPathResourceLoader(), "t9.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			BeanInfo beanInfo = Introspector.getBeanInfo(class1);
+			TestCase.assertTrue(beanInfo.getPropertyDescriptors().length==3);
+			boolean hasInnerType=false;
+			for (PropertyDescriptor d:beanInfo.getPropertyDescriptors()){
+				if (d.getName().equals("innerType")){
+					hasInnerType=true;
+					Class<?> propertyType = d.getPropertyType();
+					BeanInfo b=Introspector.getBeanInfo(propertyType);
+					TestCase.assertEquals(b.getPropertyDescriptors().length, 3);
+				}
+			}
+			TestCase.assertTrue(hasInnerType);
+		} catch (IntrospectionException e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getDeclaredMethods()[0].getName().equals("value"));
+	}
+
+//	
+//	@Test
+//	public void test23() {
+//		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t10.raml"),
+//				new ClassPathResourceLoader(), "t10.raml");
+//		JavaWriter wr = new JavaWriter();
+//		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+//		wr.setDefaultPackageName("org.aml.test");
+//		wr.write(build);
+//		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+//		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+//		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+//		try {
+//			Method declaredMethod = class1.getDeclaredMethod("getName");
+//			Annotation[] annotations = declaredMethod.getAnnotations();
+//			TestCase.assertTrue(annotations.length==1);
+//			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Important"));
+//		} catch (NoSuchMethodException e) {
+//			TestCase.assertTrue(false);
+//		} catch (SecurityException e) {
+//			TestCase.assertTrue(false);
+//		}
+//
+//	}
 }
 

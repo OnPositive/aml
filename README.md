@@ -8,8 +8,8 @@ The goal of this project is to provide a set of tools making work with RAML 1.0 
 
 #Currently supported
 
-* [Conversion of Java classes and Annotations to RAML Libraries](https://github.com/OnPositive/aml/edit/master/java2raml.md).
-* [Conversion of RAML Types and Annotations to Java classes](https://github.com/OnPositive/aml/edit/master/raml2java.md).
+* [Conversion of Java classes and Annotations to RAML Libraries](https://github.com/OnPositive/aml/master/java2raml.md).
+* [Conversion of RAML Types and Annotations to Java classes](https://github.com/OnPositive/aml/master/raml2java.md).
 
 
 

@@ -135,6 +135,7 @@
 		<module>org.aml.typesystem.java</module>
 		<module>org.aml.typesystem.yaml</module>
 		<module>org.aml.raml2java</module>
+		<module>org.aml.raml2javaMaven</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

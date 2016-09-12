@@ -2,10 +2,18 @@ package org.aml.java2ramlMaven;
 
 import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_RUNTIME;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
+import org.aml.raml2java.JavaWriter;
+import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
+import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -15,6 +23,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactFilterException;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactsFilter;
+import org.raml.v2.api.loader.FileResourceLoader;
 
 /**
  * <p>Java2RamlMojo class.</p>
@@ -27,38 +36,38 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 
 	
 	
-	@Parameter(property = "outputFile", defaultValue = "${project.build.directory}/generated-sources/raml/types.raml")
-    private File outputFile;
+	@Parameter(property = "outputFolder", defaultValue = "./generated-sources/main/java")
+    private File outputFolder;
 	
 	@Parameter
-	protected List<String> annotationPackages;
-	
-	@Parameter(required=true)
-	List<String> packagesToProcess;
+	protected List<File> ramlFiles;
 	
 	@Parameter
-	protected List<String> classMasksToIgnore;
+	protected String defaultPackageName="org.aml.samples";
 	
-	@Parameter
-	protected boolean ignoreUnreferencedAnnotationDeclarations=true;
-	
-	//Annotation profiles related settings
-	@Parameter
-	protected List<String> annotationProfiles;
-	
-	@Parameter
-	boolean ignoreDefaultAnnotationProfiles=false;
-	//settings!!!
-	
-	@Parameter(property = "extensions")
-	private List<String> extensions;
 	
 	/** {@inheritDoc} */
 	@SuppressWarnings({ })
 	@Override
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
-		
-			
+		if (!outputFolder.exists()){
+			outputFolder.mkdirs();
+		}
+		for (File f:ramlFiles){
+			try {
+				TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(new BufferedInputStream(new FileInputStream(f)),
+						new FileResourceLoader(f.getParentFile()), f.getName());
+				JavaWriter wr = new JavaWriter();
+				wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+				wr.setDefaultPackageName(defaultPackageName);
+				wr.write(build);
+				wr.getModel().build(outputFolder);
+			} catch (FileNotFoundException e) {
+				throw new MojoExecutionException(e.getMessage());
+			} catch (IOException e) {
+				throw new MojoExecutionException(e.getMessage());
+			}
+		}			
 	}
 
 	/** {@inheritDoc} */

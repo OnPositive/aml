@@ -1,0 +1,14 @@
+#%RAML 1.0 Library
+types:
+    OkStatus:
+      type: object
+      properties:
+        geo:
+          type: object
+          properties:
+            address:
+              type: object
+              properties:
+                city: string
+                streetAddress: string
+            age: number

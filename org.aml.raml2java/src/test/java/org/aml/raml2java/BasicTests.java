@@ -5,6 +5,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -706,7 +707,7 @@ public class BasicTests extends CompilerTestCase {
 	@Test
 	public void test29() {
 		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t16.raml"),
-				new ClassPathResourceLoader(), "t15.raml");
+				new ClassPathResourceLoader(), "t16.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
 		wr.setDefaultPackageName("org.aml.test");
@@ -730,6 +731,39 @@ public class BasicTests extends CompilerTestCase {
 		} catch (IllegalArgumentException e) {
 			TestCase.assertTrue(false);
 		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	
+	@Test
+	public void test30() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t17.raml"),
+				new ClassPathResourceLoader(), "t17.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.OkStatus");
+		Class<?> class1 = compileAndTest.get("org.aml.test.OkStatus");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getGeo");
+			Class<?> returnType = declaredMethod.getReturnType();
+			System.out.println(returnType);
+			try {
+				Field declaredField = returnType.getDeclaredField("address");
+				String simpleName = declaredField.getType().getSimpleName();
+				TestCase.assertTrue(simpleName.equals("OkStatusgeoaddress"));				
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
 			TestCase.assertTrue(false);
 		}
 

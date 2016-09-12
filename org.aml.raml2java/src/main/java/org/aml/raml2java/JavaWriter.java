@@ -283,7 +283,9 @@ public class JavaWriter {
 				if (range.isObject()){
 					if (!range.directPropertySet().isEmpty()||range.superTypes().size()>1){
 						AbstractType derive = TypeOps.derive(typePropertyName(member), range.superTypes().toArray(new AbstractType[range.superTypes().size()]));
-						derive.metaInfo.addAll(range.meta());
+						for (TypeInformation t:range.meta()){
+							derive.addMeta(t.clone());
+						}						
 						return getType(derive, false, false, null);
 					}
 				}

@@ -4,11 +4,13 @@
 
 #Introduction
 
-The goal of this project is to provide a set of tools making work with RAML 1.0 files from Java. At this moment it is a playground for Java Types->RAML conversion and back.
+The goal of this project is to provide a set of tools making work with RAML 1.0 files easier from Java as well as generating Java artifacts basing on RAML 1.0 files. At this moment it is a playground for Java Types->RAML conversion and back.
 
 #Currently supported
 
-* [Conversion of Java classes and Annotations to RAML Libraries](./java2raml.md).
+* [Conversion of Java classes and Annotations to RAML Libraries](https://github.com/OnPositive/aml/edit/master/java2raml.md).
+* [Conversion of RAML Types and Annotations to Java classes](https://github.com/OnPositive/aml/edit/master/raml2java.md).
+
 
 
 #Maven artifacts

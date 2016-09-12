@@ -1145,4 +1145,8 @@ public abstract class AbstractType implements IType {
 		}
 		return null;
 	}
+
+	public boolean isInteger() {
+		return this.isSubTypeOf(BuiltIns.INTEGER);
+	}
 }

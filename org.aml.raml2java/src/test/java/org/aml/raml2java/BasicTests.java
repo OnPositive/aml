@@ -5,6 +5,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -526,28 +527,212 @@ public class BasicTests extends CompilerTestCase {
 	}
 
 //	
-//	@Test
-//	public void test23() {
-//		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t10.raml"),
-//				new ClassPathResourceLoader(), "t10.raml");
-//		JavaWriter wr = new JavaWriter();
-//		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
-//		wr.setDefaultPackageName("org.aml.test");
-//		wr.write(build);
-//		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
-//		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
-//		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
-//		try {
-//			Method declaredMethod = class1.getDeclaredMethod("getName");
-//			Annotation[] annotations = declaredMethod.getAnnotations();
-//			TestCase.assertTrue(annotations.length==1);
-//			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Important"));
-//		} catch (NoSuchMethodException e) {
-//			TestCase.assertTrue(false);
-//		} catch (SecurityException e) {
-//			TestCase.assertTrue(false);
-//		}
-//
-//	}
+	@Test
+	public void test23() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t10.raml"),
+				new ClassPathResourceLoader(), "t10.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getName");
+			Annotation[] annotations = declaredMethod.getAnnotations();
+			TestCase.assertTrue(annotations.length==1);
+			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Important"));
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	
+	@Test
+	public void test24() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t11.raml"),
+				new ClassPathResourceLoader(), "t11.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getName");
+			Annotation[] annotations = declaredMethod.getAnnotations();
+			TestCase.assertTrue(annotations.length==1);
+			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Label"));
+			
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	
+	@Test
+	public void test25() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t12.raml"),
+				new ClassPathResourceLoader(), "t12.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getName");
+			Annotation[] annotations = declaredMethod.getAnnotations();
+			TestCase.assertTrue(annotations.length==1);
+			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Order"));
+			Object invoke = annotations[0].getClass().getMethod("value").invoke(annotations[0]);
+			TestCase.assertEquals(invoke, 2);
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalAccessException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	
+	@Test
+	public void test26() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t13.raml"),
+				new ClassPathResourceLoader(), "t13.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getName");
+			Annotation[] annotations = declaredMethod.getAnnotations();
+			TestCase.assertTrue(annotations.length==1);
+			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Skip"));
+			Object invoke = annotations[0].getClass().getMethod("value").invoke(annotations[0]);
+			TestCase.assertEquals(invoke, true);
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalAccessException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	@Test
+	public void test27() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t14.raml"),
+				new ClassPathResourceLoader(), "t14.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getName");
+			Annotation[] annotations = declaredMethod.getAnnotations();
+			TestCase.assertTrue(annotations.length==1);
+			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Version"));
+			Object invoke = annotations[0].getClass().getMethod("majour").invoke(annotations[0]);
+			TestCase.assertEquals(invoke, 3.0);
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalAccessException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	
+	@Test
+	public void test28() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t15.raml"),
+				new ClassPathResourceLoader(), "t15.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getName");
+			Annotation[] annotations = declaredMethod.getAnnotations();
+			TestCase.assertTrue(annotations.length==1);
+			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Version"));
+			double[] invoke = (double[]) annotations[0].getClass().getMethod("value").invoke(annotations[0]);
+			TestCase.assertEquals(invoke[0], 3.0);
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalAccessException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	
+	@Test
+	public void test29() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t16.raml"),
+				new ClassPathResourceLoader(), "t15.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Manager");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Manager");
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			Method declaredMethod = class1.getDeclaredMethod("getName");
+			Annotation[] annotations = declaredMethod.getAnnotations();
+			TestCase.assertTrue(annotations.length==1);
+			TestCase.assertTrue(annotations[0].annotationType().getSimpleName().equals("Version"));
+			double[] invoke = (double[]) annotations[0].getClass().getMethod("q").invoke(annotations[0]);
+			TestCase.assertEquals(invoke[0], 3.0);
+		} catch (NoSuchMethodException e) {
+			TestCase.assertTrue(false);
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalAccessException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
 }
 

@@ -19,7 +19,11 @@ import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.XMLFacet;
+import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.FacetRestriction;
+import org.aml.typesystem.meta.restrictions.IRangeRestriction;
+import org.aml.typesystem.meta.restrictions.MapPropertyIs;
+import org.aml.typesystem.meta.restrictions.PropertyIs;
 import org.aml.typesystem.meta.restrictions.RestrictionsList;
 import org.raml.v2.api.loader.ResourceLoader;
 import org.raml.v2.api.model.v10.RamlFragment;
@@ -129,6 +133,12 @@ public class TopLevelRamlModelBuilder {
 				}
 				a.setAnnotationType(ti.annotationTypes().getType(name));
 			}
+			if (i instanceof IRangeRestriction){
+				IRangeRestriction mm=(IRangeRestriction) i;
+				finishAnnotationBinding(node, mm.range());
+			}
+			
+			
 		}
 	}
 

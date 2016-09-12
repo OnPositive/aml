@@ -2,18 +2,29 @@ package org.aml.raml2java;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeLibrary;
 import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.beans.IProperty;
+import org.aml.typesystem.meta.TypeInformation;
+import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JAnnotatable;
+import com.sun.codemodel.JAnnotationArrayMember;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JAnnotationValue;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -86,7 +97,89 @@ public class JavaWriter {
 	}
 
 	public void annotate(JAnnotatable annotable, AbstractType tp) {
+		Set<TypeInformation> declaredMeta = tp.declaredMeta();
+		for (TypeInformation i:declaredMeta){
+			if (i instanceof Annotation){
+				Annotation ann=(Annotation) i;
+				AbstractType annotationType = ann.annotationType();
+				JClass type = (JClass) getType(annotationType);
+				JAnnotationUse annotate = annotable.annotate((JClass) type);
+				Object value = ann.value();
+				if (annotationType.isScalar()){
+					String name = "value";
+					addParam(annotate, value, name);
+				}
+				else {
+					if (annotationType.isObject()){
+						HashMap<String, ?>valueMap=(HashMap<String, ?>) value;
+						for (String c:valueMap.keySet()){
+							addParam(annotate, valueMap.get(c),c);
+						}
+					}
+					if(annotationType.isArray()){
+						List<Object>vl=(List<Object>) value;
+						JAnnotationArrayMember paramArray = annotate.paramArray("value");
+						for (Object o:vl){
+							addParam(paramArray, o);
+						}
+					}
+				}
+			}
+		}
+	}
+	private void addParam(JAnnotationArrayMember annotate, Object value) {
+		if (value instanceof String){
+			annotate.param(""+value);
+		}
+		if (value instanceof Double){
+			annotate.param( (Double)value);
+		}
+		if (value instanceof Long){
+			annotate.param( (Long)value);
+		}
+		if (value instanceof Float){
+			annotate.param( (Float)value);
+		}
+		if (value instanceof Boolean){
+			annotate.param( (Boolean)value);
+		}
+		if (value instanceof Integer){
+			annotate.param( (Integer)value);
+		}
+	}
 
+	private void addParam(JAnnotationUse annotate, Object value, String name) {
+		if (value instanceof String){
+			annotate.param(name, ""+value);
+		}
+		if (value instanceof Double){
+			annotate.param(name, (Double)value);
+		}
+		if (value instanceof Long){
+			annotate.param(name, (Long)value);
+		}
+		if (value instanceof Float){
+			annotate.param(name, (Float)value);
+		}
+		if (value instanceof Boolean){
+			annotate.param(name, (Boolean)value);
+		}
+		if (value instanceof Integer){
+			annotate.param(name, (Integer)value);
+		}
+		if (value.getClass().isArray()){
+			JAnnotationArrayMember paramArray = annotate.paramArray(name);
+			for (int i=0;i<Array.getLength(value);i++){
+				addParam(paramArray, Array.get(value, i));
+			}
+		}
+		if (Collection.class.isAssignableFrom(value.getClass())){
+			JAnnotationArrayMember paramArray = annotate.paramArray(name);
+			Collection<Object>vlc=(Collection<Object>) value;
+			for (Object o:vlc){
+				addParam(paramArray,o);
+			}
+		}
 	}
 
 	public JExpression toExpr(Object value) {
@@ -160,6 +253,9 @@ public class JavaWriter {
 				return mdl._ref(boolean.class);
 			}
 			if (range.isNumber()) {
+				if (range.isInteger()){
+					return mdl._ref(int.class);
+				}
 				return mdl._ref(double.class);
 			}
 			if (range.isObject()) {
@@ -247,7 +343,7 @@ public class JavaWriter {
 	public void write(ITypeLibrary types) {
 		for (AbstractType t : types.annotationTypes()) {
 			if (!t.isAnonimous()){
-			new AnnotationTypeGenerator(this).define(t);
+			 defined.put(t,new AnnotationTypeGenerator(this).define(t));
 			}
 		}
 		for (AbstractType t : types.types()) {

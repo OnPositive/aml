@@ -102,6 +102,7 @@ public class BuiltIns {
 		builtInsRegostry.registerType(SCALAR);
 		builtInsRegostry.registerType(FILE);
 		NUMBER.addMeta(BasicMeta.BUILTIN);
+		INTEGER.addMeta(BasicMeta.BUILTIN);
 		builtInsRegostry.registerType(DATETIME);
 		builtInsRegostry.registerType(TIMEONLY);
 		builtInsRegostry.registerType(DATEONLY);

@@ -13,7 +13,7 @@ import org.aml.typesystem.values.ObjectAccess;
  * @author kor
  * @version $Id: $Id
  */
-public class PropertyIs extends IntersectRequires implements IMatchesProperty {
+public class PropertyIs extends IntersectRequires implements IMatchesProperty ,IRangeRestriction{
 
 	private final String name;
 

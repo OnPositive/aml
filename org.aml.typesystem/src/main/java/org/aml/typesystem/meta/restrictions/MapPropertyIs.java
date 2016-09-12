@@ -16,7 +16,7 @@ import org.aml.typesystem.values.ObjectAccess;
  * @author kor
  * @version $Id: $Id
  */
-public class MapPropertyIs extends IntersectRequires implements IMatchesProperty {
+public class MapPropertyIs extends IntersectRequires implements IMatchesProperty ,IRangeRestriction{
 
 	private AbstractType baseType;
 	private final String regexp;

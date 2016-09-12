@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+annotationTypes:
+  Version: 
+    properties: 
+      majour: number
+      minor: number 
+types:
+  Manager:
+    properties:      
+      name:
+        (Version): 
+          majour: 3
+          minor: 1
+        type: string
+      

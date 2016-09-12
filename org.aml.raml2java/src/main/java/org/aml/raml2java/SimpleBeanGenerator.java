@@ -72,6 +72,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		JMethod get = defineClass.method(JMod.PUBLIC, propType,
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		get.body()._return(JExpr.ref(name));
+		writer.annotate(get, p.range());
 		JMethod set = defineClass.method(JMod.PUBLIC, writer.getModel()._ref(void.class),
 				(p.range().isBoolean() ? "is" : "set") + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		set.param(propType, "value");

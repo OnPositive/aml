@@ -13,7 +13,7 @@ import org.aml.typesystem.values.ObjectAccess;
  * @author kor
  * @version $Id: $Id
  */
-public class AdditionalProperties extends IntersectRequires implements IMatchesProperty {
+public class AdditionalProperties extends IntersectRequires implements IMatchesProperty,IRangeRestriction {
 
 	private  AbstractType baseType;
 	private  AbstractType requirement;

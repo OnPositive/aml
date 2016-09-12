@@ -15,7 +15,7 @@ import org.aml.typesystem.values.ObjectAccess;
  * @version $Id: $Id
  */
 @Name("items")
-public class ComponentShouldBeOfType extends IntersectRequires  {
+public class ComponentShouldBeOfType extends IntersectRequires implements IRangeRestriction  {
 
 	protected final AbstractType type;
 

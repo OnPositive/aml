@@ -1,10 +1,13 @@
 #%RAML 1.0 Library
 annotationTypes:
-  Important: nil
+  Version:
+    properties:
+      q: number[]  
 types:
   Manager:
     properties:      
       name:
-        (Important): 
+        (Version): 
+          q: [ 3 , 1 ]        
         type: string
       

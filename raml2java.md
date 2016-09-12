@@ -85,7 +85,7 @@ When developing in Eclipse, you must manage lifecycle mapping. For this purpose 
 ##Input and output related options
 
 * `outputFolder` - folder to write Java files
-* `<ramlFiles><value></ramlFiles>` - list of RAML files to process
+* `<ramlFiles><value>`path to raml file`</value></ramlFiles>` - list of RAML files to process
 
 #Examples
 

@@ -83,9 +83,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
-					<source>1.7</source>
+					<source>1.8</source>
 					<encoding>UTF-8</encoding>
-					<target>1.7</target>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			
@@ -134,6 +134,7 @@
 		<module>org.aml.typesystem</module>
 		<module>org.aml.typesystem.java</module>
 		<module>org.aml.typesystem.yaml</module>
+		<module>org.aml.raml2java</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

@@ -226,7 +226,9 @@ public class TopLevelRamlModelBuilder {
 				if (value instanceof SimpleTypeNode<?>) {
 					SimpleTypeNode<?> stn = (SimpleTypeNode<?>) value;
 					FacetRestriction<?> build = RestrictionsList.build(n.getName(), stn.getValue());
-					result.addMeta(build);
+					if (build!=null){
+						result.addMeta(build);
+					}
 				}
 				else{
 					Object object = toObject(value);

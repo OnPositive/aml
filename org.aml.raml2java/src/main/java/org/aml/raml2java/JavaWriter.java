@@ -274,6 +274,7 @@ public class JavaWriter {
 						AbstractType derive = TypeOps.derive(typePropertyName(member), BuiltIns.STRING);
 						derive.metaInfo.addAll(range.meta());
 						JType define = new EnumTypeGenerator(this).define(derive);
+						defined.put(range, define);
 						return define;
 					}
 				}

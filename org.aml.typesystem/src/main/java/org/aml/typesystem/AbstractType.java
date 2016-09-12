@@ -15,6 +15,7 @@ import org.aml.typesystem.meta.BasicMeta;
 import org.aml.typesystem.meta.IHasType;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Abstract;
+import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.CustomFacet;
 import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Discriminator;
@@ -1123,6 +1124,9 @@ public abstract class AbstractType implements IType {
 			}
 			for (TypeInformation t : this.declaredMeta()) {
 				if (t instanceof DisplayName) {
+					continue;
+				}
+				if (t instanceof Annotation) {
 					continue;
 				}
 				if (t instanceof Default) {

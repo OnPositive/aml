@@ -64,7 +64,7 @@ public abstract class CompilerTestCase extends TestCase {
 		super(name);
 	}
 
-	@SuppressWarnings({ "unused", "deprecation" })
+	@SuppressWarnings({ "deprecation" })
 	public HashMap<String, Class<?>> compileAndTest(JCodeModel mdl, String... names) {
 		String path=BasicTests.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 		File fl=new File(path,"generated");
@@ -79,6 +79,9 @@ public abstract class CompilerTestCase extends TestCase {
 			e.printStackTrace();
 		}
 		JavaCompiler systemJavaCompiler = ToolProvider.getSystemJavaCompiler();
+		if (systemJavaCompiler==null){
+			throw new IllegalStateException("no default compiler, please run on JDK");
+		}
 		DiagnosticListener<JavaFileObject> diagnosticListener = new DiagnosticListener<JavaFileObject>() {
 	
 			@Override
@@ -89,12 +92,17 @@ public abstract class CompilerTestCase extends TestCase {
 		
 		StandardJavaFileManager standardFileManager = systemJavaCompiler.getStandardFileManager(diagnosticListener, Locale.getDefault(), Charset.defaultCharset());
 		javax.tools.JavaFileManager.Location ll=StandardLocation.CLASS_OUTPUT;
+		
 		ArrayList<File> output = new ArrayList<File>();
 		File classes = new File(fl,"classes");
+		javax.tools.JavaFileManager.Location ls=StandardLocation.SOURCE_PATH;
 		classes.mkdirs();
 		output.add(classes);
+		ArrayList<File>source=new ArrayList<>();
+		source.add(fl);
 		try {
 			standardFileManager.setLocation(ll,output);
+			standardFileManager.setLocation(ls, source);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

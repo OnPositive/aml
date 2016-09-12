@@ -64,7 +64,7 @@ public class TopLevelRamlModelBuilder {
 	private static final String ANNOTATIONTYPES = "annotationTypes";
 
 	protected Map<Object, LibraryImpl> ramlGraph = new HashMap<>();
-	
+
 	RamlHeader header;
 
 	public LibraryImpl buildUsesMaps(Node node) {
@@ -219,6 +219,13 @@ public class TopLevelRamlModelBuilder {
 					FacetRestriction<?> build = RestrictionsList.build(n.getName(), stn.getValue());
 					result.addMeta(build);
 				}
+				else{
+					Object object = toObject(value);
+					if (object!=null){
+						FacetRestriction<?> build = RestrictionsList.build(n.getName(), object);
+						result.addMeta(build);
+					}
+				}
 			} else {
 				KeyValueNode kv = (KeyValueNode) node;
 				SimpleTypeNode b = (SimpleTypeNode) kv.getKey();
@@ -245,16 +252,25 @@ public class TopLevelRamlModelBuilder {
 				if (facet instanceof ISimpleFacet) {
 					ISimpleFacet sf = (ISimpleFacet) facet;
 					Node value = kv.getValue();
-					ObjectNode on = (ObjectNode) value;
-					if (on.getChildren().size() == 1) {
-						Node n2 = on.getChildren().get(0);
-						if (n2 instanceof KeyValueNode) {
-							KeyValueNode kv2 = (KeyValueNode) n2;
-							if (kv2.getValue() instanceof SimpleTypeNode<?>) {
-								SimpleTypeNode<?> vl = (SimpleTypeNode<?>) kv2.getValue();
-								sf.setValue(vl.getValue());
-								result.addMeta(facet);
+					if (value instanceof ObjectNode) {
+						ObjectNode on = (ObjectNode) value;
+						if (on.getChildren().size() == 1) {
+							Node n2 = on.getChildren().get(0);
+							if (n2 instanceof KeyValueNode) {
+								KeyValueNode kv2 = (KeyValueNode) n2;
+								if (kv2.getValue() instanceof SimpleTypeNode<?>) {
+									SimpleTypeNode<?> vl = (SimpleTypeNode<?>) kv2.getValue();
+									sf.setValue(vl.getValue());
+									result.addMeta(facet);
+								}
 							}
+						}
+					}
+					else{
+						Object object = toObject(value);
+						if(object!=null){
+						sf.setValue(object);
+						result.addMeta(facet);
 						}
 					}
 				}
@@ -334,24 +350,25 @@ public class TopLevelRamlModelBuilder {
 	private TypeDeclarationNode findDeclaration(TopLevelRamlImpl topLevelRamlImpl, String typeName) {
 		return topLevelRamlImpl.typeDecls.get(typeName);
 	}
-	public TopLevelRamlImpl build(InputStream c,ResourceLoader loader,String path){
+
+	public TopLevelRamlImpl build(InputStream c, ResourceLoader loader, String path) {
 		String string = StreamUtils.toString(c);
-		Node build = new RamlBuilder().build(string,loader,path);
-		RamlHeader header=null;
+		Node build = new RamlBuilder().build(string, loader, path);
+		RamlHeader header = null;
 		try {
-			header= RamlHeader.parse(string);
+			header = RamlHeader.parse(string);
 		} catch (InvalidHeaderException e) {
 			return null;
 		}
 		return build(build, header);
 	}
 
-	public TopLevelRamlImpl build(Node node, RamlHeader header) {		
+	public TopLevelRamlImpl build(Node node, RamlHeader header) {
 		TopLevelRamlImpl n = buildUsesMaps(node);
 		buildTypes(n);
-		if (header.getFragment()!=RamlFragment.Library){
-			ApiImpl impl=new ApiImpl(n);
-			return  impl;
+		if (header.getFragment() != RamlFragment.Library) {
+			ApiImpl impl = new ApiImpl(n);
+			return impl;
 		}
 		return n;
 	}

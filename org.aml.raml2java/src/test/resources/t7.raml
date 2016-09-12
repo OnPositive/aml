@@ -1,0 +1,13 @@
+#%RAML 1.0 Library
+types:
+  Base:
+    properties:
+      X: number
+  Manager:
+    properties:
+      name: string
+      innerType: 
+        type: Base
+        properties: 
+          qualityLevel: number
+

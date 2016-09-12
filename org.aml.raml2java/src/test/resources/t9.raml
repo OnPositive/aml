@@ -1,0 +1,13 @@
+#%RAML 1.0 Library
+types:
+  Base:
+    properties:
+      X: number
+  HasY:
+    properties:
+      Y: number    
+  Manager:
+    properties:
+      name: string
+      innerType: [ Base, HasY]
+        

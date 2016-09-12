@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+types:
+  Person:
+    properties:
+      name: string
+      lastName: string
+      age: number
+      hasWife: boolean
+  Manager:
+    type: Person
+    properties:
+      manages: Person[]
+      kind: Kind
+  Kind:
+    enum: [BASIC,ADVANCED,ELITE]

@@ -768,5 +768,87 @@ public class BasicTests extends CompilerTestCase {
 		}
 
 	}
+	@Test
+	public void test31() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t18.raml"),
+				new ClassPathResourceLoader(), "t18.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.CatOrDog");
+		Class<?> class1 = compileAndTest.get("org.aml.test.CatOrDog");
+		try{
+		class1.getDeclaredMethod("getCat");
+		class1.getDeclaredMethod("getDog");
+		}catch (Exception e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	@Test
+	public void test32() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t19.raml"),
+				new ClassPathResourceLoader(), "t19.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.HasPet");
+		Class<?> class1 = compileAndTest.get("org.aml.test.HasPet");
+		try{
+		class1=class1.getDeclaredMethod("getPet").getReturnType();	
+		class1.getDeclaredMethod("getCat");
+		class1.getDeclaredMethod("getDog");
+		}catch (Exception e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	@Test
+	public void test33() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t20.raml"),
+				new ClassPathResourceLoader(), "t20.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.HasPet");
+		Class<?> class1 = compileAndTest.get("org.aml.test.HasPet");
+		try{
+		TestCase.assertEquals(class1.getAnnotations().length,1);	
+		class1=class1.getDeclaredMethod("getPet").getReturnType();
+		TestCase.assertEquals(class1.getAnnotations().length,1);	
+		class1.getDeclaredMethod("getCat");
+		class1.getDeclaredMethod("getDog");
+		}catch (Exception e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
 }
 

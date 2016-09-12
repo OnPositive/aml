@@ -1,0 +1,13 @@
+#%RAML 1.0 Library
+types:
+  CatOrDog: Cat | Dog
+  Cat:
+    type: object
+    properties:
+      name: string
+      color: string
+  Dog:
+    type: object
+    properties:
+      name: string
+      fangs: string

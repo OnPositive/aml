@@ -39,9 +39,9 @@ public class JavaWriter {
 
 	private JCodeModel mdl = new JCodeModel();
 	private HashMap<AbstractType, JType> defined = new HashMap<>();
-	
+
 	private JavaGenerationConfig config;
-	
+
 	public JavaGenerationConfig getConfig() {
 		return config;
 	}
@@ -49,7 +49,7 @@ public class JavaWriter {
 	public JavaWriter(JavaGenerationConfig cfg) {
 		super();
 		this.config = cfg;
-		if (this.config.defaultPackageName!=null){
+		if (this.config.defaultPackageName != null) {
 			this.setDefaultPackageName(this.config.getDefaultPackageName());
 		}
 	}
@@ -98,28 +98,27 @@ public class JavaWriter {
 
 	public void annotate(JAnnotatable annotable, AbstractType tp) {
 		Set<TypeInformation> declaredMeta = tp.declaredMeta();
-		for (TypeInformation i:declaredMeta){
-			if (i instanceof Annotation){
-				Annotation ann=(Annotation) i;
+		for (TypeInformation i : declaredMeta) {
+			if (i instanceof Annotation) {
+				Annotation ann = (Annotation) i;
 				AbstractType annotationType = ann.annotationType();
 				JClass type = (JClass) getType(annotationType);
 				JAnnotationUse annotate = annotable.annotate((JClass) type);
 				Object value = ann.value();
-				if (annotationType.isScalar()){
+				if (annotationType.isScalar()) {
 					String name = "value";
 					addParam(annotate, value, name);
-				}
-				else {
-					if (annotationType.isObject()){
-						HashMap<String, ?>valueMap=(HashMap<String, ?>) value;
-						for (String c:valueMap.keySet()){
-							addParam(annotate, valueMap.get(c),c);
+				} else {
+					if (annotationType.isObject()) {
+						HashMap<String, ?> valueMap = (HashMap<String, ?>) value;
+						for (String c : valueMap.keySet()) {
+							addParam(annotate, valueMap.get(c), c);
 						}
 					}
-					if(annotationType.isArray()){
-						List<Object>vl=(List<Object>) value;
+					if (annotationType.isArray()) {
+						List<Object> vl = (List<Object>) value;
 						JAnnotationArrayMember paramArray = annotate.paramArray("value");
-						for (Object o:vl){
+						for (Object o : vl) {
 							addParam(paramArray, o);
 						}
 					}
@@ -127,57 +126,58 @@ public class JavaWriter {
 			}
 		}
 	}
+
 	private void addParam(JAnnotationArrayMember annotate, Object value) {
-		if (value instanceof String){
-			annotate.param(""+value);
+		if (value instanceof String) {
+			annotate.param("" + value);
 		}
-		if (value instanceof Double){
-			annotate.param( (Double)value);
+		if (value instanceof Double) {
+			annotate.param((Double) value);
 		}
-		if (value instanceof Long){
-			annotate.param( (Long)value);
+		if (value instanceof Long) {
+			annotate.param((Long) value);
 		}
-		if (value instanceof Float){
-			annotate.param( (Float)value);
+		if (value instanceof Float) {
+			annotate.param((Float) value);
 		}
-		if (value instanceof Boolean){
-			annotate.param( (Boolean)value);
+		if (value instanceof Boolean) {
+			annotate.param((Boolean) value);
 		}
-		if (value instanceof Integer){
-			annotate.param( (Integer)value);
+		if (value instanceof Integer) {
+			annotate.param((Integer) value);
 		}
 	}
 
 	private void addParam(JAnnotationUse annotate, Object value, String name) {
-		if (value instanceof String){
-			annotate.param(name, ""+value);
+		if (value instanceof String) {
+			annotate.param(name, "" + value);
 		}
-		if (value instanceof Double){
-			annotate.param(name, (Double)value);
+		if (value instanceof Double) {
+			annotate.param(name, (Double) value);
 		}
-		if (value instanceof Long){
-			annotate.param(name, (Long)value);
+		if (value instanceof Long) {
+			annotate.param(name, (Long) value);
 		}
-		if (value instanceof Float){
-			annotate.param(name, (Float)value);
+		if (value instanceof Float) {
+			annotate.param(name, (Float) value);
 		}
-		if (value instanceof Boolean){
-			annotate.param(name, (Boolean)value);
+		if (value instanceof Boolean) {
+			annotate.param(name, (Boolean) value);
 		}
-		if (value instanceof Integer){
-			annotate.param(name, (Integer)value);
+		if (value instanceof Integer) {
+			annotate.param(name, (Integer) value);
 		}
-		if (value.getClass().isArray()){
+		if (value.getClass().isArray()) {
 			JAnnotationArrayMember paramArray = annotate.paramArray(name);
-			for (int i=0;i<Array.getLength(value);i++){
+			for (int i = 0; i < Array.getLength(value); i++) {
 				addParam(paramArray, Array.get(value, i));
 			}
 		}
-		if (Collection.class.isAssignableFrom(value.getClass())){
+		if (Collection.class.isAssignableFrom(value.getClass())) {
 			JAnnotationArrayMember paramArray = annotate.paramArray(name);
-			Collection<Object>vlc=(Collection<Object>) value;
-			for (Object o:vlc){
-				addParam(paramArray,o);
+			Collection<Object> vlc = (Collection<Object>) value;
+			for (Object o : vlc) {
+				addParam(paramArray, o);
 			}
 		}
 	}
@@ -253,7 +253,7 @@ public class JavaWriter {
 				return mdl._ref(boolean.class);
 			}
 			if (range.isNumber()) {
-				if (range.isInteger()){
+				if (range.isInteger()) {
 					return mdl._ref(int.class);
 				}
 				return mdl._ref(double.class);
@@ -278,20 +278,31 @@ public class JavaWriter {
 					}
 				}
 			}
-			
-			
-				if (range.isObject()){
-					if (!range.directPropertySet().isEmpty()||range.superTypes().size()>1){
-						AbstractType derive = TypeOps.derive(typePropertyName(member), range.superTypes().toArray(new AbstractType[range.superTypes().size()]));
-						for (TypeInformation t:range.meta()){
-							derive.addMeta(t.clone());
-						}						
-						return getType(derive, false, false, null);
+
+			if (range.isUnion()) {
+				UnionTypeGenerator ug = new UnionTypeGenerator(this);
+				AbstractType derive = TypeOps.derive(typePropertyName(member),
+						range.superTypes().toArray(new AbstractType[range.superTypes().size()]));
+				for (TypeInformation t : range.meta()) {
+					derive.addMeta(t.clone());
+				}
+				JType define = ug.define(derive);
+				defined.put(range, define);
+				return define;
+			}
+			if (range.isObject()) {
+				if (!range.directPropertySet().isEmpty() || range.superTypes().size() > 1) {
+					AbstractType derive = TypeOps.derive(typePropertyName(member),
+							range.superTypes().toArray(new AbstractType[range.superTypes().size()]));
+					for (TypeInformation t : range.meta()) {
+						derive.addMeta(t.clone());
 					}
+					return getType(derive, false, false, null);
 				}
-				if (range.superTypes().size() == 1) {
-					return getType(range.superTypes().iterator().next(), allowNotJava, convertComplexToAnnotation, member);
-				}
+			}
+			if (range.superTypes().size() == 1) {
+				return getType(range.superTypes().iterator().next(), allowNotJava, convertComplexToAnnotation, member);
+			}
 		}
 		if (range.isEnumType() && range.isString()) {
 			JType define = new EnumTypeGenerator(this).define(range);
@@ -309,6 +320,12 @@ public class JavaWriter {
 							member);
 				}
 			}
+		}
+		if (range.isUnion()) {
+			UnionTypeGenerator ug = new UnionTypeGenerator(this);
+			JType define = ug.define(range);
+			defined.put(range, define);
+			return define;
 		}
 		if (range.isObject()) {
 			// if (range.hasSingleSuperType()) {
@@ -344,13 +361,13 @@ public class JavaWriter {
 
 	public void write(ITypeLibrary types) {
 		for (AbstractType t : types.annotationTypes()) {
-			if (!t.isAnonimous()){
-			 defined.put(t,new AnnotationTypeGenerator(this).define(t));
+			if (!t.isAnonimous()) {
+				defined.put(t, new AnnotationTypeGenerator(this).define(t));
 			}
 		}
 		for (AbstractType t : types.types()) {
-			if (!t.isAnonimous()){
-			getType(t);
+			if (!t.isAnonimous()) {
+				getType(t);
 			}
 		}
 	}
@@ -369,7 +386,7 @@ public class JavaWriter {
 
 	public void setDefaultPackageName(String string) {
 		this.nameGenerator = new DefaultNameGenerator(string);
-		this.config.defaultPackageName=string;
+		this.config.defaultPackageName = string;
 	}
 
 }

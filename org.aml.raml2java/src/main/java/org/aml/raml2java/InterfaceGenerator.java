@@ -35,6 +35,7 @@ public class InterfaceGenerator implements ITypeGenerator {
 					(p.range().isBoolean() ? "is" : "set") + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 			
 		});
+		writer.annotate(defineClass, t);
 		return defineClass;
 	}
 

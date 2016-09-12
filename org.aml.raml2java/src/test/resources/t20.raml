@@ -1,0 +1,20 @@
+#%RAML 1.0 Library
+annotationTypes:
+  Hello: nil
+types:  
+  HasPet: 
+    (Hello):
+    properties:
+     pet: 
+       (Hello):
+       type: Cat | Dog
+  Cat:
+    type: object
+    properties:
+      name: string
+      color: string
+  Dog:
+    type: object
+    properties:
+      name: string
+      fangs: string

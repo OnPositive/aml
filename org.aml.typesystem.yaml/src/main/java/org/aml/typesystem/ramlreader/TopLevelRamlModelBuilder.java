@@ -148,7 +148,9 @@ public class TopLevelRamlModelBuilder {
 			UnionTypeExpressionNode un = (UnionTypeExpressionNode) tn;
 			List<TypeExpressionNode> of = un.of();
 			Stream<AbstractType> map = of.stream().map(t -> buildSuperType(node, t));
-			return TypeOps.union("", Arrays.asList(map.toArray()).toArray(new AbstractType[(int) map.count()]));
+			Object[] array = map.toArray();
+			int count=array.length;
+			return TypeOps.union("", Arrays.asList(array).toArray(new AbstractType[count]));
 		}
 		if (tn instanceof NativeTypeExpressionNode) {
 			return BuiltIns.getBuiltInTypes().getType(tn.getTypeExpressionText());

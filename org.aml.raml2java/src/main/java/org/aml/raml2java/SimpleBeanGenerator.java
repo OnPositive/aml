@@ -62,6 +62,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				});
 			}
 		}
+		writer.annotate(defineClass, t);
 		return defineClass;
 	}
 

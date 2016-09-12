@@ -12,7 +12,6 @@ The goal of this project is to provide a set of tools making work with RAML 1.0 
 * [Conversion of RAML Types and Annotations to Java classes](https://github.com/OnPositive/aml/blob/master/raml2java.md).
 
 
-
 #Maven artifacts
 Maven artifacts are available at:
  - [Maven Central](http://search.maven.org/#search|ga|1|com.onpositive.aml) - release repository

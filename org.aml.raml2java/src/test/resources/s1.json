@@ -1,0 +1,11 @@
+{
+ "name": "Pavel",
+ "lastName": "Petrochenko", 
+ "age": 34.0,
+ "hasWife": true,
+ "kind":"ADVANCED",
+ "manages":[{
+ 	"name":"Ada",
+ 	"lastName":"Dog"
+ }]
+}

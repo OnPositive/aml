@@ -19,6 +19,7 @@ import com.sun.codemodel.JType;
 public class SimpleBeanGenerator implements ITypeGenerator {
 
 	private JavaWriter writer;
+	private boolean booleanAsIs=false;
 
 	public SimpleBeanGenerator(JavaWriter wr) {
 		this.writer = wr;
@@ -75,7 +76,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		get.body()._return(JExpr.ref(name));
 		writer.annotate(get, p.range());
 		JMethod set = defineClass.method(JMod.PUBLIC, writer.getModel()._ref(void.class),
-				(p.range().isBoolean() ? "is" : "set") + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+				((p.range().isBoolean()&&this.booleanAsIs) ? "is" : "set") + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		set.param(propType, "value");
 		set.body().add(new JStatement() {
 

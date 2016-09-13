@@ -1,0 +1,8 @@
+<manager>
+	<name>Pavel</name>
+	<lastName>Petrochenko</lastName>	
+	<manages>
+		<name>Ada</name>
+		<lastName>Dog</lastName>
+	</manages>
+</manager>

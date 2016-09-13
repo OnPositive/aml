@@ -8,7 +8,7 @@ annotationTypes:
       order: int
       caption: string
 types:
-  VehicleKind:
+  VehicleKind2:
     type: string
     enum:
     - MILITARY
@@ -20,7 +20,7 @@ types:
   int:
     type: integer
     format: int
-  Vehicle:
+  Vehicle2:
     type: object
     properties:
       name:
@@ -36,7 +36,7 @@ types:
       kind:
         type: VehicleKind
         (Hidden):
-  Aircraft:
+  Aircraft: 
     type: Vehicle
     properties:
       ceiling: number

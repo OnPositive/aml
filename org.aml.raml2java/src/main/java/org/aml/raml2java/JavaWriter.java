@@ -3,7 +3,6 @@ package org.aml.raml2java;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +22,6 @@ import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
-import com.sun.codemodel.JAnnotationValue;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -148,6 +146,7 @@ public class JavaWriter {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void addParam(JAnnotationUse annotate, Object value, String name) {
 		if (value instanceof String) {
 			annotate.param(name, "" + value);
@@ -389,5 +388,4 @@ public class JavaWriter {
 		this.nameGenerator = new DefaultNameGenerator(string);
 		this.config.defaultPackageName = string;
 	}
-
 }

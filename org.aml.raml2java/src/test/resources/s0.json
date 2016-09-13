@@ -1,0 +1,8 @@
+{
+ "name": "Pavel",
+ "lastName": "Petrochenko", 
+ "manages":[{
+ 	"name":"Ada",
+ 	"lastName":"Dog"
+ }]
+}

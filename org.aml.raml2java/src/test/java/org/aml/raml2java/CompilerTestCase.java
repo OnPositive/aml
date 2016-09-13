@@ -28,6 +28,9 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
+import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
+import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
+import org.raml.v2.api.loader.ClassPathResourceLoader;
 import org.raml.v2.internal.utils.StreamUtils;
 
 import com.sun.codemodel.JCodeModel;
@@ -62,6 +65,26 @@ public abstract class CompilerTestCase extends TestCase {
 
 	public CompilerTestCase(String name) {
 		super(name);
+	}
+	public Object newInstance(String path,String typeName){
+		try {
+			return compileAndLoadClass(path, typeName).newInstance();
+		} catch (InstantiationException e) {
+			throw new IllegalStateException();
+		} catch (IllegalAccessException e) {
+			throw new IllegalStateException();
+		}
+	}
+	public Class<?>compileAndLoadClass(String path,String typeName){
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/"+path),
+				new ClassPathResourceLoader(), path);
+		JavaWriter wr = new JavaWriter();
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test."+typeName);
+		TestCase.assertEquals(compileAndTest.size(), 1);
+		Class<?> class1 = compileAndTest.get("org.aml.test."+typeName);
+		return class1;
 	}
 
 	@SuppressWarnings({ "deprecation" })

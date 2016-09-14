@@ -1,15 +1,23 @@
 package org.aml.raml2java;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Set;
 
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.acbuilder.AcScheme;
+import org.aml.typesystem.acbuilder.AcSchemeBuilder;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.gson.annotations.JsonAdapter;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
+import com.sun.codemodel.JResourceFile;
 import com.sun.codemodel.JStatement;
 import com.sun.codemodel.JType;
 
@@ -30,6 +38,43 @@ public class UnionTypeGenerator implements ITypeGenerator {
 			generateProperty(defineClass, option,typeFamily);
 		}
 		writer.annotate(defineClass, t);
+		if (writer.getConfig().isGsonSupport()){
+			AcScheme build = new AcSchemeBuilder().build(t);
+			String generateAdapter = new GsonAcElementWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
+			String adapterName = defineClass.fullName()+"Adapter";
+			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new JResourceFile(defineClass.name()+"Adapter.java") {
+				
+				@Override
+				protected void build(OutputStream os) throws IOException {
+					os.write(generateAdapter.getBytes("UTF-8"));
+				}
+			});
+			defineClass.annotate(JsonAdapter.class).param("value", JExpr.dotclass(writer.getModel().directClass(adapterName)));
+		}
+		if (writer.getConfig().isJacksonSupport()){
+			AcScheme build = new AcSchemeBuilder().build(t);
+			String generateAdapter = new JacksonDeserializerWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
+			String adapterName = defineClass.fullName()+"Deserializer";
+			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new JResourceFile(defineClass.name()+"Deserializer.java") {
+				
+				@Override
+				protected void build(OutputStream os) throws IOException {
+					os.write(generateAdapter.getBytes("UTF-8"));
+				}
+			});
+			defineClass.annotate(JsonDeserialize.class).param("using", JExpr.dotclass(writer.getModel().directClass(adapterName)));
+			
+			String writerCode = new JacksonSerializerWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
+			adapterName = defineClass.fullName()+"Serializer";
+			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new JResourceFile(defineClass.name()+"Serializer.java") {
+				
+				@Override
+				protected void build(OutputStream os) throws IOException {
+					os.write(writerCode.getBytes("UTF-8"));
+				}
+			});
+			defineClass.annotate(JsonSerialize.class).param("using", JExpr.dotclass(writer.getModel().directClass(adapterName)));
+		}
 		return defineClass;
 	}
 
@@ -59,6 +104,7 @@ public class UnionTypeGenerator implements ITypeGenerator {
 				}
 			}
 		});
+		
 	}
 
 }

@@ -76,9 +76,16 @@ public abstract class CompilerTestCase extends TestCase {
 		}
 	}
 	public Class<?>compileAndLoadClass(String path,String typeName){
+		return compileAndLoadClass(path, typeName, false);
+	}
+	public Class<?>compileAndLoadClass(String path,String typeName,boolean supportSer){
 		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/"+path),
 				new ClassPathResourceLoader(), path);
 		JavaWriter wr = new JavaWriter();
+		if (supportSer){
+			wr.getConfig().setGsonSupport(true);
+			wr.getConfig().setJacksonSupport(true);
+		}
 		wr.setDefaultPackageName("org.aml.test");
 		wr.write(build);
 		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test."+typeName);

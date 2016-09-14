@@ -12,7 +12,25 @@ public class JavaGenerationConfig {
 	protected boolean generateInterfaces;
 	
 	protected MultipleInheritanceStrategy multipleInheritance=MultipleInheritanceStrategy.ALL_PLAIN;
+	public boolean gsonSupport;
+	public boolean jacksonSupport;
 	
+	public boolean isJacksonSupport() {
+		return jacksonSupport;
+	}
+
+	public void setJacksonSupport(boolean jacksonSupport) {
+		this.jacksonSupport = jacksonSupport;
+	}
+
+	public boolean isGsonSupport() {
+		return gsonSupport;
+	}
+
+	public void setGsonSupport(boolean gsonSupport) {
+		this.gsonSupport = gsonSupport;
+	}
+
 	public String getDefaultPackageName() {
 		return defaultPackageName;
 	}

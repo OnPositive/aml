@@ -889,6 +889,13 @@ public abstract class AbstractType implements IType {
 		}
 		return rs;
 	}
+	public Set<String> requiredPropertySet() {
+		final LinkedHashSet<String> rs = new LinkedHashSet<>();
+		for (final HasPropertyRestriction p : this.meta(HasPropertyRestriction.class)) {
+			rs.add(p.id());
+		}
+		return rs;
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -962,6 +969,23 @@ public abstract class AbstractType implements IType {
 		addIfNotInternal(results, this.noPolymorph());
 
 		return results;
+	}
+	public Set<AbstractType> unionTypeFamily() {
+		if (this.isUnion()) {
+			final Set<AbstractType> superTypes = this.superTypes();
+			LinkedHashSet<AbstractType> ts = new LinkedHashSet<>();
+			for (AbstractType t : superTypes) {
+				if (t instanceof UnionType) {
+					UnionType ut = (UnionType) t;
+					Set<AbstractType> allOptions = ut.allOptions();
+					for (AbstractType tm : allOptions) {
+						ts.add(tm);
+					}
+				}
+			}
+			return ts;
+		}
+		return Collections.emptySet();
 	}
 
 	/** {@inheritDoc} */

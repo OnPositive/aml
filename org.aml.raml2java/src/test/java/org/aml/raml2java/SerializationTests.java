@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.raml.v2.internal.utils.StreamUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JacksonUtils;
 import com.google.gson.Gson;
 
@@ -25,23 +26,38 @@ public class SerializationTests extends CompilerTestCase {
 	public void test0() {
 		assertValue("t1.raml", "Manager", "/s0.json", "/s0.json", "/s0.xml");
 	}
-	
+
 	@Test
 	public void test1() {
-		assertValue("t4.raml", "Manager", "/s1.json", "/s1.json","/s1.xml");
+		assertValue("t4.raml", "Manager", "/s1.json", "/s1.json", "/s1.xml");
 	}
-	
-//	@Test
-//	public void test2() {
-//		assertValue("t20.raml", "HasPet", "/s2.json", "/s2.json",null);
-//	}
+
+	@Test
+	public void test2() {
+		assertValue("t20.raml", "HasPet", "/s2.json", "/s2s.json", null);
+	}
+
+	@Test
+	public void test3() {
+		assertValue("t20.raml", "HasPet", "/s3.json", "/s3s.json", null);
+	}
 
 	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
-		Class<?> clazz = compileAndLoadClass(ramlPath, className);
+		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);
 		Object object = loadObjectGson(clazz, jsonPath);
 		assertAgainstJSON(object, plainJsonPath);
+		String json = new Gson().toJson(object);
+		Object fromJson = new Gson().fromJson(json, clazz);
+		assertAgainstJSON(fromJson, plainJsonPath);
 		object = loadObjectJackson(clazz, jsonPath);
 		assertAgainstJSON(object, plainJsonPath);
+		try {
+			String writeValueAsString = new ObjectMapper().writeValueAsString(object);
+			object = loadObjectJacksonFromString(clazz, writeValueAsString);
+			assertAgainstJSON(object, plainJsonPath);
+		} catch (JsonProcessingException e) {
+			TestCase.assertFalse(true);
+		}		
 		if (xmlPath != null) {
 			object = loadObjectJAXB(xmlPath, clazz);
 			assertAgainstJSON(object, plainJsonPath);
@@ -79,6 +95,18 @@ public class SerializationTests extends CompilerTestCase {
 		}
 		return null;
 	}
+	
+	public Object loadObjectJacksonFromString(Class<?> clazz, String value) {
+		try {
+			return JacksonUtils.getReader().forType(clazz)
+					.readValue(value);
+		} catch (JsonProcessingException e) {
+			TestCase.assertTrue(false);
+		} catch (IOException e) {
+			TestCase.assertTrue(false);
+		}
+		return null;
+	}
 
 	static void assertAgainstJSON(Object obj, String jsonPath) {
 		JSONObject ob = new JSONObject(StreamUtils.toString(SerializationTests.class.getResourceAsStream(jsonPath)));
@@ -102,11 +130,11 @@ public class SerializationTests extends CompilerTestCase {
 				assertObject(treeVal, val);
 			}
 		} else {
-			if (obj instanceof Enum<?>){
-				Enum<?>e=(Enum<?>) obj;
+			if (obj instanceof Enum<?>) {
+				Enum<?> e = (Enum<?>) obj;
 				TestCase.assertEquals(json, e.name());
-			}
-			else TestCase.assertEquals(json, obj);
+			} else
+				TestCase.assertEquals(json, obj);
 		}
 
 	}

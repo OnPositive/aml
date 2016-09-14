@@ -1,7 +1,5 @@
 package org.aml.raml2java;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Set;
 
 import org.aml.typesystem.AbstractType;
@@ -17,7 +15,6 @@ import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
-import com.sun.codemodel.JResourceFile;
 import com.sun.codemodel.JStatement;
 import com.sun.codemodel.JType;
 
@@ -42,37 +39,22 @@ public class UnionTypeGenerator implements ITypeGenerator {
 			AcScheme build = new AcSchemeBuilder().build(t);
 			String generateAdapter = new GsonAcElementWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
 			String adapterName = defineClass.fullName()+"Adapter";
-			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new JResourceFile(defineClass.name()+"Adapter.java") {
-				
-				@Override
-				protected void build(OutputStream os) throws IOException {
-					os.write(generateAdapter.getBytes("UTF-8"));
-				}
-			});
+			String qName = defineClass.name()+"Adapter.java";
+			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new StringResourceFile(qName, generateAdapter));
 			defineClass.annotate(JsonAdapter.class).param("value", JExpr.dotclass(writer.getModel().directClass(adapterName)));
 		}
 		if (writer.getConfig().isJacksonSupport()){
 			AcScheme build = new AcSchemeBuilder().build(t);
 			String generateAdapter = new JacksonDeserializerWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
 			String adapterName = defineClass.fullName()+"Deserializer";
-			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new JResourceFile(defineClass.name()+"Deserializer.java") {
-				
-				@Override
-				protected void build(OutputStream os) throws IOException {
-					os.write(generateAdapter.getBytes("UTF-8"));
-				}
-			});
+			String qName = defineClass.name()+"Deserializer.java";
+			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new StringResourceFile(qName, generateAdapter));
 			defineClass.annotate(JsonDeserialize.class).param("using", JExpr.dotclass(writer.getModel().directClass(adapterName)));
 			
 			String writerCode = new JacksonSerializerWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
 			adapterName = defineClass.fullName()+"Serializer";
-			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new JResourceFile(defineClass.name()+"Serializer.java") {
-				
-				@Override
-				protected void build(OutputStream os) throws IOException {
-					os.write(writerCode.getBytes("UTF-8"));
-				}
-			});
+			qName = defineClass.name()+"Serializer.java";
+			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new StringResourceFile(qName,writerCode));
 			defineClass.annotate(JsonSerialize.class).param("using", JExpr.dotclass(writer.getModel().directClass(adapterName)));
 		}
 		return defineClass;

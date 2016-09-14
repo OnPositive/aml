@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
@@ -837,6 +838,33 @@ public class BasicTests extends CompilerTestCase {
 		TestCase.assertEquals(class1.getAnnotations().length,1);	
 		class1.getDeclaredMethod("getCat");
 		class1.getDeclaredMethod("getDog");
+		}catch (Exception e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {
+			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+
+	}
+	
+	@Test
+	public void test34() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t21.raml"),
+				new ClassPathResourceLoader(), "t21.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Person");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Person");
+		try{
+		class1=class1.getDeclaredMethod("get__").getReturnType();
+		TestCase.assertTrue(Map.class.isAssignableFrom(class1));	
 		}catch (Exception e) {
 			TestCase.assertTrue(false);
 		}

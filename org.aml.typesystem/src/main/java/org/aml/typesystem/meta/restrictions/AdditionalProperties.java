@@ -106,7 +106,7 @@ public class AdditionalProperties extends IntersectRequires implements IMatchesP
 	/** {@inheritDoc} */
 	@Override
 	public String id() {
-		return "[]";
+		return "//";
 	}
 
 	/** {@inheritDoc} */

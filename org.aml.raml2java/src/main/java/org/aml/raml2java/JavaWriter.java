@@ -65,7 +65,7 @@ public class JavaWriter {
 
 		@Override
 		public String name(IProperty p) {
-			return p.id();
+			return escape(p.id());
 		}
 	};
 
@@ -94,6 +94,7 @@ public class JavaWriter {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void annotate(JAnnotatable annotable, AbstractType tp) {
 		Set<TypeInformation> declaredMeta = tp.declaredMeta();
 		for (TypeInformation i : declaredMeta) {

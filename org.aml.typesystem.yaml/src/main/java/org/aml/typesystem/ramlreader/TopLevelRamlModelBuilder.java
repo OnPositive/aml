@@ -217,7 +217,19 @@ public class TopLevelRamlModelBuilder {
 						TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
 						AbstractType buildType = buildType(topLevelRamlImpl, "", td);
 						boolean required = pn.isRequired();
-						result.declareProperty(pn.getName(), buildType, !required);
+						
+						String name = pn.getName();
+						if (name.startsWith("/")&&name.endsWith("/")&&name.length()!=1){
+							if (name.length()!=2){
+								result.declareMapProperty(name.substring(1, name.length()-1), buildType);
+							}
+							else{
+								result.declareAdditionalProperty(buildType);
+							}
+						}
+						else{
+							result.declareProperty(name, buildType, !required);
+						}
 					}
 					continue;
 				}

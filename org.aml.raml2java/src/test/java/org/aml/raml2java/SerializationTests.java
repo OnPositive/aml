@@ -41,6 +41,11 @@ public class SerializationTests extends CompilerTestCase {
 	public void test3() {
 		assertValue("t20.raml", "HasPet", "/s3.json", "/s3s.json", null);
 	}
+	
+//	@Test
+//	public void test4() {
+//		assertValue("t21.raml", "Person", "/s4.json", "/s4s.json", null);
+//	}
 
 	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);

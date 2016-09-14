@@ -136,7 +136,7 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 	/** {@inheritDoc} */
 	@Override
 	public String id() {
-		return "[" + this.regexp + "]";
+		return "/" + this.regexp + "/";
 	}
 
 	/** {@inheritDoc} */

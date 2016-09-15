@@ -30,7 +30,7 @@ public class UnionTypeGenerator implements ITypeGenerator {
 	@Override
 	public JType define(AbstractType t) {
 		JDefinedClass defineClass = writer.defineClass(t, ClassType.CLASS);
-		Set<AbstractType> typeFamily = t.typeFamily();
+		Set<AbstractType> typeFamily = t.unionTypeFamily();
 		for (AbstractType option:typeFamily){
 			generateProperty(defineClass, option,typeFamily);
 		}

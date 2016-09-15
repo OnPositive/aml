@@ -1,5 +1,4 @@
-package {packageName};
-
+package org.aml.raml2java;
 
 //package {packageName};
 

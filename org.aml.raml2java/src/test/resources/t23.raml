@@ -1,0 +1,11 @@
+#%RAML 1.0 Library
+types:
+  Simple:
+    properties:
+      name: string
+  Next:
+    type: Simple
+    properties:
+      name:
+        type: string
+        minLength: 2

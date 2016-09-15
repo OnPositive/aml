@@ -1,0 +1,19 @@
+#%RAML 1.0 Library
+types:
+  Base:
+    properties:
+      q: Simple
+  Extend:
+    type: Base
+    properties:
+      q: Next
+  Simple:
+    properties:
+      name: string
+  Next:
+    type: Simple
+    properties:
+      name:
+        type: string
+        minLength: 2
+      lastName: string

@@ -1,0 +1,7 @@
+<Extend>{
+	<q>
+		<name>Hello</name>
+		<lastName>Last</lastName>
+	</q>
+}
+</Extend>

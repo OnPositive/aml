@@ -43,6 +43,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		ArrayList<String> patterns = new ArrayList<>();
 		ArrayList<String> fieldNames = new ArrayList<>();
 		ArrayList<JType> types = new ArrayList<>();
+		boolean needPropertyOverrides;
 	}
 
 	@Override
@@ -102,13 +103,13 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 		}
 		writer.annotate(defineClass, t);
-		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext,hasMap);
+		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap);
 		return defineClass;
 	}
 
-	private void addExtraInfoForPatternAndAdditionals(JDefinedClass defineClass, boolean hasAdditionalOrMap,
-			Extras ext, boolean hasMap) {
-		if (hasAdditionalOrMap) {
+	private void addExtraInfoForPatternAndAdditionals(JDefinedClass defineClass, boolean hasAdditionalOrMap, Extras ext,
+			boolean hasMap) {
+		if (hasAdditionalOrMap||ext.needPropertyOverrides) {
 			if (writer.getConfig().isGsonSupport()) {
 				if (!defineClass.getPackage().hasResourceFile("PatternAndAdditionalTypeAdapterFactory.java")) {
 					String string = StreamUtils.toString(SimpleBeanGenerator.class
@@ -128,7 +129,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 						JExpr.dotclass(writer.getModel().directClass("PatternAndAdditionalTypeAdapterFactory")));
 				addPatternInfo(defineClass, ext);
 			}
-			if (writer.getConfig().isJacksonSupport()) {
+			if (writer.getConfig().isJacksonSupport()&&hasAdditionalOrMap) {
 				if (!defineClass.getPackage().hasResourceFile("MapAndAdditionalDeserializer.java")) {
 					String string = StreamUtils.toString(
 							SimpleBeanGenerator.class.getResourceAsStream("/MapAndAdditionalDeserializer.tpl"));
@@ -137,28 +138,28 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 							.addResourceFile(new StringResourceFile("MapAndAdditionalDeserializer.java", string));
 				}
 				if (!defineClass.getPackage().hasResourceFile("MapAndAdditionalSerializer.java")) {
-					String string = StreamUtils.toString(
-							SimpleBeanGenerator.class.getResourceAsStream("/MapAndAdditionalSerializer.tpl"));
+					String string = StreamUtils
+							.toString(SimpleBeanGenerator.class.getResourceAsStream("/MapAndAdditionalSerializer.tpl"));
 					string = string.replace("{packageName}", defineClass.getPackage().name());
 					defineClass.getPackage()
 							.addResourceFile(new StringResourceFile("MapAndAdditionalSerializer.java", string));
 				}
 				try {
 					JDefinedClass deserializer = defineClass.getPackage()._class(defineClass.name() + "Deserializer");
-					deserializer._extends(writer.getModel().directClass(defineClass.getPackage().name()+".MapAndAdditionalDeserializer"));
+					deserializer._extends(writer.getModel()
+							.directClass(defineClass.getPackage().name() + ".MapAndAdditionalDeserializer"));
 					deserializer.constructor(JMod.PUBLIC).body().invoke("super").arg(JExpr.dotclass(defineClass));
-					defineClass.annotate(JsonDeserialize.class).param("using",
-							JExpr.dotclass(deserializer));
+					defineClass.annotate(JsonDeserialize.class).param("using", JExpr.dotclass(deserializer));
 					addPatternInfo(deserializer, ext);
 				} catch (JClassAlreadyExistsException e) {
 					throw new IllegalStateException(e);
 				}
 				try {
 					JDefinedClass deserializer = defineClass.getPackage()._class(defineClass.name() + "Serializer");
-					deserializer._extends(writer.getModel().directClass(defineClass.getPackage().name()+".MapAndAdditionalSerializer"));
+					deserializer._extends(writer.getModel()
+							.directClass(defineClass.getPackage().name() + ".MapAndAdditionalSerializer"));
 					deserializer.constructor(JMod.PUBLIC).body().invoke("super").arg(JExpr.dotclass(defineClass));
-					defineClass.annotate(JsonSerialize.class).param("using",
-							JExpr.dotclass(deserializer));
+					defineClass.annotate(JsonSerialize.class).param("using", JExpr.dotclass(deserializer));
 					addPatternInfo(deserializer, ext);
 				} catch (JClassAlreadyExistsException e) {
 					throw new IllegalStateException(e);
@@ -199,23 +200,44 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			ext.types.add(oType);
 
 		}
-		JFieldVar field = defineClass.field(JMod.PRIVATE, propType, name);
-		if (writer.getConfig().isGsonSupport()) {
-			if (p.isMap() || p.isAdditional()) {
-				field.annotate(Expose.class).param("serialize", false).param("deserialize", false);
+		JClass _extends = defineClass._extends();
+		boolean needField = true;
+		JType ts=null;
+		if (_extends != null && _extends instanceof JDefinedClass) {
+			JDefinedClass ee = (JDefinedClass) _extends;
+			JFieldVar jFieldVar = ee.fields().get(name);
+			if (jFieldVar != null) {
+				needField = false;
+				jFieldVar.mods().setProtected();
+				ts=jFieldVar.type();
 			}
 		}
-		if (writer.getConfig().isJacksonSupport()) {
-			if (p.isMap() || p.isAdditional()) {
-				field.annotate(JsonIgnore.class);
+		if (needField) {
+			JFieldVar field = defineClass.field(JMod.PRIVATE, propType, name);
+			if (writer.getConfig().isGsonSupport()) {
+				if (p.isMap() || p.isAdditional()) {
+					field.annotate(Expose.class).param("serialize", false).param("deserialize", false);
+				}
 			}
-		}
-		if (initExpr != null) {
-			field.init(initExpr);
+			if (writer.getConfig().isJacksonSupport()) {
+				if (p.isMap() || p.isAdditional()) {
+					field.annotate(JsonIgnore.class);
+				}
+			}
+			if (initExpr != null) {
+				field.init(initExpr);
+			}
 		}
 		JMethod get = defineClass.method(JMod.PUBLIC, propType,
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
-		get.body()._return(JExpr.ref(name));
+		JExpression ref = JExpr.ref(name);
+		if (ts!=null&&!ts.equals(propType)){
+			ref=JExpr.cast(propType, ref);
+			if (writer.getConfig().isGsonSupport()){
+				ext.needPropertyOverrides=true;
+			}
+		}
+		get.body()._return(ref);
 		writer.annotate(get, p.range());
 		JMethod set = defineClass.method(JMod.PUBLIC, writer.getModel()._ref(void.class),
 				((p.range().isBoolean() && this.booleanAsIs) ? "is" : "set") + Character.toUpperCase(name.charAt(0))

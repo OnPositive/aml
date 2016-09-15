@@ -1,0 +1,45 @@
+#%RAML 1.0 Library
+uses:
+  commons: https://raw.githubusercontent.com/apiregistry/commons/master/commons.raml
+usage: |
+  This library contains set of annotations which may be used to, customize mapping
+  of RAML types to Java as well as a set of similar languages (Scala,e.t.c)
+annotationTypes:
+  package:
+    type: string
+    description: |
+      This annotation allows to specify desired package name for the generated types
+      When applied to type container works as the default package
+      name for all types in scope
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  primarySuperType:
+    type: TypeName
+    allowedTargets: TypeDeclaration
+    description: |
+      When RAML type with multiple super types is mapped to language without
+      support for multiple inheritance only one of super types may be used
+      as a real super type in the target language. This annotation allows to specify
+      the name of super type which should be used as primary super type in this case.
+  container:
+     type: string
+     enum: [array, list, set]
+     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+     description: |
+       Trivial mapping of RAML array types, is to map them to array types of the target language
+       however this behavior is not always desired. This annotation allows to customize
+       desired type of the container type when mapping array types. When used on type container
+       serves as default for all contained types.
+     default: array
+types:
+  JavaPackage: string
+  TypeName: string
+(commons.Authors):
+  - name: Pavel Petrochenko
+    email: pavel@onpositive.com
+    profiles: [ https://github.com/petrochenko-pavel-a/ ]
+(commons.Id): org.aml.java.mapping
+(commons.Version): 0.0.1
+(commons.Links):
+   - title: RAML2Java Tool
+     url: https://github.com/OnPositive/aml
+     role: Tool Location

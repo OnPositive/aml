@@ -51,7 +51,7 @@ public class PatternAndAdditionalTypeAdapter<T> extends TypeAdapter<T>{
 					String name=f.getName();
 					SerializedName annotation = f.getAnnotation(SerializedName.class);
 					if (annotation!=null){
-						name=null;
+						name=annotation.value();
 					}
 					if (Modifier.isStatic(f.getModifiers())){
 						continue;

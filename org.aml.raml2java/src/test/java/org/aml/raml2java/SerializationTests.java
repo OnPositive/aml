@@ -42,10 +42,10 @@ public class SerializationTests extends CompilerTestCase {
 		assertValue("t20.raml", "HasPet", "/s3.json", "/s3s.json", null);
 	}
 	
-//	@Test
-//	public void test4() {
-//		assertValue("t21.raml", "Person", "/s4.json", "/s4s.json", null);
-//	}
+	@Test
+	public void test4() {
+		assertValue("t21.raml", "Person", "/s4.json", "/s4s.json", null);
+	}
 
 	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);
@@ -67,7 +67,6 @@ public class SerializationTests extends CompilerTestCase {
 			object = loadObjectJAXB(xmlPath, clazz);
 			assertAgainstJSON(object, plainJsonPath);
 		}
-
 	}
 
 	public static Object getProperty(Object obj, String name) {

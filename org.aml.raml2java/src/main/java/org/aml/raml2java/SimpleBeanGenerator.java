@@ -5,6 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
@@ -44,6 +47,8 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		ArrayList<String> fieldNames = new ArrayList<>();
 		ArrayList<JType> types = new ArrayList<>();
 		boolean needPropertyOverrides;
+		
+		ArrayList<PropertyCustomizerParameters>params=new ArrayList<>();
 	}
 
 	@Override
@@ -103,13 +108,21 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 		}
 		writer.annotate(defineClass, t);
-		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap);
+		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap,t);
 		return defineClass;
 	}
 
 	private void addExtraInfoForPatternAndAdditionals(JDefinedClass defineClass, boolean hasAdditionalOrMap, Extras ext,
-			boolean hasMap) {
+			boolean hasMap,AbstractType type) {
+		ClassCustomizerParameters cp=new ClassCustomizerParameters(writer, defineClass, type, ext.params);
+		writer.runCustomizers(cp);
+		if (writer.getConfig().isJaxbSupport()){
+			
+			defineClass.annotate(XmlAccessorType.class).param("value", XmlAccessType.PROPERTY);
+			
+		}
 		if (hasAdditionalOrMap||ext.needPropertyOverrides) {
+			
 			if (writer.getConfig().isGsonSupport()) {
 				if (!defineClass.getPackage().hasResourceFile("PatternAndAdditionalTypeAdapterFactory.java")) {
 					String string = StreamUtils.toString(SimpleBeanGenerator.class
@@ -200,6 +213,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			ext.types.add(oType);
 
 		}
+		
 		JClass _extends = defineClass._extends();
 		boolean needField = true;
 		JType ts=null;
@@ -211,9 +225,11 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				jFieldVar.mods().setProtected();
 				ts=jFieldVar.type();
 			}
+			
 		}
+		JFieldVar field =null;
 		if (needField) {
-			JFieldVar field = defineClass.field(JMod.PRIVATE, propType, name);
+			field = defineClass.field(JMod.PRIVATE, propType, name);
 			if (writer.getConfig().isGsonSupport()) {
 				if (p.isMap() || p.isAdditional()) {
 					field.annotate(Expose.class).param("serialize", false).param("deserialize", false);
@@ -236,6 +252,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			if (writer.getConfig().isGsonSupport()){
 				ext.needPropertyOverrides=true;
 			}
+			
 		}
 		get.body()._return(ref);
 		writer.annotate(get, p.range());
@@ -251,6 +268,9 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				f.nl();
 			}
 		});
+		PropertyCustomizerParameters propCustomizer=new PropertyCustomizerParameters(writer, p, defineClass, get, set, field);
+		writer.runCustomizers(propCustomizer);
+		ext.params.add(propCustomizer);
 	}
 
 }

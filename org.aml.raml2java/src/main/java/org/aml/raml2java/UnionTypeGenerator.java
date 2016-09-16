@@ -85,8 +85,7 @@ public class UnionTypeGenerator implements ITypeGenerator {
 					}
 				}
 			}
-		});
-		
+		});		
 	}
 
 }

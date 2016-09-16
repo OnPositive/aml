@@ -389,4 +389,12 @@ public class JavaWriter {
 		this.nameGenerator = new DefaultNameGenerator(string);
 		this.config.defaultPackageName = string;
 	}
+
+	public void runCustomizers(PropertyCustomizerParameters propCustomizer) {
+		config.customizers.forEach(x->x.customize(propCustomizer));
+	}
+
+	public void runCustomizers(ClassCustomizerParameters cp) {
+		config.classCustomizers.forEach(x->x.customize(cp));
+	}
 }

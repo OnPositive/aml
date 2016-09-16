@@ -85,6 +85,7 @@ public abstract class CompilerTestCase extends TestCase {
 		if (supportSer){
 			wr.getConfig().setGsonSupport(true);
 			wr.getConfig().setJacksonSupport(true);
+			wr.getConfig().setJaxbSupport(true);
 		}
 		wr.setDefaultPackageName("org.aml.test");
 		wr.write(build);

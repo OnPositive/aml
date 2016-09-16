@@ -1,5 +1,7 @@
 package org.aml.raml2java;
 
+import java.util.ArrayList;
+
 public class JavaGenerationConfig {
 
 	public static enum MultipleInheritanceStrategy{
@@ -12,9 +14,37 @@ public class JavaGenerationConfig {
 	protected boolean generateInterfaces;
 	
 	protected MultipleInheritanceStrategy multipleInheritance=MultipleInheritanceStrategy.ALL_PLAIN;
-	public boolean gsonSupport;
-	public boolean jacksonSupport;
+	protected boolean gsonSupport;
+	protected boolean jacksonSupport;
+	protected boolean jaxbSupport;
 	
+	protected ArrayList<IPropertyCustomizer>customizers=new ArrayList<>();
+	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
+	
+	public ArrayList<IClassCustomizer> getClassCustomizers() {
+		return classCustomizers;
+	}
+
+	public void setClassCustomizers(ArrayList<IClassCustomizer> classCustomizers) {
+		this.classCustomizers = classCustomizers;
+	}
+
+	public ArrayList<IPropertyCustomizer> getCustomizers() {
+		return customizers;
+	}
+
+	public void setCustomizers(ArrayList<IPropertyCustomizer> customizers) {
+		this.customizers = customizers;
+	}
+
+	public boolean isJaxbSupport() {
+		return jaxbSupport;
+	}
+
+	public void setJaxbSupport(boolean jaxbSupport) {
+		this.jaxbSupport = jaxbSupport;
+	}
+
 	public boolean isJacksonSupport() {
 		return jacksonSupport;
 	}

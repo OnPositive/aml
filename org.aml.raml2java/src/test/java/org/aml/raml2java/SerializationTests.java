@@ -52,7 +52,7 @@ public class SerializationTests extends CompilerTestCase {
 	}
 	@Test
 	public void test6() {
-		assertValue("t24.raml", "Extend", "/s6.json", "/s6.json", null);
+		assertValue("t24.raml", "Extend", "/s6.json", "/s6.json",null);
 	}
 
 	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {

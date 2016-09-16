@@ -7,10 +7,14 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
+import org.aml.typesystem.beans.IXMLHints;
 import org.raml.v2.internal.utils.StreamUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,6 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JArray;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -271,6 +276,26 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		PropertyCustomizerParameters propCustomizer=new PropertyCustomizerParameters(writer, p, defineClass, get, set, field);
 		writer.runCustomizers(propCustomizer);
 		ext.params.add(propCustomizer);
+		if (writer.getConfig().isJaxbSupport()&&p.getXMLHints()!=null){
+			IXMLHints xmlHints = p.getXMLHints();
+			if(xmlHints.isAttribute()){
+				JAnnotationUse annotate = get.annotate(XmlAttribute.class);
+				if (xmlHints.localName()!=null&&!xmlHints.localName().equals(name)){
+					annotate.param("name", xmlHints.localName());
+				}
+			}
+			else{
+				if (xmlHints.wrapped()){
+					JAnnotationUse annotate = get.annotate(XmlElementWrapper.class);					
+					annotate.param("name", name);
+				}
+				if (xmlHints.localName()!=null&&!xmlHints.localName().equals(name)){
+					JAnnotationUse annotate = get.annotate(XmlElement.class);					
+					annotate.param("name", xmlHints.localName());					
+				}
+				
+			}
+		}
 	}
 
 }

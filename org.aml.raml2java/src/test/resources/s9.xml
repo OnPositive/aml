@@ -1,0 +1,17 @@
+<manager>
+	<name>Pavel</name>
+	<lastName>Petrochenko</lastName>	
+	<age>34.0</age>
+	<kind>ADVANCED</kind>
+	<hasWife>true</hasWife>
+	<manages>
+		<person>
+		<name>Ada</name>
+		<lastName>Dog</lastName>
+		</person>
+		<person>
+		<name>Misa</name>
+		<lastName>Cat</lastName>
+		</person>
+	</manages>
+</manager>

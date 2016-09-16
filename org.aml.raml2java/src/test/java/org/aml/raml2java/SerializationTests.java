@@ -68,6 +68,10 @@ public class SerializationTests extends CompilerTestCase {
 	public void test9() {
 		assertValue("t27.raml", "Manager", "/s0.json", "/s0.json","/s9.xml");
 	}
+	@Test
+	public void test10() {
+		assertValue("t28.raml", "Manager", "/s0.json", "/s0.json","/s10.xml");
+	}
 
 	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);

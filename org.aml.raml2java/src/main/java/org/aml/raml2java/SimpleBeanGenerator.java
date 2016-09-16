@@ -15,6 +15,8 @@ import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.beans.IXMLHints;
+import org.aml.typesystem.meta.facets.XMLFacet;
+import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.raml.v2.internal.utils.StreamUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,8 +54,8 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		ArrayList<String> fieldNames = new ArrayList<>();
 		ArrayList<JType> types = new ArrayList<>();
 		boolean needPropertyOverrides;
-		
-		ArrayList<PropertyCustomizerParameters>params=new ArrayList<>();
+
+		ArrayList<PropertyCustomizerParameters> params = new ArrayList<>();
 	}
 
 	@Override
@@ -113,21 +115,21 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 		}
 		writer.annotate(defineClass, t);
-		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap,t);
+		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap, t);
 		return defineClass;
 	}
 
 	private void addExtraInfoForPatternAndAdditionals(JDefinedClass defineClass, boolean hasAdditionalOrMap, Extras ext,
-			boolean hasMap,AbstractType type) {
-		ClassCustomizerParameters cp=new ClassCustomizerParameters(writer, defineClass, type, ext.params);
+			boolean hasMap, AbstractType type) {
+		ClassCustomizerParameters cp = new ClassCustomizerParameters(writer, defineClass, type, ext.params);
 		writer.runCustomizers(cp);
-		if (writer.getConfig().isJaxbSupport()){
-			
+		if (writer.getConfig().isJaxbSupport()) {
+
 			defineClass.annotate(XmlAccessorType.class).param("value", XmlAccessType.PROPERTY);
-			
+
 		}
-		if (hasAdditionalOrMap||ext.needPropertyOverrides) {
-			
+		if (hasAdditionalOrMap || ext.needPropertyOverrides) {
+
 			if (writer.getConfig().isGsonSupport()) {
 				if (!defineClass.getPackage().hasResourceFile("PatternAndAdditionalTypeAdapterFactory.java")) {
 					String string = StreamUtils.toString(SimpleBeanGenerator.class
@@ -147,7 +149,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 						JExpr.dotclass(writer.getModel().directClass("PatternAndAdditionalTypeAdapterFactory")));
 				addPatternInfo(defineClass, ext);
 			}
-			if (writer.getConfig().isJacksonSupport()&&hasAdditionalOrMap) {
+			if (writer.getConfig().isJacksonSupport() && hasAdditionalOrMap) {
 				if (!defineClass.getPackage().hasResourceFile("MapAndAdditionalDeserializer.java")) {
 					String string = StreamUtils.toString(
 							SimpleBeanGenerator.class.getResourceAsStream("/MapAndAdditionalDeserializer.tpl"));
@@ -218,21 +220,21 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			ext.types.add(oType);
 
 		}
-		
+
 		JClass _extends = defineClass._extends();
 		boolean needField = true;
-		JType ts=null;
+		JType ts = null;
 		if (_extends != null && _extends instanceof JDefinedClass) {
 			JDefinedClass ee = (JDefinedClass) _extends;
 			JFieldVar jFieldVar = ee.fields().get(name);
 			if (jFieldVar != null) {
 				needField = false;
 				jFieldVar.mods().setProtected();
-				ts=jFieldVar.type();
+				ts = jFieldVar.type();
 			}
-			
+
 		}
-		JFieldVar field =null;
+		JFieldVar field = null;
 		if (needField) {
 			field = defineClass.field(JMod.PRIVATE, propType, name);
 			if (writer.getConfig().isGsonSupport()) {
@@ -252,12 +254,12 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		JMethod get = defineClass.method(JMod.PUBLIC, propType,
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		JExpression ref = JExpr.ref(name);
-		if (ts!=null&&!ts.equals(propType)){
-			ref=JExpr.cast(propType, ref);
-			if (writer.getConfig().isGsonSupport()){
-				ext.needPropertyOverrides=true;
+		if (ts != null && !ts.equals(propType)) {
+			ref = JExpr.cast(propType, ref);
+			if (writer.getConfig().isGsonSupport()) {
+				ext.needPropertyOverrides = true;
 			}
-			
+
 		}
 		get.body()._return(ref);
 		writer.annotate(get, p.range());
@@ -273,27 +275,49 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				f.nl();
 			}
 		});
-		PropertyCustomizerParameters propCustomizer=new PropertyCustomizerParameters(writer, p, defineClass, get, set, field);
+		PropertyCustomizerParameters propCustomizer = new PropertyCustomizerParameters(writer, p, defineClass, get, set,
+				field);
 		writer.runCustomizers(propCustomizer);
 		ext.params.add(propCustomizer);
-		if (writer.getConfig().isJaxbSupport()&&p.getXMLHints()!=null){
+		if (writer.getConfig().isJaxbSupport() && p.getXMLHints() != null) {
 			IXMLHints xmlHints = p.getXMLHints();
-			if(xmlHints.isAttribute()){
+			if (xmlHints.isAttribute()) {
 				JAnnotationUse annotate = get.annotate(XmlAttribute.class);
-				if (xmlHints.localName()!=null&&!xmlHints.localName().equals(name)){
+				if (xmlHints.localName() != null && !xmlHints.localName().equals(name)) {
 					annotate.param("name", xmlHints.localName());
 				}
-			}
-			else{
-				if (xmlHints.wrapped()){
-					JAnnotationUse annotate = get.annotate(XmlElementWrapper.class);					
+			} else {
+				if (xmlHints.wrapped()) {
+					JAnnotationUse annotate = get.annotate(XmlElementWrapper.class);
 					annotate.param("name", name);
+					annotate = get.annotate(XmlElement.class);
+					String mn = p.range().name();
+					AbstractType range = p.range();
+					ComponentShouldBeOfType oneMeta = range.oneMeta(ComponentShouldBeOfType.class);
+					if (oneMeta!=null){
+						range=oneMeta.range();
+					}
+					if (range.superTypes().size()>1){
+						mn=name;
+					}
+					while (mn == null || mn.length() == 0) {
+
+						
+						mn = range.name();
+						if (range.hasDirectMeta(XMLFacet.class)){
+							XMLFacet meta = range.oneMeta(XMLFacet.class);
+							if (meta.getName()!=null&&meta.getName().length()>0){
+								mn=meta.getName();
+							}
+						}
+						range = range.superType();
+					}
+					annotate.param("name", mn);
+				} else if (xmlHints.localName() != null && !xmlHints.localName().equals(name)) {
+					JAnnotationUse annotate = get.annotate(XmlElement.class);
+					annotate.param("name", xmlHints.localName());
 				}
-				if (xmlHints.localName()!=null&&!xmlHints.localName().equals(name)){
-					JAnnotationUse annotate = get.annotate(XmlElement.class);					
-					annotate.param("name", xmlHints.localName());					
-				}
-				
+
 			}
 		}
 	}

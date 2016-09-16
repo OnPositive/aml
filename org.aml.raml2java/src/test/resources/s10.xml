@@ -5,13 +5,13 @@
 	<kind>ADVANCED</kind>
 	<hasWife>true</hasWife>
 	<manages>
-		<Person>
+		<person>
 		<name>Ada</name>
 		<lastName>Dog</lastName>
-		</Person>
-		<Person>
+		</person>
+		<person>
 		<name>Misa</name>
 		<lastName>Cat</lastName>
-		</Person>
+		</person>
 	</manages>
 </manager>

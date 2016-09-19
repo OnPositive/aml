@@ -2,10 +2,8 @@ package org.aml.raml2java;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.net.URL;
@@ -13,12 +11,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.aml.java.mapping.container;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeLibrary;
@@ -27,20 +25,16 @@ import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
-import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.CompositeAnnotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.GsonAnnotator;
 import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.v2.internal.utils.StreamUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
@@ -309,7 +303,8 @@ public class JavaWriter {
 		if (range.isAnonimous()) {
 			if (range.isArray()) {
 				AbstractType range2 = range.oneMeta(ComponentShouldBeOfType.class).range();
-				return getType(range2, allowNotJava, convertComplexToAnnotation, member).array();
+				
+				return toArray(range2, member);
 			}
 			if (range.isString()) {
 				if (range.isEnumType()) {
@@ -356,7 +351,7 @@ public class JavaWriter {
 		if (!allowNotJava) {
 			if (range.isArray()) {
 				AbstractType range2 = range.oneMeta(ComponentShouldBeOfType.class).range();
-				return getType(range2).array();
+				return toArray(range2,member);
 			}
 			if (range.isScalar()) {
 				if (range.superTypes().size() == 1) {
@@ -477,6 +472,33 @@ public class JavaWriter {
 			}
 		}
 		return null;
+	}
+
+	private JClass toArray(AbstractType range2,IProperty member) {
+		JType type = getType(range2, false, false, member);		
+		boolean containerStrategyCollection = config.containerStrategyCollection;
+		boolean set = false;
+		container annotation = range2.annotation(container.class, true);
+		if(annotation!=null){
+			String vl=annotation.value();
+			if (vl.equals("list")){
+				containerStrategyCollection=true;
+			}
+			if (vl.equals("array")){
+				containerStrategyCollection=false;
+			}
+			if (vl.equals("set")){
+				containerStrategyCollection=true;
+				set=true;
+			}
+		}
+		if (containerStrategyCollection){
+			if (set){
+				return mdl.ref(Set.class).narrow(type);
+			}
+			return mdl.ref(List.class).narrow(type);
+		}
+		return type.array();
 	}
 
 	private Annotator getAnnotator() {

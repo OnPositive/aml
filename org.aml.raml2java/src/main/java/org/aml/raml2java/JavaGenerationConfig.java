@@ -20,7 +20,16 @@ public class JavaGenerationConfig {
 	
 	protected ArrayList<IPropertyCustomizer>customizers=new ArrayList<>();
 	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
+	protected boolean containerStrategyCollection=false;
 	
+	public boolean isContainerStrategyCollection() {
+		return containerStrategyCollection;
+	}
+
+	public void setContainerStrategyCollection(boolean containerStrategyCollection) {
+		this.containerStrategyCollection = containerStrategyCollection;
+	}
+
 	public ArrayList<IClassCustomizer> getClassCustomizers() {
 		return classCustomizers;
 	}

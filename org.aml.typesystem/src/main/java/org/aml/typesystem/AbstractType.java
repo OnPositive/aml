@@ -1,10 +1,14 @@
 package org.aml.typesystem;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.aml.typesystem.beans.IProperty;
@@ -1232,5 +1236,49 @@ public abstract class AbstractType implements IType {
 
 	public boolean isExternal() {
 		return this.isSubTypeOf(BuiltIns.EXTERNAL);
+	}
+	
+	
+	public <T> T annotation(Class<T> clazz,boolean lookInTopLevel){
+		for (TypeInformation t:meta()){
+			if (t instanceof Annotation){
+				Annotation a=(Annotation) t;
+				T r=tryConvert(clazz, a);
+				if (r!=null){
+					return r;
+				}
+			}
+		}
+		if (lookInTopLevel){
+			for (IAnnotation a:this.getSource().annotations()){
+				T r=tryConvert(clazz, a);
+				if (r!=null){
+					return r;
+				}
+			}
+		}
+		return null;		
+	}
+
+	private <T> T tryConvert(Class<T> clazz, IAnnotation a) {
+		AbstractType annotationType = a.annotationType();
+		if (annotationType!=null){
+			if ((annotationType.getNameSpaceId()+"."+annotationType.name()).toLowerCase().equals(clazz.getName().toLowerCase())){
+				InvocationHandler h=new InvocationHandler() {
+					
+					@SuppressWarnings("unchecked")
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+						if (method.getName().equals("value")){
+							return a.value();	
+						}
+						Map<String,Object>os=(Map<String, Object>) a.value();
+						return os.get(method.getName());								
+					}
+				};
+				return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, h));
+			}
+		}
+		return null;
 	}
 }

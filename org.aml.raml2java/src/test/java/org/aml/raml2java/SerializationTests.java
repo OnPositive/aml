@@ -6,6 +6,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Base64;
 import java.util.List;
 
 import javax.xml.bind.JAXB;
@@ -109,6 +110,10 @@ public class SerializationTests extends CompilerTestCase {
 		} catch (NoSuchFieldException | SecurityException e) {
 			TestCase.assertFalse(true);
 		}
+	}
+	@Test
+	public void test18() {
+		assertValue("t22.raml", "Person", "/s18.json", "/s18.json", "/s18.xml");
 	}
 	private Class<?> assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);
@@ -219,6 +224,9 @@ public class SerializationTests extends CompilerTestCase {
 				}
 				if (obj instanceof BigDecimal){
 					tv=((BigDecimal) obj).doubleValue();
+				}
+				if (obj instanceof byte[]){
+					tv=Base64.getEncoder().encodeToString((byte[]) obj);
 				}
 				TestCase.assertEquals(json, tv);
 			}

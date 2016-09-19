@@ -111,6 +111,7 @@ public class BuiltIns {
 		NIL.addMeta(BasicMeta.BUILTIN);
 		DATEONLY.addMeta(BasicMeta.BUILTIN);
 		TIMEONLY.addMeta(BasicMeta.BUILTIN);
+		FILE.addMeta(BasicMeta.BUILTIN);
 		DATETIMEONLY.addMeta(BasicMeta.BUILTIN);
 		DATETIME.addMeta(BasicMeta.BUILTIN);
 		DATETIME.addMeta(new FacetDeclaration("format", BuiltIns.STRING));

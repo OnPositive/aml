@@ -1284,4 +1284,8 @@ public abstract class AbstractType implements IType {
 		}
 		return null;
 	}
+
+	public boolean isFile() {
+		return this.isSubTypeOf(BuiltIns.FILE);
+	}
 }

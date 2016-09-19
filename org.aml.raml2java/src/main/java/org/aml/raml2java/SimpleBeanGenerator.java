@@ -64,6 +64,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		AbstractType superType = t.superType();
 		boolean hasAdditionalOrMap = false;
 		boolean hasMap = false;
+		
 		Extras ext = new Extras();
 		if (superType != null) {
 			JType type = writer.getType(superType);
@@ -116,6 +117,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		}
 		writer.annotate(defineClass, t);
 		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap, t);
+		
 		return defineClass;
 	}
 
@@ -237,6 +239,17 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		JFieldVar field = null;
 		if (needField) {
 			field = defineClass.field(JMod.PRIVATE, propType, name);
+			if (p.range().isFile()&&writer.getConfig().isGsonSupport()){
+				if (!defineClass.getPackage().hasResourceFile("ByteArrayToBase64TypeAdapter.java")) {
+					String string = StreamUtils.toString(
+							SimpleBeanGenerator.class.getResourceAsStream("/ByteArrayToBase64TypeAdapter.tpl"));
+					string = string.replace("{packageName}", defineClass.getPackage().name());
+					defineClass.getPackage()
+							.addResourceFile(new StringResourceFile("ByteArrayToBase64TypeAdapter.java", string));
+					field.annotate(JsonAdapter.class).param("value", writer.getModel().directClass(defineClass.getPackage().name()+".ByteArrayToBase64TypeAdapter"));
+					
+				}
+			}
 			if (writer.getConfig().isGsonSupport()) {
 				if (p.isMap() || p.isAdditional()) {
 					field.annotate(Expose.class).param("serialize", false).param("deserialize", false);

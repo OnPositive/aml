@@ -286,6 +286,9 @@ public class JavaWriter {
 			if (range.isString()) {
 				return mdl._ref(String.class);
 			}
+			if (range.isFile()) {
+				return mdl._ref(byte[].class);
+			}
 			if (range.isBoolean()) {
 				return mdl._ref(boolean.class);
 			}

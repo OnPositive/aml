@@ -1,0 +1,9 @@
+#%RAML 1.0 Library
+uses:
+  r2j: ./raml2java.raml
+types:
+  JsonType: !include ./schema.json
+  XSDType: !include t.xsd
+  
+(r2j.package): com.test.annotations
+  

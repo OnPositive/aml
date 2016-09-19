@@ -1,12 +1,23 @@
 package org.aml.raml2java;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
@@ -16,12 +27,29 @@ import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.CompositeAnnotator;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.GsonAnnotator;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.Jsonschema2Pojo;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.raml.v2.internal.utils.StreamUtils;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
 
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JAnnotationValue;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
@@ -32,6 +60,14 @@ import com.sun.codemodel.JExpressionImpl;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
+import com.sun.tools.xjc.AbortException;
+import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.Language;
+import com.sun.tools.xjc.ModelLoader;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.outline.ClassOutline;
+import com.sun.tools.xjc.outline.Outline;
 
 public class JavaWriter {
 
@@ -101,12 +137,12 @@ public class JavaWriter {
 			if (i instanceof Annotation) {
 				Annotation ann = (Annotation) i;
 				AbstractType annotationType = ann.annotationType();
-				if (annotationType==null){
-					//partially parsed raml file ignore loosly typed annotation
+				if (annotationType == null) {
+					// partially parsed raml file ignore loosly typed annotation
 					continue;
 				}
 				JClass type = (JClass) getType(annotationType);
-				if (type==null){
+				if (type == null) {
 					throw new IllegalStateException("Should never happen");
 				}
 				JAnnotationUse annotate = annotable.annotate((JClass) type);
@@ -342,12 +378,132 @@ public class JavaWriter {
 			defined.put(range, define);
 			return define;
 		}
-		if (range.isAnnotationType()){
+		if (range.isAnnotationType()) {
 			JType define = new AnnotationTypeGenerator(this).define(range);
 			defined.put(range, define);
 			return define;
 		}
+		if (range.isSubTypeOf(BuiltIns.EXTERNAL)) {
+			String externalSchemaContent = range.getExternalSchemaContent();
+			//this is JSON schema
+			if (externalSchemaContent.trim().startsWith("{")) {
+				GenerationConfig jsonSchemaGenerationConfig=new DefaultGenerationConfig();				
+				SchemaMapper mp = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(),
+		                new SchemaStore()), new SchemaGenerator());
+				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
+				URL storeContentToTempFile = storeContentToTempFile(externalSchemaContent);
+				URL json = storeContentToTempFile;
+				try {
+					JType t = mp.generate(getModel(),
+							fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf('.') + 1),
+							fullyQualifiedName.substring(0, fullyQualifiedName.lastIndexOf('.')), json);
+					defined.put(range, t);
+					return t;
+				} catch (IOException e) {
+					throw new IllegalStateException(e);
+				}
+			}
+			else{
+				try {
+					Options opt=new Options();
+					String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
+					int lastIndexOf = fullyQualifiedName.lastIndexOf('.');
+					String packageName=fullyQualifiedName.substring(0,lastIndexOf);
+					opt.defaultPackage=packageName;
+					opt.setSchemaLanguage(Language.XMLSCHEMA);
+					URL storeContentToTempFile = storeContentToTempFile(externalSchemaContent);
+					InputSource is = new InputSource(storeContentToTempFile.toExternalForm());
+					opt.addGrammar(is);
+					ErrorReceiver receiver=new ErrorReceiver() {
+						
+						@Override
+						public void warning(SAXParseException exception) throws AbortException {
+							exception.printStackTrace(System.err);
+						}
+						
+						@Override
+						public void info(SAXParseException exception) {
+							exception.printStackTrace(System.err);
+						}
+						
+						@Override
+						public void fatalError(SAXParseException exception) throws AbortException {
+							exception.printStackTrace(System.err);
+						}
+						
+						@Override
+						public void error(SAXParseException exception) throws AbortException {
+							exception.printStackTrace(System.err);
+						}
+					};
+					Model model = ModelLoader.load(opt, getModel(), receiver);
+					
+					Outline outline = model.generateCode(opt, receiver);
+					HashSet<JDefinedClass>classList=new HashSet<>();
+					String rootElement="";
+					for (ClassOutline co : outline.getClasses()) {
+						JDefinedClass cl = co.implClass;
+						if (cl.outer() == null) {
+							for (JAnnotationUse c:cl.annotations()){
+								String nm=c.getAnnotationClass().name();
+								if (nm.equals("XmlRootElement")){
+									classList.add(cl);
+									JAnnotationValue jAnnotationValue = c.getAnnotationMembers().get("name");
+									StringWriter w = new StringWriter();
+									jAnnotationValue.generate(new JFormatter(w));
+									rootElement=w.toString().substring(1,w.toString().length()-1);
+								}
+								
+							}
+							classList.add(cl);
+						}
+						
+					}
+					if (classList.size()>1){
+						throw new IllegalArgumentException("Mapping to schemas with more then one element is not implemented");
+					}
+					else{
+						
+						JDefinedClass next = classList.iterator().next();
+						JDefinedClass defineClass =  mdl._class(fullyQualifiedName, ClassType.CLASS);
+						defineClass._extends(next);
+						defineClass.annotate(XmlRootElement.class).param("name", rootElement);
+						defined.put(range, defineClass);						
+						return defineClass;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return null;
+	}
+
+	private Annotator getAnnotator() {
+		ArrayList<Annotator>annotators=new ArrayList<>();
+		if (config.isGsonSupport()){
+			annotators.add(new GsonAnnotator());
+		}
+		if (config.isJacksonSupport()){
+			annotators.add(new Jackson2Annotator());
+		}
+		CompositeAnnotator ac=new CompositeAnnotator(annotators.toArray(new Annotator[annotators.size()]));
+		return ac;
+	}
+
+	private URL storeContentToTempFile(String externalSchemaContent) {
+		URL json = null;
+		try {
+			File createTempFile = File.createTempFile("ddd", ".xsd");
+			FileOutputStream fs = new FileOutputStream(createTempFile);
+			byte[] bytes = externalSchemaContent.getBytes("UTF8");
+			fs.write(bytes, 0, bytes.length);
+			fs.close();
+			json = createTempFile.toURL();
+		} catch (IOException e1) {
+			throw new IllegalStateException(e1);
+		}
+		return json;
 	}
 
 	private String typePropertyName(IProperty member) {
@@ -403,10 +559,10 @@ public class JavaWriter {
 	}
 
 	public void runCustomizers(PropertyCustomizerParameters propCustomizer) {
-		config.customizers.forEach(x->x.customize(propCustomizer));
+		config.customizers.forEach(x -> x.customize(propCustomizer));
 	}
 
 	public void runCustomizers(ClassCustomizerParameters cp) {
-		config.classCustomizers.forEach(x->x.customize(cp));
+		config.classCustomizers.forEach(x -> x.customize(cp));
 	}
 }

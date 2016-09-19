@@ -54,9 +54,9 @@ public abstract class AbstractType implements IType {
 	protected boolean locked = false;
 
 	protected boolean nullable = false;
-	
-	protected boolean isAnnotation=false;
-	
+
+	protected boolean isAnnotation = false;
+
 	protected ITypeLibrary source;
 
 	public ITypeLibrary getSource() {
@@ -909,6 +909,7 @@ public abstract class AbstractType implements IType {
 		}
 		return rs;
 	}
+
 	public Set<String> requiredPropertySet() {
 		final LinkedHashSet<String> rs = new LinkedHashSet<>();
 		for (final HasPropertyRestriction p : this.meta(HasPropertyRestriction.class)) {
@@ -990,6 +991,7 @@ public abstract class AbstractType implements IType {
 
 		return results;
 	}
+
 	public Set<AbstractType> unionTypeFamily() {
 		if (this.isUnion()) {
 			final Set<AbstractType> superTypes = this.superTypes();
@@ -1201,18 +1203,34 @@ public abstract class AbstractType implements IType {
 	public boolean isAnnotationType() {
 		return this.isAnnotation;
 	}
-	
-	public String getNameSpaceId(){
-		if (this.getSource()==null){
+
+	public String getNameSpaceId() {
+		if (this.getSource() == null) {
 			return "";
 		}
-		for (IAnnotation a:this.getSource().annotations()){
-			if (a.annotationType().name().equals("Id")){
-				if (a.annotationType().isString()){
-					return ""+a.value();
+		for (IAnnotation a : this.getSource().annotations()) {
+			AbstractType annotationType = a.annotationType();
+			if (annotationType != null) {
+				if (annotationType.name().equals("Id")) {
+					if (annotationType.isString()) {
+						return "" + a.value();
+					}
 				}
 			}
 		}
 		return "";
+	}
+
+	public String getExternalSchemaContent() {
+		if (this.isExternal()) {
+			AbstractType superType = this.superType();
+
+			return superType.name();
+		}
+		return null;
+	}
+
+	public boolean isExternal() {
+		return this.isSubTypeOf(BuiltIns.EXTERNAL);
 	}
 }

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
 
 import javax.xml.bind.JAXB;
 
@@ -84,6 +87,19 @@ public class SerializationTests extends CompilerTestCase {
 	@Test
 	public void test13() {
 		assertValue("t31.raml", "Manager", "/s0.json", "/s0.json","/s0.xml");
+	}
+	@Test
+	public void test14() {
+		assertValue("t32.raml", "JsonType", "/s8.json", "/s8.json",null);
+	}
+	@Test
+	public void test15() {
+		assertValue("t33.raml", "com.test.annotations.JsonType", "/s8.json", "/s8.json",null);
+	}
+	
+	@Test
+	public void test16() {
+		assertValue("t33.raml", "com.test.annotations.XSDType", "/s19.json", "/s19.json","/s19.xml");
 	}
 	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);
@@ -167,6 +183,15 @@ public class SerializationTests extends CompilerTestCase {
 			});
 		} else if (json instanceof JSONArray) {
 			JSONArray arr = (JSONArray) json;
+			if (obj instanceof List){
+				List<?>l=(List<?>) obj;
+				for (int i = 0; i < arr.length(); i++) {
+					Object val = l.get(i);
+					Object treeVal = arr.get(i);
+					assertObject(treeVal, val);
+				}
+			}
+			else
 			for (int i = 0; i < arr.length(); i++) {
 				Object val = Array.get(obj, i);
 				Object treeVal = arr.get(i);
@@ -177,7 +202,16 @@ public class SerializationTests extends CompilerTestCase {
 				Enum<?> e = (Enum<?>) obj;
 				TestCase.assertEquals(json, e.name());
 			} else
-				TestCase.assertEquals(json, obj);
+			{
+				Object tv=obj;
+				if (obj instanceof BigInteger){
+					tv=((BigInteger) obj).intValue();
+				}
+				if (obj instanceof BigDecimal){
+					tv=((BigDecimal) obj).doubleValue();
+				}
+				TestCase.assertEquals(json, tv);
+			}
 		}
 
 	}

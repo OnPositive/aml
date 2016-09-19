@@ -151,7 +151,16 @@ public class TopLevelRamlModelBuilder {
 		if (namespace != null) {
 			ti = node.usesMap.get(namespace);
 		}
-		a.setAnnotationType(ti.annotationTypes().getType(name));
+		if (ti==null){
+			return;
+		}
+		AbstractType type = ti.annotationTypes().getType(name);
+		if (type!=null){
+		a.setAnnotationType(type);
+		}
+		else{
+			System.err.println("Error");
+		}
 	}
 
 	private AbstractType buildSuperType(TopLevelRamlImpl node, TypeExpressionNode tn) {

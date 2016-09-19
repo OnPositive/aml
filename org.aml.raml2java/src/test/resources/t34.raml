@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+uses:
+  r2j: ./raml2java.raml
+types:
+  Person:
+    properties:
+      name: string
+      lastName: string
+  Manager:
+
+    type: Person
+    properties:
+      manages: Person[]
+(r2j.package): com.test.annotations
+(r2j.container): list

@@ -1250,11 +1250,14 @@ public abstract class AbstractType implements IType {
 			}
 		}
 		if (lookInTopLevel){
-			for (IAnnotation a:this.getSource().annotations()){
+			ITypeLibrary source2 = this.getSource();
+			if (source2!=null){
+			for (IAnnotation a:source2.annotations()){
 				T r=tryConvert(clazz, a);
 				if (r!=null){
 					return r;
 				}
+			}
 			}
 		}
 		return null;		

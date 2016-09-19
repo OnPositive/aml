@@ -101,7 +101,16 @@ public class SerializationTests extends CompilerTestCase {
 	public void test16() {
 		assertValue("t33.raml", "com.test.annotations.XSDType", "/s19.json", "/s19.json","/s19.xml");
 	}
-	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
+	@Test
+	public void test17() {
+		Class<?> assertValue = assertValue("t34.raml", "com.test.annotations.Manager", "/s0.json", "/s0.json","/s0.xml");
+		try {
+			TestCase.assertTrue(List.class.isAssignableFrom(assertValue.getDeclaredField("manages").getType()));
+		} catch (NoSuchFieldException | SecurityException e) {
+			TestCase.assertFalse(true);
+		}
+	}
+	private Class<?> assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);
 		Object object = loadObjectGson(clazz, jsonPath);
 		assertAgainstJSON(object, plainJsonPath);
@@ -121,6 +130,7 @@ public class SerializationTests extends CompilerTestCase {
 			object = loadObjectJAXB(xmlPath, clazz);
 			assertAgainstJSON(object, plainJsonPath);
 		}
+		return clazz;
 	}
 
 	public static Object getProperty(Object obj, String name) {

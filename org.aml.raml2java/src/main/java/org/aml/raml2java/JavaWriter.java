@@ -304,7 +304,7 @@ public class JavaWriter {
 			if (range.isArray()) {
 				AbstractType range2 = range.oneMeta(ComponentShouldBeOfType.class).range();
 				
-				return toArray(range2, member);
+				return toArray(range2, member,convertComplexToAnnotation);
 			}
 			if (range.isString()) {
 				if (range.isEnumType()) {
@@ -351,7 +351,7 @@ public class JavaWriter {
 		if (!allowNotJava) {
 			if (range.isArray()) {
 				AbstractType range2 = range.oneMeta(ComponentShouldBeOfType.class).range();
-				return toArray(range2,member);
+				return toArray(range2,member,convertComplexToAnnotation);
 			}
 			if (range.isScalar()) {
 				if (range.superTypes().size() == 1) {
@@ -474,11 +474,12 @@ public class JavaWriter {
 		return null;
 	}
 
-	private JClass toArray(AbstractType range2,IProperty member) {
+	private JClass toArray(AbstractType range2,IProperty member, boolean convertComplexToAnnotation) {
 		JType type = getType(range2, false, false, member);		
 		boolean containerStrategyCollection = config.containerStrategyCollection;
 		boolean set = false;
 		container annotation = range2.annotation(container.class, true);
+		
 		if(annotation!=null){
 			String vl=annotation.value();
 			if (vl.equals("list")){
@@ -491,8 +492,8 @@ public class JavaWriter {
 				containerStrategyCollection=true;
 				set=true;
 			}
-		}
-		if (containerStrategyCollection){
+		}		
+		if (containerStrategyCollection&&!convertComplexToAnnotation){
 			if (set){
 				return mdl.ref(Set.class).narrow(type);
 			}

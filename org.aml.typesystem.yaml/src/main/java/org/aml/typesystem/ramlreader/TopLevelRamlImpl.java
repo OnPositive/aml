@@ -51,5 +51,6 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelRaml{
 	public Map<String, ? extends Library> uses() {
 		return usesMap;
 	}
+
 	
 }

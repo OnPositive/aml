@@ -24,4 +24,5 @@ public interface ITypeRegistry extends Iterable<AbstractType>{
 	 * @return a {@link java.util.Collection} object.
 	 */
 	Collection<AbstractType> types();
+	
 }

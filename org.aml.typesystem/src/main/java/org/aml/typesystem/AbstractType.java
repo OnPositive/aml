@@ -54,6 +54,26 @@ public abstract class AbstractType implements IType {
 	protected boolean locked = false;
 
 	protected boolean nullable = false;
+	
+	protected boolean isAnnotation=false;
+	
+	protected ITypeLibrary source;
+
+	public ITypeLibrary getSource() {
+		return source;
+	}
+
+	public void setSource(ITypeLibrary source) {
+		this.source = source;
+	}
+
+	public boolean isAnnotation() {
+		return isAnnotation;
+	}
+
+	public void setAnnotation(boolean isAnnotation) {
+		this.isAnnotation = isAnnotation;
+	}
 
 	public final Set<TypeInformation> metaInfo = new LinkedHashSet<>();
 
@@ -1176,5 +1196,23 @@ public abstract class AbstractType implements IType {
 
 	public boolean isInteger() {
 		return this.isSubTypeOf(BuiltIns.INTEGER);
+	}
+
+	public boolean isAnnotationType() {
+		return this.isAnnotation;
+	}
+	
+	public String getNameSpaceId(){
+		if (this.getSource()==null){
+			return "";
+		}
+		for (IAnnotation a:this.getSource().annotations()){
+			if (a.annotationType().name().equals("Id")){
+				if (a.annotationType().isString()){
+					return ""+a.value();
+				}
+			}
+		}
+		return "";
 	}
 }

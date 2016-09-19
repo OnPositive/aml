@@ -89,9 +89,13 @@ public abstract class CompilerTestCase extends TestCase {
 		}
 		wr.setDefaultPackageName("org.aml.test");
 		wr.write(build);
-		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test."+typeName);
+		String string = "org.aml.test."+typeName;
+		if (typeName.indexOf('.')!=-1){
+			string=typeName;
+		}
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), string);
 		TestCase.assertEquals(compileAndTest.size(), 1);
-		Class<?> class1 = compileAndTest.get("org.aml.test."+typeName);
+		Class<?> class1 = compileAndTest.get(string);
 		return class1;
 	}
 

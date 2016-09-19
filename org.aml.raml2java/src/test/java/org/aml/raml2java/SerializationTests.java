@@ -6,7 +6,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.bind.JAXB;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.json.JSONArray;
@@ -72,7 +71,20 @@ public class SerializationTests extends CompilerTestCase {
 	public void test10() {
 		assertValue("t28.raml", "Manager", "/s0.json", "/s0.json","/s10.xml");
 	}
-
+	
+	
+	@Test
+	public void test11() {
+		assertValue("t29.raml", "com.test.annotations.Manager", "/s0.json", "/s0.json","/s0.xml");
+	}
+	@Test
+	public void test12() {
+		assertValue("t30.raml", "com.test.annotations.Manager", "/s0.json", "/s0.json","/s0.xml");
+	}
+	@Test
+	public void test13() {
+		assertValue("t31.raml", "Manager", "/s0.json", "/s0.json","/s0.xml");
+	}
 	private void assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);
 		Object object = loadObjectGson(clazz, jsonPath);

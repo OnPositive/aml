@@ -1,0 +1,16 @@
+#%RAML 1.0 Library
+uses:
+  r2j: ./raml2java.raml
+annotationTypes:
+  package: string  
+types:
+  Person:
+    properties:
+      name: string
+      lastName: string
+  Manager:
+
+    type: Person
+    properties:
+      manages: Person[]
+(package): com.test.annotations #this should be ignore

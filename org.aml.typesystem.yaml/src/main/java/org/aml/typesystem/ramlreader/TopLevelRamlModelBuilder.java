@@ -22,7 +22,9 @@ import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.FacetRestriction;
 import org.aml.typesystem.meta.restrictions.IRangeRestriction;
 import org.aml.typesystem.meta.restrictions.RestrictionsList;
+import org.raml.v2.api.loader.CompositeResourceLoader;
 import org.raml.v2.api.loader.ResourceLoader;
+import org.raml.v2.api.loader.UrlResourceLoader;
 import org.raml.v2.api.model.v10.RamlFragment;
 import org.raml.v2.internal.impl.RamlBuilder;
 import org.raml.v2.internal.impl.commons.RamlHeader;
@@ -111,32 +113,45 @@ public class TopLevelRamlModelBuilder {
 		for (AbstractType t : node.annotationTypes()) {
 			finishAnnotationBinding(node, t);
 		}
+		for (Node q:node.original.getChildren()){
+			if (q instanceof AnnotationNode){
+				AnnotationNode aNode=(AnnotationNode) q;
+				Node value = aNode.getValue();
+				Object val = toObject(value);
+				String literalValue=aNode.getKey().getLiteralValue();
+				Annotation as = new Annotation(literalValue.substring(1,literalValue.length()-1), val, null);
+				bindAnnotation(node, as);
+				node.annotations.add(as);
+			}			
+		}
 	}
 
 	private void finishAnnotationBinding(TopLevelRamlImpl node, AbstractType t) {
 		for (TypeInformation i : t.declaredMeta()) {
 			if (i instanceof Annotation) {
 				Annotation a = (Annotation) i;
-				String name = a.getName();
-				String namespace = null;
-				int indexOf = name.indexOf('.');
-				if (indexOf != -1) {
-					namespace = name.substring(0, indexOf);
-					name = name.substring(indexOf + 1);
-				}
-				TopLevelRamlImpl ti = node;
-				if (namespace != null) {
-					ti = node.usesMap.get(namespace);
-				}
-				a.setAnnotationType(ti.annotationTypes().getType(name));
+				bindAnnotation(node, a);
 			}
 			if (i instanceof IRangeRestriction){
 				IRangeRestriction mm=(IRangeRestriction) i;
 				finishAnnotationBinding(node, mm.range());
-			}
-			
-			
+			}						
 		}
+	}
+
+	private void bindAnnotation(TopLevelRamlImpl node, Annotation a) {
+		String name = a.getName();
+		String namespace = null;
+		int indexOf = name.indexOf('.');
+		if (indexOf != -1) {
+			namespace = name.substring(0, indexOf);
+			name = name.substring(indexOf + 1);
+		}
+		TopLevelRamlImpl ti = node;
+		if (namespace != null) {
+			ti = node.usesMap.get(namespace);
+		}
+		a.setAnnotationType(ti.annotationTypes().getType(name));
 	}
 
 	private AbstractType buildSuperType(TopLevelRamlImpl node, TypeExpressionNode tn) {
@@ -200,8 +215,10 @@ public class TopLevelRamlModelBuilder {
 			superTypes.add(superType);
 		}
 		AbstractType result = TypeOps.derive(typeName, superTypes.toArray(new AbstractType[superTypes.size()]));
+		result.setSource(topLevelRamlImpl);		
 		if (ts.getParent() instanceof AnnotationTypeNode) {
 			topLevelRamlImpl.annotationTypes.registerType(result);
+			result.setAnnotation(true);
 		} else {
 			topLevelRamlImpl.topLevelTypes.registerType(result);
 		}
@@ -376,7 +393,8 @@ public class TopLevelRamlModelBuilder {
 
 	public TopLevelRamlImpl build(InputStream c, ResourceLoader loader, String path) {
 		String string = StreamUtils.toString(c);
-		Node build = new RamlBuilder().build(string, loader, path);
+		CompositeResourceLoader rs=new CompositeResourceLoader(loader,new UrlResourceLoader());
+		Node build = new RamlBuilder().build(string, rs, path);
 		RamlHeader header = null;
 		try {
 			header = RamlHeader.parse(string);

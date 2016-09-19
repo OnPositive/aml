@@ -2,6 +2,7 @@ package org.aml.typesystem.meta.facets;
 
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
+import org.aml.typesystem.IAnnotation;
 import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.beans.ISimpleFacet;
@@ -13,7 +14,7 @@ import org.aml.typesystem.meta.TypeInformation;
  * @author kor
  * @version $Id: $Id
  */
-public class Annotation extends TypeInformation implements ISimpleFacet {
+public class Annotation extends TypeInformation implements ISimpleFacet,IAnnotation {
 
 	protected String name;
 	protected Object value;

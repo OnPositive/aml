@@ -101,7 +101,14 @@ public class JavaWriter {
 			if (i instanceof Annotation) {
 				Annotation ann = (Annotation) i;
 				AbstractType annotationType = ann.annotationType();
+				if (annotationType==null){
+					//partially parsed raml file ignore loosly typed annotation
+					continue;
+				}
 				JClass type = (JClass) getType(annotationType);
+				if (type==null){
+					throw new IllegalStateException("Should never happen");
+				}
 				JAnnotationUse annotate = annotable.annotate((JClass) type);
 				Object value = ann.value();
 				if (annotationType.isScalar()) {
@@ -332,6 +339,11 @@ public class JavaWriter {
 			// if (range.hasSingleSuperType()) {
 			SimpleBeanGenerator sb = new SimpleBeanGenerator(this);
 			JType define = sb.define(range);
+			defined.put(range, define);
+			return define;
+		}
+		if (range.isAnnotationType()){
+			JType define = new AnnotationTypeGenerator(this).define(range);
 			defined.put(range, define);
 			return define;
 		}

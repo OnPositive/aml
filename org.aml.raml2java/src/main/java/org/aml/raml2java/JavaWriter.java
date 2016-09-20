@@ -678,6 +678,7 @@ public class JavaWriter {
 		return ac;
 	}
 
+	@SuppressWarnings("deprecation")
 	private URL storeContentToTempFile(String externalSchemaContent) {
 		URL json = null;
 		try {

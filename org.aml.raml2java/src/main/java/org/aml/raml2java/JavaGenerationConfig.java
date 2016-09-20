@@ -26,8 +26,16 @@ public class JavaGenerationConfig {
 	
 	protected BasicAnnotationProcessingConfig annotationConfig;
 	
+	protected boolean addGenerated=true;
 	
-	
+	public boolean isAddGenerated() {
+		return addGenerated;
+	}
+
+	public void setAddGenerated(boolean addGenerated) {
+		this.addGenerated = addGenerated;
+	}
+
 	public BasicAnnotationProcessingConfig getAnnotationConfig() {
 		return annotationConfig;
 	}

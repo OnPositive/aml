@@ -15,6 +15,7 @@ import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.beans.IXMLHints;
+import org.aml.typesystem.meta.facets.Description;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.raml.v2.internal.utils.StreamUtils;
@@ -266,6 +267,9 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		}
 		JMethod get = defineClass.method(JMod.PUBLIC, propType,
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+		if (p.range().hasDirectMeta(Description.class)){
+			get.javadoc().add(p.range().oneMeta(Description.class).value());
+		}
 		JExpression ref = JExpr.ref(name);
 		if (ts != null && !ts.equals(propType)) {
 			ref = JExpr.cast(propType, ref);

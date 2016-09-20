@@ -7,6 +7,7 @@ import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.meta.facets.Default;
+import org.aml.typesystem.meta.facets.Description;
 
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationUse;
@@ -45,7 +46,12 @@ public class AnnotationTypeGenerator implements ITypeGenerator {
 				//note not primitive annotation members should become annotations
 				JType type = owner.getType(x.range(),false,true,x);
 				JMethod method = defineClass.method(JMod.PUBLIC, type,owner.propNameGenerator.name(x));
+				AbstractType tp=x.range();
+				if (tp.hasDirectMeta(Description.class)){
+					method.javadoc().add(tp.oneMeta(Description.class).value());
+				}
 				owner.annotate(method,x.range());
+				
 				Default oneMeta = x.range().oneMeta(Default.class);
 				if (oneMeta!=null){
 					Object value = oneMeta.value();

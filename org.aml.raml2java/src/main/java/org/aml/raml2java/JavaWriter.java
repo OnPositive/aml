@@ -10,11 +10,13 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.aml.java.mapping.container;
@@ -25,6 +27,7 @@ import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
+import org.aml.typesystem.meta.facets.Description;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.CompositeAnnotator;
@@ -103,7 +106,15 @@ public class JavaWriter {
 	public JDefinedClass defineClass(AbstractType t, ClassType type) {
 		String fullyQualifiedName = nameGenerator.fullyQualifiedName(t);
 		try {
-			return mdl._class(fullyQualifiedName, type);
+			JDefinedClass _class = mdl._class(fullyQualifiedName, type);
+			if (config.addGenerated){
+				_class.annotate(Generated.class).param("value", JavaWriter.class.getPackage().getName()).param("date", new Date().toString());
+			}
+			if (t.hasDirectMeta(Description.class)){
+				String description=t.oneMeta(Description.class).value();
+				_class.javadoc().add(description);
+			}
+			return _class;
 		} catch (JClassAlreadyExistsException e) {
 			throw new IllegalStateException(e);
 		}

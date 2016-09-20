@@ -2,6 +2,8 @@ package org.aml.raml2java;
 
 import java.util.ArrayList;
 
+import org.aml.java.mapping.primarySuperType;
+
 public class JavaGenerationConfig {
 
 	public static enum MultipleInheritanceStrategy{
@@ -22,8 +24,24 @@ public class JavaGenerationConfig {
 	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
 	protected boolean containerStrategyCollection=false;
 	
+	protected BasicAnnotationProcessingConfig annotationConfig;
+	
+	
+	
+	public BasicAnnotationProcessingConfig getAnnotationConfig() {
+		return annotationConfig;
+	}
+
+	public void setAnnotationConfig(BasicAnnotationProcessingConfig annotationConfig) {
+		this.annotationConfig = annotationConfig;
+	}
+
 	public JavaGenerationConfig() {
-		classCustomizers.add(new AnnotationsProcessingInverseConfig());
+		classCustomizers.add(new FacetProcessingConfig());
+		BasicAnnotationProcessingConfig basicAnnotationProcessingConfig = new BasicAnnotationProcessingConfig();
+		basicAnnotationProcessingConfig.addNamespaceToSkipDefinition(primarySuperType.class.getPackage().getName());
+		basicAnnotationProcessingConfig.addNamespaceToSkipReference(primarySuperType.class.getPackage().getName());
+		annotationConfig=basicAnnotationProcessingConfig;
 	}
 	
 	public boolean isContainerStrategyCollection() {

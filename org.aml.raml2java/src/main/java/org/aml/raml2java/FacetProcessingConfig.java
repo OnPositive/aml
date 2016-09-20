@@ -17,7 +17,7 @@ import org.aml.typesystem.meta.facets.CustomFacet;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JAnnotationUse;
 
-public class AnnotationsProcessingInverseConfig implements IClassCustomizer{
+public class FacetProcessingConfig implements IClassCustomizer{
 
 	public static class AnnotationGenerationInfo {
 
@@ -36,7 +36,7 @@ public class AnnotationsProcessingInverseConfig implements IClassCustomizer{
 
 	protected JavaWriter writer;
 	
-	public AnnotationsProcessingInverseConfig(){
+	public FacetProcessingConfig(){
 		AnnotationsProcessingConfig annotationsProcessingConfig = new AnnotationsProcessingConfig();
 		annotationsProcessingConfig.append(AnnotationsProcessingConfig.class.getResourceAsStream("/javax.validation.xml"));
 		appendConfig(annotationsProcessingConfig);

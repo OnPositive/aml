@@ -132,6 +132,9 @@ public class JavaWriter {
 			if (i instanceof Annotation) {
 				Annotation ann = (Annotation) i;
 				AbstractType annotationType = ann.annotationType();
+				if (config.getAnnotationConfig().skipReference(annotationType)){
+					continue;
+				}
 				if (annotationType == null) {
 					// partially parsed raml file ignore loosly typed annotation
 					continue;
@@ -297,7 +300,14 @@ public class JavaWriter {
 				return getType(range.superTypes().iterator().next(), allowNotJava, convertComplexToAnnotation, member);
 			}
 		}
-
+		if (range.isAnnotation()){
+			if (config.getAnnotationConfig().skipDefinition(range)){
+				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
+				JClass ref = mdl.ref(fullyQualifiedName);
+				defined.put(range, ref);
+				return ref;
+			}
+		}
 		if (defined.containsKey(range)) {
 			return defined.get(range);
 		}

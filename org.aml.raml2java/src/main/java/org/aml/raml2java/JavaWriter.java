@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +22,9 @@ import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.aml.java.mapping.container;
+import org.aml.java.mapping.defaultIntegerFormat;
+import org.aml.java.mapping.defaultNumberFormat;
+import org.aml.raml2java.JavaGenerationConfig.WrappersStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeLibrary;
@@ -28,6 +33,7 @@ import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.Description;
+import org.aml.typesystem.meta.facets.Format;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.CompositeAnnotator;
@@ -107,11 +113,12 @@ public class JavaWriter {
 		String fullyQualifiedName = nameGenerator.fullyQualifiedName(t);
 		try {
 			JDefinedClass _class = mdl._class(fullyQualifiedName, type);
-			if (config.addGenerated){
-				_class.annotate(Generated.class).param("value", JavaWriter.class.getPackage().getName()).param("date", new Date().toString());
+			if (config.addGenerated) {
+				_class.annotate(Generated.class).param("value", JavaWriter.class.getPackage().getName()).param("date",
+						new Date().toString());
 			}
-			if (t.hasDirectMeta(Description.class)){
-				String description=t.oneMeta(Description.class).value();
+			if (t.hasDirectMeta(Description.class)) {
+				String description = t.oneMeta(Description.class).value();
 				_class.javadoc().add(description);
 			}
 			return _class;
@@ -143,7 +150,7 @@ public class JavaWriter {
 			if (i instanceof Annotation) {
 				Annotation ann = (Annotation) i;
 				AbstractType annotationType = ann.annotationType();
-				if (config.getAnnotationConfig().skipReference(annotationType)){
+				if (config.getAnnotationConfig().skipReference(annotationType)) {
 					continue;
 				}
 				if (annotationType == null) {
@@ -202,27 +209,26 @@ public class JavaWriter {
 	@SuppressWarnings("unchecked")
 	protected void addParam(JAnnotationUse annotate, Object value, String name) {
 		JClass annotationClass = annotate.getAnnotationClass();
-		try{
-			Class<?> cl=Class.forName(annotationClass.fullName());
+		try {
+			Class<?> cl = Class.forName(annotationClass.fullName());
 			Method method = cl.getMethod(name);
 			Class<?> returnType = method.getReturnType();
-			if (returnType==String.class){
-				value=""+value;
+			if (returnType == String.class) {
+				value = "" + value;
 			}
-		}catch (Exception e) {
-				// TODO: handle exception
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		if (value instanceof String) {
 			annotate.param(name, "" + value);
 		}
 		if (value instanceof Double) {
-			
+
 			Double value2 = (Double) value;
-			if (Long.valueOf(value2.intValue()).doubleValue()==value2.doubleValue()){
+			if (Long.valueOf(value2.intValue()).doubleValue() == value2.doubleValue()) {
 				annotate.param(name, value2.intValue());
-			}
-			else{
-			annotate.param(name, value2);
+			} else {
+				annotate.param(name, value2);
 			}
 		}
 		if (value instanceof Long) {
@@ -311,8 +317,8 @@ public class JavaWriter {
 				return getType(range.superTypes().iterator().next(), allowNotJava, convertComplexToAnnotation, member);
 			}
 		}
-		if (range.isAnnotation()){
-			if (config.getAnnotationConfig().skipDefinition(range)){
+		if (range.isAnnotation()) {
+			if (config.getAnnotationConfig().skipDefinition(range)) {
 				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
 				JClass ref = mdl.ref(fullyQualifiedName);
 				defined.put(range, ref);
@@ -330,13 +336,18 @@ public class JavaWriter {
 				return mdl._ref(byte[].class);
 			}
 			if (range.isBoolean()) {
+				if (config.wrapperStrategy == WrappersStrategy.ALWAYS) {
+					return mdl._ref(Boolean.class);
+				}
+				if (config.wrapperStrategy == WrappersStrategy.OPTIONAL) {
+					if (member != null && !member.isRequired()) {
+						return mdl._ref(Boolean.class);
+					}
+				}
 				return mdl._ref(boolean.class);
 			}
 			if (range.isNumber()) {
-				if (range.isInteger()) {
-					return mdl._ref(int.class);
-				}
-				return mdl._ref(double.class);
+				return numberType(range, member);
 			}
 			if (range.isObject()) {
 				return mdl._ref(Object.class);
@@ -346,8 +357,8 @@ public class JavaWriter {
 		if (range.isAnonimous()) {
 			if (range.isArray()) {
 				AbstractType range2 = range.oneMeta(ComponentShouldBeOfType.class).range();
-				
-				return toArray(range2, member,convertComplexToAnnotation);
+
+				return toArray(range2, member, convertComplexToAnnotation);
 			}
 			if (range.isString()) {
 				if (range.isEnumType()) {
@@ -394,7 +405,7 @@ public class JavaWriter {
 		if (!allowNotJava) {
 			if (range.isArray()) {
 				AbstractType range2 = range.oneMeta(ComponentShouldBeOfType.class).range();
-				return toArray(range2,member,convertComplexToAnnotation);
+				return toArray(range2, member, convertComplexToAnnotation);
 			}
 			if (range.isScalar()) {
 				if (range.superTypes().size() == 1) {
@@ -423,11 +434,12 @@ public class JavaWriter {
 		}
 		if (range.isSubTypeOf(BuiltIns.EXTERNAL)) {
 			String externalSchemaContent = range.getExternalSchemaContent();
-			//this is JSON schema
+			// this is JSON schema
 			if (externalSchemaContent.trim().startsWith("{")) {
-				GenerationConfig jsonSchemaGenerationConfig=new DefaultGenerationConfig();				
-				SchemaMapper mp = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(),
-		                new SchemaStore()), new SchemaGenerator());
+				GenerationConfig jsonSchemaGenerationConfig = new DefaultGenerationConfig();
+				SchemaMapper mp = new SchemaMapper(
+						new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(), new SchemaStore()),
+						new SchemaGenerator());
 				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
 				URL storeContentToTempFile = storeContentToTempFile(externalSchemaContent);
 				URL json = storeContentToTempFile;
@@ -440,73 +452,72 @@ public class JavaWriter {
 				} catch (IOException e) {
 					throw new IllegalStateException(e);
 				}
-			}
-			else{
+			} else {
 				try {
-					Options opt=new Options();
+					Options opt = new Options();
 					String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
 					int lastIndexOf = fullyQualifiedName.lastIndexOf('.');
-					String packageName=fullyQualifiedName.substring(0,lastIndexOf);
-					opt.defaultPackage=packageName;
+					String packageName = fullyQualifiedName.substring(0, lastIndexOf);
+					opt.defaultPackage = packageName;
 					opt.setSchemaLanguage(Language.XMLSCHEMA);
 					URL storeContentToTempFile = storeContentToTempFile(externalSchemaContent);
 					InputSource is = new InputSource(storeContentToTempFile.toExternalForm());
 					opt.addGrammar(is);
-					ErrorReceiver receiver=new ErrorReceiver() {
-						
+					ErrorReceiver receiver = new ErrorReceiver() {
+
 						@Override
 						public void warning(SAXParseException exception) throws AbortException {
 							exception.printStackTrace(System.err);
 						}
-						
+
 						@Override
 						public void info(SAXParseException exception) {
 							exception.printStackTrace(System.err);
 						}
-						
+
 						@Override
 						public void fatalError(SAXParseException exception) throws AbortException {
 							exception.printStackTrace(System.err);
 						}
-						
+
 						@Override
 						public void error(SAXParseException exception) throws AbortException {
 							exception.printStackTrace(System.err);
 						}
 					};
 					Model model = ModelLoader.load(opt, getModel(), receiver);
-					
+
 					Outline outline = model.generateCode(opt, receiver);
-					HashSet<JDefinedClass>classList=new HashSet<>();
-					String rootElement="";
+					HashSet<JDefinedClass> classList = new HashSet<>();
+					String rootElement = "";
 					for (ClassOutline co : outline.getClasses()) {
 						JDefinedClass cl = co.implClass;
 						if (cl.outer() == null) {
-							for (JAnnotationUse c:cl.annotations()){
-								String nm=c.getAnnotationClass().name();
-								if (nm.equals("XmlRootElement")){
+							for (JAnnotationUse c : cl.annotations()) {
+								String nm = c.getAnnotationClass().name();
+								if (nm.equals("XmlRootElement")) {
 									classList.add(cl);
 									JAnnotationValue jAnnotationValue = c.getAnnotationMembers().get("name");
 									StringWriter w = new StringWriter();
 									jAnnotationValue.generate(new JFormatter(w));
-									rootElement=w.toString().substring(1,w.toString().length()-1);
+									rootElement = w.toString().substring(1, w.toString().length() - 1);
 								}
-								
+
 							}
 							classList.add(cl);
 						}
-						
+
 					}
-					if (classList.size()>1){
-						throw new IllegalArgumentException("Mapping to schemas with more then one element is not implemented");
-					}
-					else{
-						
+					if (classList.size() > 1) {
+						throw new IllegalArgumentException(
+								"Mapping to schemas with more then one element is not implemented");
+					} else {
+
 						JDefinedClass next = classList.iterator().next();
-						JDefinedClass defineClass =  mdl._class(fullyQualifiedName, ClassType.CLASS);
+						JDefinedClass defineClass = mdl._class(fullyQualifiedName, ClassType.CLASS);
 						defineClass._extends(next);
 						defineClass.annotate(XmlRootElement.class).param("name", rootElement);
-						defined.put(range, defineClass);						
+						defined.put(range, defineClass);
 						return defineClass;
 					}
 				} catch (Exception e) {
@@ -517,27 +528,137 @@ public class JavaWriter {
 		return null;
 	}
 
-	private JClass toArray(AbstractType range2,IProperty member, boolean convertComplexToAnnotation) {
-		JType type = getType(range2, false, false, member);		
+	static HashMap<String,Class<?>>formats=new HashMap<>();
+	
+	static{
+		formats.put("int32", int.class);
+		formats.put("int64", long.class);
+		formats.put("int", int.class);
+		formats.put("long", long.class);
+		formats.put("float", float.class);
+		formats.put("double", double.class);
+		formats.put("int16", short.class);
+		formats.put("int8", byte.class);
+	}
+	
+	private JType numberType(AbstractType range, IProperty member) {
+		Format oneMeta = range.oneMeta(Format.class);
+		if (oneMeta==null&&member!=null){
+			oneMeta=member.range().oneMeta(Format.class);
+		}
+		String format=null;
+		if (oneMeta!=null){
+			//int32, int64, int, long, float, double, int16, int8
+			format=oneMeta.value();			
+		}
+		defaultNumberFormat annotation = member.getDeclaredAt().annotation(defaultNumberFormat.class, true);
+		if (annotation!=null){
+			format=annotation.value();
+		}
+		if (range.isInteger()){
+			defaultIntegerFormat ia = member.getDeclaredAt().annotation(defaultIntegerFormat.class, true);
+			if (ia!=null){
+				format=ia.value();
+			}
+		}
+		if (format!=null){
+			Class<?> class1 = formats.get(format);
+			JType _ref = mdl._ref(class1);
+			if (class1!=null){
+				switch (config.getWrapperStrategy()) {
+				case NONE:
+					return _ref;
+				case ALWAYS:
+					return _ref.boxify();
+				case OPTIONAL:
+					return member != null && !member.isRequired()?_ref.boxify():_ref;
+				default:
+					break;
+				}
+			}
+		}
+		if (range.isInteger()) {
+			switch (config.getIntegerFormat()) {
+			case INT:
+				switch (config.getWrapperStrategy()) {
+				case NONE:
+					return mdl._ref(int.class);
+				case OPTIONAL:
+					return member != null && !member.isRequired() ? mdl.ref(Integer.class) : mdl._ref(int.class);
+				case ALWAYS:
+					return mdl.ref(Integer.class);
+
+				default:
+					break;
+				}
+				return mdl._ref(int.class);
+
+			case BIGINT:
+				return mdl._ref(BigInteger.class);
+
+			case LONG:
+				switch (config.getWrapperStrategy()) {
+				case NONE:
+					return mdl._ref(long.class);
+				case OPTIONAL:
+					return member != null && !member.isRequired() ? mdl.ref(Integer.class) : mdl._ref(long.class);
+				case ALWAYS:
+					return mdl.ref(Long.class);
+
+				default:
+					break;
+				}
+
+			default:
+				break;
+			}
+			return mdl._ref(int.class);
+		}
+		switch (config.getDoubleFormat()) {
+		case DOUBLE:
+			switch (config.getWrapperStrategy()) {
+			case NONE:
+				return mdl._ref(double.class);
+			case OPTIONAL:
+				return member != null && !member.isRequired() ? mdl.ref(Double.class) : mdl._ref(double.class);
+			case ALWAYS:
+				return mdl.ref(Long.class);
+
+			default:
+				break;
+			}
+			return mdl._ref(double.class);
+
+		case BIGDECIMAL:
+			return mdl._ref(BigDecimal.class);
+
+		default:
+			break;
+		}
+		return mdl._ref(double.class);
+	}
+
+	private JClass toArray(AbstractType range2, IProperty member, boolean convertComplexToAnnotation) {
+		JType type = getType(range2, false, false, member);
 		boolean containerStrategyCollection = config.containerStrategyCollection;
 		boolean set = false;
 		container annotation = range2.annotation(container.class, true);
-		
-		if(annotation!=null){
-			String vl=annotation.value();
-			if (vl.equals("list")){
-				containerStrategyCollection=true;
+
+		if (annotation != null) {
+			String vl = annotation.value();
+			if (vl.equals("list")) {
+				containerStrategyCollection = true;
 			}
-			if (vl.equals("array")){
-				containerStrategyCollection=false;
+			if (vl.equals("array")) {
+				containerStrategyCollection = false;
 			}
-			if (vl.equals("set")){
-				containerStrategyCollection=true;
-				set=true;
+			if (vl.equals("set")) {
+				containerStrategyCollection = true;
+				set = true;
 			}
-		}		
-		if (containerStrategyCollection&&!convertComplexToAnnotation){
-			if (set){
+		}
+		if (containerStrategyCollection && !convertComplexToAnnotation) {
+			if (set) {
 				return mdl.ref(Set.class).narrow(type);
 			}
 			return mdl.ref(List.class).narrow(type);
@@ -546,14 +667,14 @@ public class JavaWriter {
 	}
 
 	private Annotator getAnnotator() {
-		ArrayList<Annotator>annotators=new ArrayList<>();
-		if (config.isGsonSupport()){
+		ArrayList<Annotator> annotators = new ArrayList<>();
+		if (config.isGsonSupport()) {
 			annotators.add(new GsonAnnotator());
 		}
-		if (config.isJacksonSupport()){
+		if (config.isJacksonSupport()) {
 			annotators.add(new Jackson2Annotator());
 		}
-		CompositeAnnotator ac=new CompositeAnnotator(annotators.toArray(new Annotator[annotators.size()]));
+		CompositeAnnotator ac = new CompositeAnnotator(annotators.toArray(new Annotator[annotators.size()]));
 		return ac;
 	}
 

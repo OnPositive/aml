@@ -5,9 +5,21 @@ import java.util.ArrayList;
 import org.aml.java.mapping.primarySuperType;
 
 public class JavaGenerationConfig {
+	
+	
+	public static enum DefaultIntegerFormat{
+		INT,LONG,BIGINT
+	}
+	public static enum DefaultNumberFormat{
+		DOUBLE,BIGDECIMAL
+	}
 
 	public static enum MultipleInheritanceStrategy{
 		ALL_PLAIN,MIX_IN
+	}
+	
+	public static enum WrappersStrategy{
+		NONE,OPTIONAL,ALWAYS
 	}
 	
 	protected String defaultPackageName;
@@ -22,9 +34,37 @@ public class JavaGenerationConfig {
 	
 	protected ArrayList<IPropertyCustomizer>customizers=new ArrayList<>();
 	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
-	protected boolean containerStrategyCollection=false;
+	protected boolean containerStrategyCollection=true;
+	protected WrappersStrategy wrapperStrategy=WrappersStrategy.NONE;
 	
+	public WrappersStrategy getWrapperStrategy() {
+		return wrapperStrategy;
+	}
+
+	public void setWrapperStrategy(WrappersStrategy wrapperStrategy) {
+		this.wrapperStrategy = wrapperStrategy;
+	}
+
 	protected BasicAnnotationProcessingConfig annotationConfig;
+	
+	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;
+	public DefaultIntegerFormat getIntegerFormat() {
+		return integerFormat;
+	}
+
+	public void setIntegerFormat(DefaultIntegerFormat integerFormat) {
+		this.integerFormat = integerFormat;
+	}
+
+	public DefaultNumberFormat getDoubleFormat() {
+		return doubleFormat;
+	}
+
+	public void setDoubleFormat(DefaultNumberFormat doubleFormat) {
+		this.doubleFormat = doubleFormat;
+	}
+
+	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;
 	
 	protected boolean addGenerated=true;
 	

@@ -968,5 +968,64 @@ public class BasicTests extends CompilerTestCase {
 			TestCase.assertTrue(false);
 		}
 	}
+	
+	@Test
+	public void test38() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t37.raml"),
+				new ClassPathResourceLoader(), "t37.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.MyType");
+		Class<?> class1 = compileAndTest.get("org.aml.test.MyType");
+		try {
+			Method method = class1.getMethod("getQ");
+			TestCase.assertTrue(method.getReturnType()==long.class);
+			method = class1.getMethod("getQ1");
+			TestCase.assertTrue(method.getReturnType()==int.class);
+			method = class1.getMethod("getQ2");
+			TestCase.assertTrue(method.getReturnType()==float.class);
+			method = class1.getMethod("getQ3");
+			TestCase.assertTrue(method.getReturnType()==byte.class);
+			method = class1.getMethod("getQ4");
+			TestCase.assertTrue(method.getReturnType()==long.class);
+		} catch (NoSuchMethodException | SecurityException e1) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void test39() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t37.raml"),
+				new ClassPathResourceLoader(), "t37.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.AnotherType");
+		Class<?> class1 = compileAndTest.get("org.aml.test.AnotherType");
+		try {
+			Method method = class1.getMethod("getZ");
+			TestCase.assertTrue(method.getReturnType()==long.class);
+			method = class1.getMethod("getV");
+			TestCase.assertTrue(method.getReturnType()==float.class);
+			
+		} catch (NoSuchMethodException | SecurityException e1) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+	}
 }
 

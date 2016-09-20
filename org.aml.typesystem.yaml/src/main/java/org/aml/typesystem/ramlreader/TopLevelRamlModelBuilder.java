@@ -267,6 +267,14 @@ public class TopLevelRamlModelBuilder {
 					if (build!=null){
 						result.addMeta(build);
 					}
+					else{
+					TypeInformation facet = FacetRegistry.facet(n.getName());
+					if (facet!=null&&facet instanceof ISimpleFacet){
+						ISimpleFacet fs=(ISimpleFacet) facet;
+						fs.setValue(toObject(value));
+						result.addMeta(facet);
+					}
+					}
 				}
 				else{
 					Object object = toObject(value);

@@ -1,0 +1,28 @@
+#%RAML 1.0 Library
+# int32, int64, int, long, float, double, int16, int8
+uses:
+  r2j: ./raml2java.raml
+types:
+  MyType:
+    properties:
+      q:
+        type: integer
+        format: long
+      q1:
+        type: number
+        format: int
+      q2:
+        type: number
+        format: float
+      q3:
+        type: number
+        format: int8
+      q4:
+        type: number
+        format: int64
+  AnotherType:
+    (r2j.defaultIntegerFormat): long
+    properties:
+        z: integer
+        v: number
+(r2j.defaultNumberFormat): float

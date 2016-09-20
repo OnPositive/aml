@@ -11,6 +11,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
@@ -877,6 +881,39 @@ public class BasicTests extends CompilerTestCase {
 			TestCase.assertTrue(false);
 		}
 
+	}
+	
+
+	@Test
+	public void test35() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t35.raml"),
+				new ClassPathResourceLoader(), "t21.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Person");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Person");
+		try{
+		Pattern annotation = class1.getMethod("getName").getAnnotation(Pattern.class);	
+		TestCase.assertTrue(annotation!=null);
+		Size annotation1 = class1.getMethod("getCell").getAnnotation(Size.class);	
+		TestCase.assertTrue(annotation1!=null);
+		TestCase.assertTrue(annotation1.max()==8);
+		
+		DecimalMax annotation2 = class1.getMethod("getAge").getAnnotation(DecimalMax.class);	
+		TestCase.assertTrue(annotation1!=null);
+		TestCase.assertTrue(annotation2.value().equals("140.0"));
+		}catch (Exception e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
 	}
 }
 

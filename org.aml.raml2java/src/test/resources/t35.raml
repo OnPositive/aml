@@ -1,0 +1,16 @@
+#%RAML 1.0 Library
+types:
+  phone:
+    minLength: 8
+    maxLength: 8
+  Person:
+    properties:
+      cell: phone
+      name:
+        type: string
+        pattern: .+
+      age:
+        type: integer
+        minimum: 0
+        maximum: 140
+        

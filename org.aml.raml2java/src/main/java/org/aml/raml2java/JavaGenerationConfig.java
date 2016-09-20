@@ -22,6 +22,10 @@ public class JavaGenerationConfig {
 	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
 	protected boolean containerStrategyCollection=false;
 	
+	public JavaGenerationConfig() {
+		classCustomizers.add(new AnnotationsProcessingInverseConfig());
+	}
+	
 	public boolean isContainerStrategyCollection() {
 		return containerStrategyCollection;
 	}

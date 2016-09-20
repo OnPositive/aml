@@ -3,6 +3,7 @@ package org.aml.typesystem.java;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.xml.bind.JAXB;
@@ -33,21 +34,24 @@ public class AnnotationsProcessingConfig {
 
 	public static class MemberMapping {
 		@XmlAttribute
-		String name;
+		public String name;
 		@XmlAttribute
-		String target;
+		public String target;
 		@XmlAttribute
-		String value;
+		public String value;
+		
+		@XmlAttribute
+		public String type;
 	}
 
 	public static class AnnotationConfig {
 		@XmlAttribute
-		String name;
+		public String name;
 		@XmlElement(name = "member")
-		ArrayList<MemberMapping> members = new ArrayList<>();
+		public ArrayList<MemberMapping> members = new ArrayList<>();
 
 		@XmlAttribute
-		boolean skipFromRaml;
+		public boolean skipFromRaml;
 	}
 
 	public static class AnnotationsConfig {
@@ -68,6 +72,10 @@ public class AnnotationsProcessingConfig {
 		for (AnnotationConfig c : unmarshal.config) {
 			config.put(c.name, c);
 		}
+	}
+	
+	public Collection<AnnotationConfig>getConfiguration(){
+		return config.values();
 	}
 
 	/**

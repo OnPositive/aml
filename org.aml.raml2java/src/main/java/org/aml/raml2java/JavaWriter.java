@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -185,12 +186,30 @@ public class JavaWriter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addParam(JAnnotationUse annotate, Object value, String name) {
+	protected void addParam(JAnnotationUse annotate, Object value, String name) {
+		JClass annotationClass = annotate.getAnnotationClass();
+		try{
+			Class<?> cl=Class.forName(annotationClass.fullName());
+			Method method = cl.getMethod(name);
+			Class<?> returnType = method.getReturnType();
+			if (returnType==String.class){
+				value=""+value;
+			}
+		}catch (Exception e) {
+				// TODO: handle exception
+		}
 		if (value instanceof String) {
 			annotate.param(name, "" + value);
 		}
 		if (value instanceof Double) {
-			annotate.param(name, (Double) value);
+			
+			Double value2 = (Double) value;
+			if (Long.valueOf(value2.intValue()).doubleValue()==value2.doubleValue()){
+				annotate.param(name, value2.intValue());
+			}
+			else{
+			annotate.param(name, value2);
+			}
 		}
 		if (value instanceof Long) {
 			annotate.param(name, (Long) value);

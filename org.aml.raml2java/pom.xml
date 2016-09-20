@@ -13,6 +13,7 @@
 			<artifactId>org.aml.typesystem.java</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.onpositive.aml</groupId>
 			<artifactId>org.aml.typesystem.yaml</artifactId>

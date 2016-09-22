@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,29 +55,40 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 	
 		
 	@Parameter
-	protected boolean gsonSupport=false;
+	protected boolean gsonSupport=false;//done
 	@Parameter(defaultValue="true")
-	protected boolean jacksonSupport=true;
+	protected boolean jacksonSupport=true;//done
 	@Parameter(defaultValue="true")
-	protected boolean jaxbSupport;
+	protected boolean jaxbSupport=true;//done
 	@Parameter
-	protected boolean containerStrategyCollection=true;
+	protected boolean containerStrategyCollection=true;//done
 	
 	protected ArrayList<IPropertyCustomizer>customizers=new ArrayList<>();
 	
 	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
 	
 	@Parameter
-	protected WrappersStrategy wrapperStrategy=WrappersStrategy.NONE;	
+	protected WrappersStrategy wrappedTypesStrategy=WrappersStrategy.NONE;	//done
 	@Parameter
-	protected boolean addGenerated=true;
+	protected boolean addGenerated=true;//done
+	@Parameter
+	protected HashSet<String>annotationNamespacesToSkipDefinition=new HashSet<>();//done
+	@Parameter
+	protected HashSet<String>annotationNamespacesToSkipReference=new HashSet<>();//done
 	
-	protected BasicAnnotationProcessingConfig annotationConfig;
+	@Parameter
+	protected HashSet<String>annotationIdsToSkipDefinition=new HashSet<>();//done
+	@Parameter
+	protected HashSet<String>annotationIdsToSkipReference=new HashSet<>();//done
+	@Parameter
+	protected boolean skipAllAnnotationDefinitions;//done
+	@Parameter
+	protected boolean skipAllAnnotationReferences;//done
 
 	@Parameter
-	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;
+	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;//done
 	@Parameter
-	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;
+	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;//done
 	
 	/** {@inheritDoc} */
 	@SuppressWarnings({ })
@@ -90,8 +102,39 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 				TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(new BufferedInputStream(new FileInputStream(f)),
 						new FileResourceLoader(f.getParentFile()), f.getName());
 				JavaWriter wr = new JavaWriter();
+				wr.getConfig().setWrapperStrategy(wrappedTypesStrategy);
+				wr.getConfig().getAnnotationConfig().setSkipAllDefinitions(skipAllAnnotationDefinitions);
+				wr.getConfig().getAnnotationConfig().setSkipAllReferences(skipAllAnnotationReferences);
+				if (this.annotationIdsToSkipDefinition!=null){
+					for (String s:annotationIdsToSkipDefinition){
+						wr.getConfig().getAnnotationConfig().addIdToSkipDefinition(s);
+					}
+				}
+				if (this.annotationIdsToSkipReference!=null){
+					for (String s:annotationIdsToSkipReference){
+						wr.getConfig().getAnnotationConfig().addIdToSkipReference(s);
+					}
+				}
+				if (this.annotationNamespacesToSkipDefinition!=null){
+					for (String s:annotationNamespacesToSkipDefinition){
+						wr.getConfig().getAnnotationConfig().addNamespaceToSkipDefinition(s);
+					}
+				}
+				if (this.annotationNamespacesToSkipReference!=null){
+					for (String s:annotationNamespacesToSkipReference){
+						wr.getConfig().getAnnotationConfig().addNamespaceToSkipReference(s);
+					}
+				}
+				wr.getConfig().setJacksonSupport(jacksonSupport);
+				wr.getConfig().setGsonSupport(gsonSupport);
+				wr.getConfig().setJaxbSupport(jaxbSupport);
+				wr.getConfig().setContainerStrategyCollection(containerStrategyCollection);
 				wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
 				wr.setDefaultPackageName(defaultPackageName);
+				wr.getConfig().setIntegerFormat(integerFormat);
+				wr.getConfig().setDoubleFormat(doubleFormat);
+				wr.getConfig().setAddGenerated(addGenerated);
+				
 				wr.write(build);
 				wr.getModel().build(outputFolder);
 			} catch (FileNotFoundException e) {

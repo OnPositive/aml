@@ -29,7 +29,40 @@ annotationTypes:
        however this behavior is not always desired. This annotation allows to customize
        desired type of the container type when mapping array types. When used on type container
        serves as default for all contained types.
-     default: array
+     default: list
+  defaultNumberFormat:
+    description: This annotation allows to configure default java representation for number values
+    type: string
+    default: double
+    enum: [float, long, int, int16,int32, int64, double]
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  defaultIntegerFormat:
+    description: This annotation allows to configure default java representation for integer values
+    type: string
+    enum: [long, int, int16, int32, int64, int8]
+    default: int
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  #Not supported yet
+  clonable:
+    type: nil
+    description: This marker annotation states that generated types should support cloning
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  serializable:
+    type: nil
+    description: This marker annotation states that generated types should be serializable
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  comparable:
+    type: string
+    description: |
+       This annotation states that generated types should be comparable,
+       annotation argument is the name of property which should be used for comparison
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  equalsAndHashCode:
+    type: nil
+    description: |
+      This marker annotation states that generated types should have equals and hashCode methods
+      which supports comparison by value
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
 types:
   JavaPackage: string
   TypeName: string
@@ -38,7 +71,7 @@ types:
     email: pavel@onpositive.com
     profiles: [ "https://github.com/petrochenko-pavel-a/" ]
 (commons.Id): org.aml.java.mapping
-(commons.Version): 0.0.1
+(commons.Version): 0.0.3
 (commons.Title): RAML2Java Annotations
 (commons.Links):
    - title: RAML2Java Tool

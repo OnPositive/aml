@@ -7,10 +7,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.aml.raml2java.JavaGenerationConfig.DefaultIntegerFormat;
+import org.aml.raml2java.JavaGenerationConfig.DefaultNumberFormat;
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
+import org.aml.raml2java.JavaGenerationConfig.WrappersStrategy;
+import org.aml.raml2java.BasicAnnotationProcessingConfig;
+import org.aml.raml2java.IClassCustomizer;
+import org.aml.raml2java.IPropertyCustomizer;
 import org.aml.raml2java.JavaWriter;
 import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
@@ -45,6 +52,31 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 	@Parameter
 	protected String defaultPackageName="org.aml.samples";
 	
+		
+	@Parameter
+	protected boolean gsonSupport=false;
+	@Parameter(defaultValue="true")
+	protected boolean jacksonSupport=true;
+	@Parameter(defaultValue="true")
+	protected boolean jaxbSupport;
+	@Parameter
+	protected boolean containerStrategyCollection=true;
+	
+	protected ArrayList<IPropertyCustomizer>customizers=new ArrayList<>();
+	
+	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
+	
+	@Parameter
+	protected WrappersStrategy wrapperStrategy=WrappersStrategy.NONE;	
+	@Parameter
+	protected boolean addGenerated=true;
+	
+	protected BasicAnnotationProcessingConfig annotationConfig;
+
+	@Parameter
+	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;
+	@Parameter
+	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;
 	
 	/** {@inheritDoc} */
 	@SuppressWarnings({ })

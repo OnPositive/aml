@@ -23,19 +23,20 @@ public class JavaGenerationConfig {
 	}
 	
 	protected String defaultPackageName;
-	protected String outputPath;
-	
-	protected boolean generateInterfaces;
-	
+	protected String outputPath;	
+	protected boolean generateInterfaces;	
 	protected MultipleInheritanceStrategy multipleInheritance=MultipleInheritanceStrategy.ALL_PLAIN;
 	protected boolean gsonSupport;
 	protected boolean jacksonSupport;
-	protected boolean jaxbSupport;
-	
+	protected boolean jaxbSupport;	
 	protected ArrayList<IPropertyCustomizer>customizers=new ArrayList<>();
 	protected ArrayList<IClassCustomizer> classCustomizers=new ArrayList<>();
 	protected boolean containerStrategyCollection=true;
-	protected WrappersStrategy wrapperStrategy=WrappersStrategy.NONE;
+	protected WrappersStrategy wrapperStrategy=WrappersStrategy.NONE;	
+	protected boolean addGenerated=true;
+	protected BasicAnnotationProcessingConfig annotationConfig;
+	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;
+	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;
 	
 	public WrappersStrategy getWrapperStrategy() {
 		return wrapperStrategy;
@@ -45,9 +46,8 @@ public class JavaGenerationConfig {
 		this.wrapperStrategy = wrapperStrategy;
 	}
 
-	protected BasicAnnotationProcessingConfig annotationConfig;
 	
-	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;
+	
 	public DefaultIntegerFormat getIntegerFormat() {
 		return integerFormat;
 	}
@@ -64,9 +64,7 @@ public class JavaGenerationConfig {
 		this.doubleFormat = doubleFormat;
 	}
 
-	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;
 	
-	protected boolean addGenerated=true;
 	
 	public boolean isAddGenerated() {
 		return addGenerated;

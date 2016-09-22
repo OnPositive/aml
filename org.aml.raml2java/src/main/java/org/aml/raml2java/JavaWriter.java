@@ -76,7 +76,7 @@ import com.sun.tools.xjc.outline.Outline;
 public class JavaWriter {
 
 	private JCodeModel mdl = new JCodeModel();
-	private HashMap<AbstractType, JType> defined = new HashMap<>();
+	protected HashMap<AbstractType, JType> defined = new HashMap<>();
 
 	private JavaGenerationConfig config;
 
@@ -547,10 +547,7 @@ public class JavaWriter {
 			oneMeta=member.range().oneMeta(Format.class);
 		}
 		String format=null;
-		if (oneMeta!=null){
-			//int32, int64, int, long, float, double, int16, int8
-			format=oneMeta.value();			
-		}
+		
 		defaultNumberFormat annotation = member.getDeclaredAt().annotation(defaultNumberFormat.class, true);
 		if (annotation!=null){
 			format=annotation.value();
@@ -560,6 +557,10 @@ public class JavaWriter {
 			if (ia!=null){
 				format=ia.value();
 			}
+		}
+		if (oneMeta!=null){
+			//int32, int64, int, long, float, double, int16, int8
+			format=oneMeta.value();			
 		}
 		if (format!=null){
 			Class<?> class1 = formats.get(format);

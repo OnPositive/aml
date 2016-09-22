@@ -29,11 +29,17 @@ annotationTypes:
        however this behavior is not always desired. This annotation allows to customize
        desired type of the container type when mapping array types. When used on type container
        serves as default for all contained types.
-     default: array
+     default: list
   defaultNumberFormat:
+    description: This annotations allows to configure default java representation for number values
     type: string
+    default: double
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
   defaultIntegerFormat:
+    description: This annotations allows to configure default java representation for integer values
     type: string
+    default: int
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
 types:
   JavaPackage: string
   TypeName: string
@@ -42,7 +48,7 @@ types:
     email: pavel@onpositive.com
     profiles: [ "https://github.com/petrochenko-pavel-a/" ]
 (commons.Id): org.aml.java.mapping
-(commons.Version): 0.0.1
+(commons.Version): 0.0.3
 (commons.Title): RAML2Java Annotations
 (commons.Links):
    - title: RAML2Java Tool

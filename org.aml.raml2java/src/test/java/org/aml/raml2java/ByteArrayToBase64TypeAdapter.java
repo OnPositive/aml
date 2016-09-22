@@ -13,7 +13,6 @@ public class ByteArrayToBase64TypeAdapter extends TypeAdapter<byte[]> {
 		public void write(JsonWriter out, byte[] value) throws IOException {
 			out.value(Base64.getEncoder().encodeToString(value));
 		}
-
 		public byte[] read(JsonReader in) throws IOException {
 			return Base64.getDecoder().decode(in.nextString());
 		}

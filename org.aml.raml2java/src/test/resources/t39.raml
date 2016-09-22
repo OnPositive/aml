@@ -1,0 +1,17 @@
+#%RAML 1.0 Library
+types:
+  Person:
+    discriminator: kind
+    properties:
+      name: string
+      kind: string
+  Manager:
+    type: Person
+    discriminatorValue: manager
+    properties:
+      manages: Person[]
+  Owner:
+    type: Person
+    discriminatorValue: owner
+    properties:
+      title: string

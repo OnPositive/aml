@@ -16,16 +16,21 @@ import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.beans.IXMLHints;
 import org.aml.typesystem.meta.facets.Description;
+import org.aml.typesystem.meta.facets.Discriminator;
+import org.aml.typesystem.meta.facets.DiscriminatorValue;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.raml.v2.internal.utils.StreamUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.sun.codemodel.ClassType;
+import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JArray;
 import com.sun.codemodel.JClass;
@@ -55,17 +60,18 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		ArrayList<String> fieldNames = new ArrayList<>();
 		ArrayList<JType> types = new ArrayList<>();
 		boolean needPropertyOverrides;
-
+		boolean needSubTypes;
 		ArrayList<PropertyCustomizerParameters> params = new ArrayList<>();
 	}
 
 	@Override
 	public JType define(AbstractType t) {
 		JDefinedClass defineClass = writer.defineClass(t, ClassType.CLASS);
+		writer.defined.put(t, defineClass);
 		AbstractType superType = t.superType();
 		boolean hasAdditionalOrMap = false;
 		boolean hasMap = false;
-		
+
 		Extras ext = new Extras();
 		if (superType != null) {
 			JType type = writer.getType(superType);
@@ -117,8 +123,34 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 		}
 		writer.annotate(defineClass, t);
-		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap, t);
 		
+		if (t.subTypes().size() > 0) {
+			Discriminator oneMeta = t.oneMeta(Discriminator.class);
+			if (oneMeta != null) {
+				String str = oneMeta.value();
+				if (writer.getConfig().isJacksonSupport()) {
+					defineClass.annotate(JsonTypeInfo.class).param("use", JsonTypeInfo.Id.NAME).param("property", str).param("visible", true)
+							.param("defaultImpl", defineClass);
+					JAnnotationArrayMember paramArray = defineClass.annotate(JsonSubTypes.class).paramArray("value");
+					for (AbstractType s : t.subTypes()) {
+						if (!s.isAnonimous()) {
+							JType type = writer.getType(s);
+							String discriminatorValue = s.name();
+							if (s.hasDirectMeta(DiscriminatorValue.class)) {
+								discriminatorValue = "" + s.oneMeta(DiscriminatorValue.class).value();
+							}
+							paramArray.annotate(JsonSubTypes.Type.class).param("value", type).param("name",
+									discriminatorValue);
+						}
+					}
+				}
+				if (writer.getConfig().isGsonSupport()){
+					ext.needSubTypes=true;
+					
+				}
+			}
+		}
+		addExtraInfoForPatternAndAdditionals(defineClass, hasAdditionalOrMap, ext, hasMap, t);
 		return defineClass;
 	}
 
@@ -131,7 +163,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			defineClass.annotate(XmlAccessorType.class).param("value", XmlAccessType.PROPERTY);
 
 		}
-		if (hasAdditionalOrMap || ext.needPropertyOverrides) {
+		if (hasAdditionalOrMap || ext.needPropertyOverrides||ext.needSubTypes) {
 
 			if (writer.getConfig().isGsonSupport()) {
 				if (!defineClass.getPackage().hasResourceFile("PatternAndAdditionalTypeAdapterFactory.java")) {
@@ -151,6 +183,9 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				defineClass.annotate(JsonAdapter.class).param("value",
 						JExpr.dotclass(writer.getModel().directClass("PatternAndAdditionalTypeAdapterFactory")));
 				addPatternInfo(defineClass, ext);
+				if (ext.needSubTypes){
+					addGsonSubTypingInfo(defineClass, type);
+				}
 			}
 			if (writer.getConfig().isJacksonSupport() && hasAdditionalOrMap) {
 				if (!defineClass.getPackage().hasResourceFile("MapAndAdditionalDeserializer.java")) {
@@ -189,6 +224,27 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				}
 			}
 		}
+	}
+
+	private void addGsonSubTypingInfo(JDefinedClass defineClass, AbstractType type) {
+		defineClass.field(JMod.STATIC|JMod.PUBLIC|JMod.FINAL, String.class, "$DISCRIMINATOR").init(JExpr.lit(type.oneMeta(Discriminator.class).value()));
+		JArray newArray = JExpr.newArray(writer.getModel()._ref(Class.class));
+		defineClass.field(JMod.STATIC|JMod.FINAL, Class[].class, "$SUBTYPES").init(newArray);					
+		for (AbstractType t:type.subTypes()){
+			newArray.add(JExpr.dotclass((JClass) writer.getType(t)));
+		}
+		JArray descValues = JExpr.newArray(writer.getModel()._ref(String.class));
+		defineClass.field(JMod.STATIC|JMod.FINAL, String[].class, "$DISCRIMINATOR_VALUES").init(descValues);					
+		for (AbstractType t:type.subTypes()){
+			if (!t.isAnonimous()){
+				String vl=t.name();
+				if (t.hasDirectMeta(DiscriminatorValue.class)){
+					vl=""+t.oneMeta(DiscriminatorValue.class).value();
+				}
+				descValues.add(JExpr.lit(vl));
+			}
+		}
+		
 	}
 
 	private void addPatternInfo(JDefinedClass defineClass, Extras ext) {
@@ -240,15 +296,16 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		JFieldVar field = null;
 		if (needField) {
 			field = defineClass.field(JMod.PRIVATE, propType, name);
-			if (p.range().isFile()&&writer.getConfig().isGsonSupport()){
+			if (p.range().isFile() && writer.getConfig().isGsonSupport()) {
 				if (!defineClass.getPackage().hasResourceFile("ByteArrayToBase64TypeAdapter.java")) {
 					String string = StreamUtils.toString(
 							SimpleBeanGenerator.class.getResourceAsStream("/ByteArrayToBase64TypeAdapter.tpl"));
 					string = string.replace("{packageName}", defineClass.getPackage().name());
 					defineClass.getPackage()
 							.addResourceFile(new StringResourceFile("ByteArrayToBase64TypeAdapter.java", string));
-					field.annotate(JsonAdapter.class).param("value", writer.getModel().directClass(defineClass.getPackage().name()+".ByteArrayToBase64TypeAdapter"));
-					
+					field.annotate(JsonAdapter.class).param("value", writer.getModel()
+							.directClass(defineClass.getPackage().name() + ".ByteArrayToBase64TypeAdapter"));
+
 				}
 			}
 			if (writer.getConfig().isGsonSupport()) {
@@ -267,7 +324,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		}
 		JMethod get = defineClass.method(JMod.PUBLIC, propType,
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
-		if (p.range().hasDirectMeta(Description.class)){
+		if (p.range().hasDirectMeta(Description.class)) {
 			get.javadoc().add(p.range().oneMeta(Description.class).value());
 		}
 		JExpression ref = JExpr.ref(name);
@@ -311,20 +368,19 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 					String mn = p.range().name();
 					AbstractType range = p.range();
 					ComponentShouldBeOfType oneMeta = range.oneMeta(ComponentShouldBeOfType.class);
-					if (oneMeta!=null){
-						range=oneMeta.range();
+					if (oneMeta != null) {
+						range = oneMeta.range();
 					}
-					if (range.superTypes().size()>1){
-						mn=name;
+					if (range.superTypes().size() > 1) {
+						mn = name;
 					}
 					while (mn == null || mn.length() == 0) {
 
-						
 						mn = range.name();
-						if (range.hasDirectMeta(XMLFacet.class)){
+						if (range.hasDirectMeta(XMLFacet.class)) {
 							XMLFacet meta = range.oneMeta(XMLFacet.class);
-							if (meta.getName()!=null&&meta.getName().length()>0){
-								mn=meta.getName();
+							if (meta.getName() != null && meta.getName().length() > 0) {
+								mn = meta.getName();
 							}
 						}
 						range = range.superType();

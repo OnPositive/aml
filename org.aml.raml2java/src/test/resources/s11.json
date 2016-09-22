@@ -1,0 +1,10 @@
+{
+  "name":"Ada",
+  "kind":"manager",
+  "manages":[{
+  	"name":"Q",
+  	"kind":"owner",
+  	"title":"Big Q"  
+  }]
+	
+}

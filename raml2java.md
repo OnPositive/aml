@@ -87,6 +87,30 @@ When developing in Eclipse, you must manage lifecycle mapping. For this purpose 
 * `outputFolder` - folder to write Java files
 * `<ramlFiles><value>`path to raml file`</value></ramlFiles>` - list of RAML files to process
 
+###Serialization Annotations
+
+* `gsonSupport` - if set to true raml2java will generate annotations required for serialization/deserialization with gson. default false
+* `jacksonSupport` - if set to true raml2java will generate annotations required for serialization/deserialization with jackson. default true
+* `jaxbSupport` - if set to true raml2java will generate annotations required for serialization/deserialization with jaxb. default true
+
+###Types representation
+
+* `containerStrategyCollection` - allows to configure default strategy for representing array types. By default array types are represented with lists. Setting to false will map array types to Java arrays
+* `integerFormat` - allows to configure default representation for `integer` type. Valid values: `INT,LONG,BIGINT`. Default `INT`. 
+* `numberFormat`- allows to configure default representation for `number` type. Valid values: `DOUBLE,BIGDECIMAL`. Default `DOUBLE`
+* `wrappedTypesStrategy` - allows to choose strategy for wrrapping number and boolean types. Valid values: `NONE,OPTIONAL,ALWAYS`. Default `NONE`
+* `addGenerated` - allows to choose if `Generated` annotation should be added to generated Java types. Default `true`
+
+###Annotations processing
+
+* `annotationNamespacesToSkipDefinition` - allows to configure namespaces for annotation types which should not be defined by RAML2Java generator (assumed as preexisting)
+* `annotationNamespacesToSkipReference` - allows to configure namespaces of  annotation  which should not be translated to Java code
+* `annotationIdsToSkipDefinition`  - allows to configure ids of  annotation types (simple or including namespace) which should not be defined by RAML2Java generator (assumed as preexisting)
+* `annotationIdsToSkipReference` - allows to configure ids of  annotation  which should not be translated to Java code
+* `skipAllAnnotationDefinitions` - shortcut to prevent tool from annotation types generation
+* `skipAllAnnotationReferences` - shortcut to prevent tool from annotations generation
+
+
 #Examples
 
 There are following example projects at this moment:

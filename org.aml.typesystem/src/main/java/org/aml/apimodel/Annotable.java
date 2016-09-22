@@ -1,4 +1,4 @@
-package org.aml.typesystem.raml.model;
+package org.aml.apimodel;
 
 import java.util.List;
 

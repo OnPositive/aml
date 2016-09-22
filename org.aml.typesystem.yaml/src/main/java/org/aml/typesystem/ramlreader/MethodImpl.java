@@ -3,27 +3,26 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Resource;
+import org.aml.apimodel.Response;
 import org.aml.typesystem.AbstractType;
-import org.aml.typesystem.raml.model.Method;
-import org.aml.typesystem.raml.model.Resource;
-import org.aml.typesystem.raml.model.Response;
-import org.raml.v2.api.model.v10.methods.TraitRef;
-import org.raml.v2.api.model.v10.security.SecuritySchemeRef;
 
-public class MethodImpl extends AnnotableImpl implements Method{
+public class MethodImpl extends AnnotableImpl implements Action{
 
 	protected String method;
 	protected Resource parent;
-	protected ArrayList<AbstractType>body=new ArrayList<>();
+	protected ArrayList<MimeType>body=new ArrayList<>();
 	protected ArrayList<String>protocols=new ArrayList<>();
-	protected ArrayList<TraitRef>is=new ArrayList<>();
-	protected ArrayList<SecuritySchemeRef>secured=new ArrayList<>();
 	protected String description;
 	protected String displayName;
-	protected ArrayList<AbstractType>queryParameters=new ArrayList<>();
-	protected ArrayList<AbstractType>headers=new ArrayList<>();
+	protected ArrayList<AbstractParam>queryParameters=new ArrayList<>();
+	protected ArrayList<AbstractParam>headers=new ArrayList<>();
 	protected AbstractType queryString;
 	protected ArrayList<Response>responses;
+	protected ArrayList<String>is=new ArrayList<>();
 	
 	@Override
 	public String method() {
@@ -36,23 +35,13 @@ public class MethodImpl extends AnnotableImpl implements Method{
 	}
 
 	@Override
-	public List<AbstractType> body() {
+	public List<org.aml.apimodel.MimeType> body() {
 		return body;
 	}
 
 	@Override
 	public List<String> protocols() {
 		return protocols;
-	}
-
-	@Override
-	public List<TraitRef> is() {
-		return is;
-	}
-
-	@Override
-	public List<SecuritySchemeRef> securedBy() {
-		return secured;
 	}
 
 	@Override
@@ -66,12 +55,12 @@ public class MethodImpl extends AnnotableImpl implements Method{
 	}
 
 	@Override
-	public List<AbstractType> queryParameters() {
+	public List<AbstractParam> queryParameters() {
 		return queryParameters;
 	}
 
 	@Override
-	public List<AbstractType> headers() {
+	public List<AbstractParam> headers() {
 		return headers;
 	}
 
@@ -83,6 +72,22 @@ public class MethodImpl extends AnnotableImpl implements Method{
 	@Override
 	public List<Response> responses() {
 		return responses;
+	}
+
+	@Override
+	public Resource getResource() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasBody() {
+		return false;
+	}
+
+	@Override
+	public ArrayList<String> getIs() {
+		return is;
 	}
 
 }

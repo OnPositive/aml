@@ -410,15 +410,7 @@ public class TopLevelRamlModelBuilder {
 
 	public TopLevelRamlImpl build(InputStream c, ResourceLoader loader, String path) {
 		String string = StreamUtils.toString(c);
-		CompositeResourceLoader rs=new CompositeResourceLoader(loader,new UrlResourceLoader());
-		Node build = new RamlBuilder().build(string, rs, path);
-		RamlHeader header = null;
-		try {
-			header = RamlHeader.parse(string);
-		} catch (InvalidHeaderException e) {
-			return null;
-		}
-		return build(build, header);
+		return build(string, loader,path);
 	}
 
 	public TopLevelRamlImpl build(Node node, RamlHeader header) {
@@ -438,5 +430,17 @@ public class TopLevelRamlModelBuilder {
 	Optional<Node> getValue(Node n, String path) {
 		Node r = n.get(path);
 		return Optional.ofNullable(r);
+	}
+
+	public TopLevelRamlImpl build(String ramlBuffer, ResourceLoader loader, String readerLocation) {
+		CompositeResourceLoader rs=new CompositeResourceLoader(loader,new UrlResourceLoader());
+		Node build = new RamlBuilder().build(ramlBuffer, loader, readerLocation);
+		RamlHeader header = null;
+		try {
+			header = RamlHeader.parse(ramlBuffer);
+		} catch (InvalidHeaderException e) {
+			return null;
+		}
+		return build(build, header);
 	}
 }

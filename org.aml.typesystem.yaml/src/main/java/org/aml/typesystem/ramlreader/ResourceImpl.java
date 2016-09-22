@@ -3,9 +3,10 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.Resource;
 import org.aml.typesystem.AbstractType;
-import org.aml.typesystem.raml.model.Method;
-import org.aml.typesystem.raml.model.Resource;
 import org.raml.v2.api.model.v10.security.SecuritySchemeRef;
 
 public class ResourceImpl extends AnnotableImpl implements Resource{
@@ -15,7 +16,7 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 	ArrayList<Resource>resources=new ArrayList<>();
 	String resourcePath;
 	Resource parent;
-	ArrayList<Method>methods=new ArrayList<>();
+	ArrayList<Action>methods=new ArrayList<>();
 	ArrayList<AbstractType>uriParameters=new ArrayList<>();
 	ArrayList<SecuritySchemeRef>secured=new ArrayList<>();
 	String decription;
@@ -46,7 +47,7 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 	}
 
 	@Override
-	public List<Method> methods() {
+	public List<Action> methods() {
 		return methods;
 	}
 
@@ -55,14 +56,25 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 		return decription;
 	}
 
-	@Override
-	public List<SecuritySchemeRef> securedBy() {
-		return secured;
-	}
 
 	@Override
 	public List<AbstractType> uriParameters() {
 		return this.uriParameters;
+	}
+
+	@Override
+	public String getUri() {
+		return null;
+	}
+
+	@Override
+	public Resource getParentResource() {
+		return null;
+	}
+
+	@Override
+	public AbstractParam[] getUriParameters() {
+		return null;
 	}
 
 }

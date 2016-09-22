@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.beans.IProperty;
@@ -13,7 +14,6 @@ import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.minmax.MaxProperties;
 import org.aml.typesystem.meta.restrictions.minmax.Minimum;
-import org.aml.typesystem.raml.model.TopLevelRaml;
 import org.junit.Test;
 import org.raml.v2.internal.impl.RamlBuilder;
 import org.raml.v2.internal.impl.commons.RamlHeader;
@@ -27,7 +27,7 @@ public class BasicTests extends TestCase{
 
 	@Test
 	public void test() {
-		TopLevelRaml raml = parse("/t1.raml");
+		TopLevelModel raml = parse("/t1.raml");
 		AbstractType type = raml.types().getType("Z");
 		List<IProperty> allProperties = type.toPropertiesView().allProperties();
 		for (IProperty p:allProperties){
@@ -38,7 +38,7 @@ public class BasicTests extends TestCase{
 	
 	@Test
 	public void test2() {
-		TopLevelRaml raml = parse("/t2.raml");
+		TopLevelModel raml = parse("/t2.raml");
 		AbstractType type = raml.types().getType("Animal");
 		
 		TestCase.assertTrue(type.oneMeta(MaxProperties.class).value().intValue()==3);
@@ -46,7 +46,7 @@ public class BasicTests extends TestCase{
 
 	@Test
 	public void test3() {
-		TopLevelRaml raml = parse("/t1.raml");
+		TopLevelModel raml = parse("/t1.raml");
 		AbstractType type = raml.types().getType("Z");
 		AbstractType next = type.superTypes().iterator().next();
 		TestCase.assertEquals(next.name(), "Animal");
@@ -57,27 +57,27 @@ public class BasicTests extends TestCase{
 	
 	@Test
 	public void test4() {
-		TopLevelRaml raml = parse("/t3.raml");
+		TopLevelModel raml = parse("/t3.raml");
 		AbstractType type = raml.types().getType("Animal");
 		TestCase.assertEquals(type.oneMeta(Description.class).value(), "Small nice description");
 	}
 	
 	@Test
 	public void test5() {
-		TopLevelRaml raml = parse("/t4.raml");
+		TopLevelModel raml = parse("/t4.raml");
 		AbstractType type = raml.types().getType("Animal");		
 		TestCase.assertEquals(type.oneMeta(FacetDeclaration.class).getName(), "q?");
 	}
 	@Test
 	public void test6() {
-		TopLevelRaml raml = parse("/t1.raml");
+		TopLevelModel raml = parse("/t1.raml");
 		AbstractType type = raml.annotationTypes().getType("Hello");		
 		TestCase.assertEquals(type.oneMeta(Minimum.class).value().intValue(), 5);
 	}
 	
 	@Test
 	public void test7() {
-		TopLevelRaml raml = parse("/t5.raml");
+		TopLevelModel raml = parse("/t5.raml");
 		AbstractType type = raml.types().getType("Z");
 		Set<Annotation> meta = type.meta(Annotation.class);
 		TestCase.assertEquals(meta.size(), 1);
@@ -89,7 +89,7 @@ public class BasicTests extends TestCase{
 	
 	@Test
 	public void test8() {
-		TopLevelRaml raml = parse("/t6.raml");
+		TopLevelModel raml = parse("/t6.raml");
 		AbstractType type = raml.types().getType("Z");
 		Set<Annotation> meta = type.meta(Annotation.class);
 		TestCase.assertEquals(meta.size(), 1);
@@ -101,7 +101,7 @@ public class BasicTests extends TestCase{
 	
 	@Test
 	public void test9() {
-		TopLevelRaml raml = parse("/t7.raml");
+		TopLevelModel raml = parse("/t7.raml");
 		AbstractType type = raml.types().getType("Z");
 		XMLFacet meta = type.oneMeta(XMLFacet.class);
 		TestCase.assertEquals(meta.getName(),"ZZ");	
@@ -109,7 +109,7 @@ public class BasicTests extends TestCase{
 	
 	@Test	
 	public void test10() {
-		TopLevelRaml raml = parse("/t8.raml");
+		TopLevelModel raml = parse("/t8.raml");
 		AbstractType type = raml.types().getType("Z");
 		TestCase.assertEquals(type.meta(Annotation.class).size(), 3);
 		type.declaredMeta().forEach(x->{
@@ -129,7 +129,7 @@ public class BasicTests extends TestCase{
 		});	
 	}
 	
-	private TopLevelRaml parse(String res) {
+	private TopLevelModel parse(String res) {
 		String string = StreamUtils.toString(BasicTests.class.getResourceAsStream(res));
 		Node build = new RamlBuilder().build(string);
 		RamlHeader header=null;
@@ -139,7 +139,7 @@ public class BasicTests extends TestCase{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		TopLevelRaml raml = new TopLevelRamlModelBuilder().build(build,header);
+		TopLevelModel raml = new TopLevelRamlModelBuilder().build(build,header);
 		return raml;
 	}
 

@@ -1,11 +1,11 @@
-package org.aml.typesystem.raml.model;
+package org.aml.apimodel;
 
 import java.util.Map;
 
 import org.aml.typesystem.ITypeLibrary;
 import org.aml.typesystem.ITypeRegistry;
 
-public interface TopLevelRaml extends Annotable, ITypeLibrary{
+public interface TopLevelModel extends Annotable, ITypeLibrary{
 	
 	ITypeRegistry types();
 	

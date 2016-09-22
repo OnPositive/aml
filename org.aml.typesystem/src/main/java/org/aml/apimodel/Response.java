@@ -1,8 +1,7 @@
-package org.aml.typesystem.raml.model;
+package org.aml.apimodel;
 
 import java.util.List;
 
-import org.aml.typesystem.AbstractType;
 
 public interface Response extends Annotable{
 	String code();
@@ -10,17 +9,19 @@ public interface Response extends Annotable{
 	/**
 	 * Detailed information about any response headers returned by this method
 	 **/
-	List<AbstractType> headers();
+	List<AbstractParam> headers();
 
 	/**
 	 * The body of the response: a body declaration
 	 **/
-	List<AbstractType> body();
+	List<MimeType> body();
 
 	/**
 	 * A longer, human-friendly description of the response
 	 **/
 	// --def-system-mod--
 	String description();
+
+	boolean hasBody();
 
 }

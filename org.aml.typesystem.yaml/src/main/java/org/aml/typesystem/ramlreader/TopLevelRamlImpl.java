@@ -2,17 +2,19 @@ package org.aml.typesystem.ramlreader;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.aml.apimodel.Library;
+import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.TypeRegistryImpl;
-import org.aml.typesystem.raml.model.Library;
-import org.aml.typesystem.raml.model.TopLevelRaml;
+import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.internal.impl.commons.nodes.TypeDeclarationNode;
 import org.raml.yagi.framework.nodes.Node;
 
-public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelRaml{
+public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 
 	
 	protected transient Node original;
@@ -50,6 +52,13 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelRaml{
 	@Override
 	public Map<String, ? extends Library> uses() {
 		return usesMap;
+	}
+	
+	public boolean isOk() {
+		return false;
+	}
+	public List<ValidationResult> validationResults() {
+		return null;
 	}
 
 	

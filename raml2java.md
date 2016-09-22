@@ -87,7 +87,7 @@ When developing in Eclipse, you must manage lifecycle mapping. For this purpose 
 * `outputFolder` - folder to write Java files
 * `<ramlFiles><value>`path to raml file`</value></ramlFiles>` - list of RAML files to process
 
-###Serialization Annotations
+###Serialization framework related parameters
 
 * `gsonSupport` - if set to true raml2java will generate annotations required for serialization/deserialization with gson. default false
 * `jacksonSupport` - if set to true raml2java will generate annotations required for serialization/deserialization with jackson. default true

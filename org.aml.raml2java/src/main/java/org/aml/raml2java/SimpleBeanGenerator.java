@@ -15,6 +15,7 @@ import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.beans.IXMLHints;
+import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Description;
 import org.aml.typesystem.meta.facets.Discriminator;
 import org.aml.typesystem.meta.facets.DiscriminatorValue;
@@ -123,14 +124,14 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 		}
 		writer.annotate(defineClass, t);
-		
+
 		if (t.subTypes().size() > 0) {
 			Discriminator oneMeta = t.oneMeta(Discriminator.class);
 			if (oneMeta != null) {
 				String str = oneMeta.value();
 				if (writer.getConfig().isJacksonSupport()) {
-					defineClass.annotate(JsonTypeInfo.class).param("use", JsonTypeInfo.Id.NAME).param("property", str).param("visible", true)
-							.param("defaultImpl", defineClass);
+					defineClass.annotate(JsonTypeInfo.class).param("use", JsonTypeInfo.Id.NAME).param("property", str)
+							.param("visible", true).param("defaultImpl", defineClass);
 					JAnnotationArrayMember paramArray = defineClass.annotate(JsonSubTypes.class).paramArray("value");
 					for (AbstractType s : t.subTypes()) {
 						if (!s.isAnonimous()) {
@@ -144,9 +145,9 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 						}
 					}
 				}
-				if (writer.getConfig().isGsonSupport()){
-					ext.needSubTypes=true;
-					
+				if (writer.getConfig().isGsonSupport()) {
+					ext.needSubTypes = true;
+
 				}
 			}
 		}
@@ -163,7 +164,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			defineClass.annotate(XmlAccessorType.class).param("value", XmlAccessType.PROPERTY);
 
 		}
-		if (hasAdditionalOrMap || ext.needPropertyOverrides||ext.needSubTypes) {
+		if (hasAdditionalOrMap || ext.needPropertyOverrides || ext.needSubTypes) {
 
 			if (writer.getConfig().isGsonSupport()) {
 				if (!defineClass.getPackage().hasResourceFile("PatternAndAdditionalTypeAdapterFactory.java")) {
@@ -183,7 +184,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				defineClass.annotate(JsonAdapter.class).param("value",
 						JExpr.dotclass(writer.getModel().directClass("PatternAndAdditionalTypeAdapterFactory")));
 				addPatternInfo(defineClass, ext);
-				if (ext.needSubTypes){
+				if (ext.needSubTypes) {
 					addGsonSubTypingInfo(defineClass, type);
 				}
 			}
@@ -227,24 +228,25 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 	}
 
 	private void addGsonSubTypingInfo(JDefinedClass defineClass, AbstractType type) {
-		defineClass.field(JMod.STATIC|JMod.PUBLIC|JMod.FINAL, String.class, "$DISCRIMINATOR").init(JExpr.lit(type.oneMeta(Discriminator.class).value()));
+		defineClass.field(JMod.STATIC | JMod.PUBLIC | JMod.FINAL, String.class, "$DISCRIMINATOR")
+				.init(JExpr.lit(type.oneMeta(Discriminator.class).value()));
 		JArray newArray = JExpr.newArray(writer.getModel()._ref(Class.class));
-		defineClass.field(JMod.STATIC|JMod.FINAL, Class[].class, "$SUBTYPES").init(newArray);					
-		for (AbstractType t:type.subTypes()){
+		defineClass.field(JMod.STATIC | JMod.FINAL, Class[].class, "$SUBTYPES").init(newArray);
+		for (AbstractType t : type.subTypes()) {
 			newArray.add(JExpr.dotclass((JClass) writer.getType(t)));
 		}
 		JArray descValues = JExpr.newArray(writer.getModel()._ref(String.class));
-		defineClass.field(JMod.STATIC|JMod.FINAL, String[].class, "$DISCRIMINATOR_VALUES").init(descValues);					
-		for (AbstractType t:type.subTypes()){
-			if (!t.isAnonimous()){
-				String vl=t.name();
-				if (t.hasDirectMeta(DiscriminatorValue.class)){
-					vl=""+t.oneMeta(DiscriminatorValue.class).value();
+		defineClass.field(JMod.STATIC | JMod.FINAL, String[].class, "$DISCRIMINATOR_VALUES").init(descValues);
+		for (AbstractType t : type.subTypes()) {
+			if (!t.isAnonimous()) {
+				String vl = t.name();
+				if (t.hasDirectMeta(DiscriminatorValue.class)) {
+					vl = "" + t.oneMeta(DiscriminatorValue.class).value();
 				}
 				descValues.add(JExpr.lit(vl));
 			}
 		}
-		
+
 	}
 
 	private void addPatternInfo(JDefinedClass defineClass, Extras ext) {
@@ -279,7 +281,43 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			ext.types.add(oType);
 
 		}
-
+		if (p.range().isArray()) {
+			initExpr = writer.toArrayInit(p.range(), p);
+		} else {
+			Default dv = p.range().oneMeta(Default.class);
+			if (dv != null) {
+				if (p.range().isScalar()) {
+					if (p.range().isString()) {
+						initExpr = JExpr.lit("" + dv.value());
+					}
+					if (p.range().isBoolean()) {
+						initExpr = JExpr.lit(Boolean.parseBoolean(""+dv.value()));
+					}
+					
+					else if (p.range().isNumber()) {
+						String name2 = propType.name().toLowerCase();
+						if(name2.equals("float")){
+							initExpr = JExpr.lit(Float.parseFloat(((""+dv.value()))));
+						}
+						else if(name2.equals("double")){
+							initExpr = JExpr.lit(Double.parseDouble(((""+dv.value()))));	
+						}
+						else if(name2.equals("short")){
+							initExpr = JExpr.lit(Double.parseDouble(((""+dv.value()))));	
+						}
+						else if(name2.equals("long")){
+							initExpr = JExpr.lit(Long.parseLong(((""+dv.value()))));	
+						}
+						else if(name2.equals("byte")){
+							initExpr = JExpr.lit(Byte.parseByte(((""+dv.value()))));	
+						}
+						else{
+							initExpr = JExpr.lit(Double.parseDouble(((""+dv.value()))));
+						}
+					}
+				}
+			}
+		}
 		JClass _extends = defineClass._extends();
 		boolean needField = true;
 		JType ts = null;

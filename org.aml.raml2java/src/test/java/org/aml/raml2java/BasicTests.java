@@ -1027,5 +1027,40 @@ public class BasicTests extends CompilerTestCase {
 			TestCase.assertTrue(false);
 		}
 	}
+	@Test
+	public void test40() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t45.raml"),
+				new ClassPathResourceLoader(), "/t45.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.TestTypeWithDefaults");
+		Class<?> class1 = compileAndTest.get("org.aml.test.TestTypeWithDefaults");
+		try {
+			Object newInstance = class1.newInstance();
+			Method method = class1.getMethod("getZ");
+			Object vl=method.invoke(newInstance);
+			TestCase.assertTrue(vl.equals(2.0f));
+			method = class1.getMethod("getQ");
+			vl=method.invoke(newInstance);
+			TestCase.assertTrue(vl.equals("Hello"));
+			method = class1.getMethod("getV");
+			vl=method.invoke(newInstance);
+			TestCase.assertTrue(vl.equals(true));
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException e1) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+	}
 }
 

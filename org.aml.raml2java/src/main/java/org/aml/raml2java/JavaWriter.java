@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,6 +63,7 @@ import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JExpressionImpl;
 import com.sun.codemodel.JFormatter;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
 import com.sun.tools.xjc.AbortException;
@@ -665,6 +667,35 @@ public class JavaWriter {
 			return mdl.ref(List.class).narrow(type);
 		}
 		return type.array();
+	}
+	
+	protected JInvocation toArrayInit(AbstractType range2, IProperty member) {
+		range2=range2.oneMeta(ComponentShouldBeOfType.class).range();
+		JType type = getType(range2, false, false, member);
+		boolean containerStrategyCollection = config.containerStrategyCollection;
+		boolean set = false;
+		container annotation = range2.annotation(container.class, true);
+
+		if (annotation != null) {
+			String vl = annotation.value();
+			if (vl.equals("list")) {
+				containerStrategyCollection = true;
+			}
+			if (vl.equals("array")) {
+				containerStrategyCollection = false;
+			}
+			if (vl.equals("set")) {
+				containerStrategyCollection = true;
+				set = true;
+			}
+		}
+		if (containerStrategyCollection ) {
+			if (set) {
+				return JExpr._new(mdl.ref(LinkedHashSet.class).narrow(type));
+			}
+			return JExpr._new(mdl.ref(ArrayList.class).narrow(type));
+		}
+		return null;
 	}
 
 	private Annotator getAnnotator() {

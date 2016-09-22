@@ -82,6 +82,8 @@ When developing in Eclipse, you must manage lifecycle mapping. For this purpose 
 
 #Configuration Options
 
+This chapter uses names of parameters used in Maven Plugin, however same options are accessible for programmatical access through `JavaGenerationConfig` class.
+
 ##Input and output related options
 
 * `outputFolder` - folder to write Java files

@@ -3,7 +3,7 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
@@ -18,8 +18,8 @@ public class MethodImpl extends AnnotableImpl implements Action{
 	protected ArrayList<String>protocols=new ArrayList<>();
 	protected String description;
 	protected String displayName;
-	protected ArrayList<AbstractParam>queryParameters=new ArrayList<>();
-	protected ArrayList<AbstractParam>headers=new ArrayList<>();
+	protected ArrayList<NamedParam>queryParameters=new ArrayList<>();
+	protected ArrayList<NamedParam>headers=new ArrayList<>();
 	protected AbstractType queryString;
 	protected ArrayList<Response>responses;
 	protected ArrayList<String>is=new ArrayList<>();
@@ -55,12 +55,12 @@ public class MethodImpl extends AnnotableImpl implements Action{
 	}
 
 	@Override
-	public List<AbstractParam> queryParameters() {
+	public List<NamedParam> queryParameters() {
 		return queryParameters;
 	}
 
 	@Override
-	public List<AbstractParam> headers() {
+	public List<NamedParam> headers() {
 		return headers;
 	}
 

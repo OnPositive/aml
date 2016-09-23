@@ -3,7 +3,7 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Resource;
 import org.aml.typesystem.AbstractType;
@@ -73,7 +73,7 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 	}
 
 	@Override
-	public AbstractParam[] getUriParameters() {
+	public NamedParam[] getUriParameters() {
 		return null;
 	}
 

@@ -9,7 +9,7 @@ public interface Response extends Annotable{
 	/**
 	 * Detailed information about any response headers returned by this method
 	 **/
-	List<AbstractParam> headers();
+	List<NamedParam> headers();
 
 	/**
 	 * The body of the response: a body declaration

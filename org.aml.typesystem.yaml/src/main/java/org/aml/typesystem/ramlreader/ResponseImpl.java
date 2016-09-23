@@ -3,14 +3,14 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Response;
 
 public class ResponseImpl extends AnnotableImpl implements Response{
 
 	protected String code;
-	protected ArrayList<AbstractParam>headers=new ArrayList<>();
+	protected ArrayList<NamedParam>headers=new ArrayList<>();
 	protected ArrayList<MimeType> body=new ArrayList<>();
 	protected String description;
 	
@@ -20,7 +20,7 @@ public class ResponseImpl extends AnnotableImpl implements Response{
 	}
 
 	@Override
-	public List<AbstractParam> headers() {
+	public List<NamedParam> headers() {
 		return headers;
 	}
 

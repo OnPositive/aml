@@ -1,7 +1,7 @@
 package org.aml.apimodel;
 
-public interface Api extends ApiLike{
+public interface Api extends TopLevelModel{
 
-	String getVersion();
 
+	Resource[] resources();
 }

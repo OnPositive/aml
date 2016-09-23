@@ -55,6 +55,6 @@ public interface Resource extends Annotable{
 	Resource getParentResource();
 
 
-	AbstractParam[] getUriParameters();
+	NamedParam[] getUriParameters();
 
 }

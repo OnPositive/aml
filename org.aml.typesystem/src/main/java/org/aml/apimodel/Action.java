@@ -40,13 +40,13 @@ public interface Action extends Annotable{
     /**
      * An APIs resources MAY be filtered (to return a subset of results) or altered (such as transforming  a response body from JSON to XML format) by the use of query strings. If the resource or its method supports a query string, the query string MUST be defined by the queryParameters property
      **/
-    List<AbstractParam> queryParameters();
+    List<NamedParam> queryParameters();
 
 
     /**
      * Headers that allowed at this position
      **/
-    List<AbstractParam> headers();
+    List<NamedParam> headers();
 
 
     /**

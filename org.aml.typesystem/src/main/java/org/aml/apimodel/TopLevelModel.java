@@ -6,7 +6,9 @@ import org.aml.typesystem.ITypeLibrary;
 import org.aml.typesystem.ITypeRegistry;
 
 public interface TopLevelModel extends Annotable, ITypeLibrary{
-	
+
+	String getVersion();
+
 	ITypeRegistry types();
 	
 	ITypeRegistry annotationTypes();

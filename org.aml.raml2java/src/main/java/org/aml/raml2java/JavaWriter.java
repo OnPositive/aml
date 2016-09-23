@@ -730,7 +730,7 @@ public class JavaWriter {
 		return member.getDeclaredAt().name() + member.id();
 	}
 
-	public String escape(String x) {
+	public static String escape(String x) {
 		StringBuilder bld = new StringBuilder();
 		for (int i = 0; i < x.length(); i++) {
 			char c = x.charAt(i);

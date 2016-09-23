@@ -3,91 +3,63 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
-import org.aml.apimodel.MimeType;
+import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
-import org.aml.typesystem.AbstractType;
+import org.aml.apimodel.TopLevelModel;
+import org.raml.v2.internal.impl.commons.nodes.MethodNode;
+import org.raml.v2.internal.impl.commons.nodes.ResponseNode;
+import org.raml.yagi.framework.nodes.Node;
 
-public class MethodImpl extends AnnotableImpl implements Action{
+public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> implements Action {
 
-	protected String method;
-	protected Resource parent;
-	protected ArrayList<MimeType>body=new ArrayList<>();
-	protected ArrayList<String>protocols=new ArrayList<>();
-	protected String description;
-	protected String displayName;
-	protected ArrayList<NamedParam>queryParameters=new ArrayList<>();
-	protected ArrayList<NamedParam>headers=new ArrayList<>();
-	protected AbstractType queryString;
-	protected ArrayList<Response>responses;
-	protected ArrayList<String>is=new ArrayList<>();
-	
+	public MethodImpl(TopLevelModel mdl, Resource parent, MethodNode node) {
+		super(mdl, parent, node);
+	}
+
 	@Override
 	public String method() {
-		return method;
+		return node.getName();
 	}
 
 	@Override
 	public Resource resource() {
-		return parent;
-	}
-
-	@Override
-	public List<org.aml.apimodel.MimeType> body() {
-		return body;
+		return this.parent;
 	}
 
 	@Override
 	public List<String> protocols() {
-		return protocols;
+		// TODO Auto-generated method stub
+		return null;
 	}
-
 	@Override
-	public String description() {
-		return description;
-	}
-
-	@Override
-	public String displayName() {
-		return displayName;
-	}
-
-	@Override
-	public List<NamedParam> queryParameters() {
-		return queryParameters;
-	}
-
-	@Override
-	public List<NamedParam> headers() {
-		return headers;
-	}
-
-	@Override
-	public AbstractType queryString() {
-		return queryString;
-	}
-
-	@Override
-	public List<Response> responses() {
-		return responses;
-	}
-
-	@Override
-	public Resource getResource() {
+	public ArrayList<String> getIs() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean hasBody() {
-		return false;
+	public List<? extends INamedParam> queryParameters() {
+		Node childNodeWithKey = this.getChildNodeWithKey("queryParameters");
+		return toParamList(childNodeWithKey);
 	}
+
+	
 
 	@Override
-	public ArrayList<String> getIs() {
-		return is;
+	public List<Response> responses() {
+		ArrayList<Response> result = new ArrayList<>();
+		Node childNodeWithKey = this.getChildNodeWithKey("responses");
+		if (childNodeWithKey != null) {
+			for (Node n : childNodeWithKey.getChildren()) {
+				if (n instanceof ResponseNode){
+					ResponseNode rn=(ResponseNode) n;
+					result.add(new ResponseImpl(mdl,this,rn));
+				}
+			}
+		}
+		return result;
 	}
-
+	
 }

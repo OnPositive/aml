@@ -55,7 +55,7 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 	}
 	
 	public boolean isOk() {
-		return false;
+		return true;
 	}
 	public List<ValidationResult> validationResults() {
 		return null;

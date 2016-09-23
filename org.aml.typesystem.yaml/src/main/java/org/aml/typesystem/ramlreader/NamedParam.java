@@ -1,8 +1,9 @@
-package org.aml.apimodel;
+package org.aml.typesystem.ramlreader;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.aml.apimodel.INamedParam;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Description;
@@ -14,7 +15,7 @@ import org.aml.typesystem.meta.restrictions.minmax.Maximum;
 import org.aml.typesystem.meta.restrictions.minmax.MinLength;
 import org.aml.typesystem.meta.restrictions.minmax.Minimum;
 
-public class NamedParam {
+public class NamedParam implements INamedParam {
 	
 	protected AbstractType type;
 	protected boolean required;
@@ -112,10 +113,7 @@ public class NamedParam {
 		return repeat;
 	}
 	
-	public static enum TypeKind{
-		BOOLEAN,DATE,FILE,INTEGER,NUMBER,STRING
-	}
-
+	
 	public TypeKind getTypeKind() {
 		if (type.isBoolean()){
 			return TypeKind.BOOLEAN;
@@ -134,6 +132,10 @@ public class NamedParam {
 		}
 		//FIXME
 		return TypeKind.STRING;
+	}
+
+	public AbstractType getTypeModel() {
+		return this.type;
 	}
 
 }

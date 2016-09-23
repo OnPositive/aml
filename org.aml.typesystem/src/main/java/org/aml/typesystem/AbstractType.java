@@ -1288,4 +1288,14 @@ public abstract class AbstractType implements IType {
 	public boolean isFile() {
 		return this.isSubTypeOf(BuiltIns.FILE);
 	}
+	
+	protected boolean optional;
+
+	public boolean isOptional(){
+		return this.optional;
+	}
+	
+	public void setOptional(boolean b) {
+		this.optional=b;
+	}
 }

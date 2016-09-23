@@ -3,42 +3,28 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Resource;
-import org.aml.typesystem.AbstractType;
-import org.raml.v2.api.model.v10.security.SecuritySchemeRef;
+import org.aml.apimodel.TopLevelModel;
+import org.raml.v2.internal.impl.commons.nodes.MethodNode;
+import org.raml.v2.internal.impl.commons.nodes.ResourceNode;
 
-public class ResourceImpl extends AnnotableImpl implements Resource{
+public class ResourceImpl extends AbstractWrappedNodeImpl<Resource,ResourceNode> implements Resource{
 
-	String relativeUri;
-	String displayName;
-	ArrayList<Resource>resources=new ArrayList<>();
-	String resourcePath;
-	Resource parent;
-	ArrayList<Action>methods=new ArrayList<>();
-	ArrayList<AbstractType>uriParameters=new ArrayList<>();
-	ArrayList<SecuritySchemeRef>secured=new ArrayList<>();
-	String decription;
-	
-	@Override
-	public String relativeUri() {
-		return relativeUri;
+	public ResourceImpl(TopLevelModel mdl,Resource parent, ResourceNode n) {
+		super(mdl,parent,n);
 	}
 
 	@Override
-	public String displayName() {
-		return displayName;
+	public String relativeUri() {
+		return this.node.getRelativeUri();
 	}
 
 	@Override
 	public List<Resource> resources() {
-		return resources;
-	}
-
-	@Override
-	public String resourcePath() {
-		return resourcePath;
+		ArrayList<Resource>res=new ArrayList<>();
+		this.getChildWithType(ResourceNode.class).forEach(x->res.add(new ResourceImpl(this.mdl,this, x)));
+		return res;
 	}
 
 	@Override
@@ -48,33 +34,18 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 
 	@Override
 	public List<Action> methods() {
-		return methods;
+		ArrayList<Action>res=new ArrayList<>();
+		this.getChildWithType(MethodNode.class).forEach(x->res.add(new MethodImpl(this.mdl,this, x)));
+		return res;
 	}
 
 	@Override
-	public String description() {
-		return decription;
-	}
-
-
-	@Override
-	public List<AbstractType> uriParameters() {
-		return this.uriParameters;
+	public List<? extends NamedParam> uriParameters() {
+		return new ArrayList<>();//FIXME
 	}
 
 	@Override
 	public String getUri() {
-		return null;
+		return node.getResourcePath();
 	}
-
-	@Override
-	public Resource getParentResource() {
-		return null;
-	}
-
-	@Override
-	public NamedParam[] getUriParameters() {
-		return null;
-	}
-
 }

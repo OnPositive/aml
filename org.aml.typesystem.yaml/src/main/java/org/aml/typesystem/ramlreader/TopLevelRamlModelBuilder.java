@@ -60,6 +60,7 @@ import org.raml.yagi.framework.nodes.snakeyaml.SYStringNode;
 
 public class TopLevelRamlModelBuilder {
 
+	private static final String REQUIRED = "required";
 	private static final String FACETS = "facets";
 	private static final String PROPERTIES = "properties";
 	private static final String USES = "uses";
@@ -106,7 +107,7 @@ public class TopLevelRamlModelBuilder {
 	protected void buildTypes(TopLevelRamlImpl node) {
 		node.usesMap.values().forEach(x -> buildTypes(x));
 		node.typeDecls.keySet().forEach(x -> resolveType(node, x));
-		node.atypeDecls.keySet().forEach(x -> buildType(node, x, node.atypeDecls.get(x)));
+		node.atypeDecls.keySet().forEach(x -> buildType(node, x, node.atypeDecls.get(x), true));
 		for (AbstractType t : node.types()) {
 			finishAnnotationBinding(node, t);
 		}
@@ -213,10 +214,10 @@ public class TopLevelRamlModelBuilder {
 
 	private AbstractType buildType(TopLevelRamlImpl topLevelRamlImpl, String typeName) {
 		TypeDeclarationNode ts = findDeclaration(topLevelRamlImpl, typeName);
-		return buildType(topLevelRamlImpl, typeName, ts);
+		return buildType(topLevelRamlImpl, typeName, ts, true);
 	}
 
-	private AbstractType buildType(TopLevelRamlImpl topLevelRamlImpl, String typeName, TypeDeclarationNode ts) {
+	protected AbstractType buildType(TopLevelRamlImpl topLevelRamlImpl, String typeName, TypeDeclarationNode ts, boolean register) {
 		List<TypeExpressionNode> baseTypes = ts.getBaseTypes();
 		ArrayList<AbstractType> superTypes = new ArrayList<>();
 		for (TypeExpressionNode n : baseTypes) {
@@ -226,22 +227,27 @@ public class TopLevelRamlModelBuilder {
 		AbstractType result = TypeOps.derive(typeName, superTypes.toArray(new AbstractType[superTypes.size()]));
 		result.setSource(topLevelRamlImpl);		
 		if (ts.getParent() instanceof AnnotationTypeNode) {
+			if (register){
 			topLevelRamlImpl.annotationTypes.registerType(result);
+			}
 			result.setAnnotation(true);
 		} else {
+			if (register){
 			topLevelRamlImpl.topLevelTypes.registerType(result);
+			}
 		}
 		List<Node> facets = ts.getChildren();
 		for (Node node : facets) {
 			if (node instanceof FacetNode) {
 				FacetNode n = (FacetNode) node;
+				
 				if (n.getName().equals(PROPERTIES)) {
 					Node value = n.getValue();
 					List<Node> ps = value.getChildren();
 					for (Node p : ps) {
 						PropertyNode pn = (PropertyNode) p;
 						TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
-						AbstractType buildType = buildType(topLevelRamlImpl, "", td);
+						AbstractType buildType = buildType(topLevelRamlImpl, "", td, register);
 						boolean required = pn.isRequired();
 						
 						String name = pn.getName();
@@ -287,6 +293,15 @@ public class TopLevelRamlModelBuilder {
 				KeyValueNode kv = (KeyValueNode) node;
 				SimpleTypeNode b = (SimpleTypeNode) kv.getKey();
 				String literalValue = b.getLiteralValue();
+				if (literalValue.equals(REQUIRED)){
+					Object object = toObject(kv.getValue());
+					if(object instanceof Boolean){
+						Boolean bl=(Boolean) object;
+						if (!bl){
+							result.setOptional(true);
+						}
+					}
+				}
 				if (kv instanceof AnnotationNode) {
 					Node value = kv.getValue();
 					Object val = toObject(value);
@@ -299,7 +314,7 @@ public class TopLevelRamlModelBuilder {
 					for (Node p : ps) {
 						CustomFacetDefinitionNode pn = (CustomFacetDefinitionNode) p;
 						TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
-						AbstractType buildType = buildType(topLevelRamlImpl, "", td);
+						AbstractType buildType = buildType(topLevelRamlImpl, "", td, register);
 						FacetDeclaration fd = new FacetDeclaration(pn.getFacetName(), buildType);
 						result.addMeta(fd);
 					}

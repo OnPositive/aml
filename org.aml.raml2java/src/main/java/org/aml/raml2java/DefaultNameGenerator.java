@@ -24,6 +24,7 @@ public class DefaultNameGenerator implements INameGenerator{
 	@Override
 	public String fullyQualifiedName(AbstractType t) {
 		String name = t.name();
+		name=JavaWriter.escape(name);
 		for (String s:keywords){
 			if (name.equals(s)){
 				name=Character.toUpperCase(name.charAt(0))+name.substring(1);

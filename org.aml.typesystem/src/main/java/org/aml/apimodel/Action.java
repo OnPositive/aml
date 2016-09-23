@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import org.aml.typesystem.AbstractType;
-
 public interface Action extends Annotable{
 
 	/**
@@ -40,27 +38,20 @@ public interface Action extends Annotable{
     /**
      * An APIs resources MAY be filtered (to return a subset of results) or altered (such as transforming  a response body from JSON to XML format) by the use of query strings. If the resource or its method supports a query string, the query string MUST be defined by the queryParameters property
      **/
-    List<NamedParam> queryParameters();
+    List<? extends INamedParam> queryParameters();
 
 
     /**
      * Headers that allowed at this position
      **/
-    List<NamedParam> headers();
+    List<? extends INamedParam> headers();
 
-
-    /**
-     * Specifies the query string needed by this method. Mutually exclusive with queryParameters.
-     **/
-    AbstractType queryString();
-
-
+    
     /**
      * Information about the expected responses to a request
      **/
     List<Response> responses();
-
-	Resource getResource();
+	
 
 	boolean hasBody();
 

@@ -5,24 +5,15 @@ import java.util.Map;
 
 import org.aml.typesystem.AbstractType;
 
-public class MimeType {
+public interface MimeType {
 	
-	protected AbstractType model;
-
-	public String getType() {
-		return model.name();
-	}
 	
-	public String getExample() {
-		return null;
-	}
+	public String getType() ;
 
-	public Map<String, List<NamedParam>> getFormParameters() {
-		return null;
-	}
+	public String getExample();
 
-	public AbstractType getModel() {
-		return model;
-	}
+	public Map<String, List<INamedParam>> getFormParameters() ;
+
+	public AbstractType getTypeModel();
 
 }

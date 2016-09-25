@@ -1,0 +1,31 @@
+#%RAML 0.8
+title: Hello
+traits:
+  - Hello:
+      queryParameters:
+        c:
+          required: false
+schemas:
+  - Person: "{}"    
+/q:
+  displayName: QQ
+  get:
+    is: [ Hello ]
+    description: get some stuff
+    queryParameters:
+      a: 
+      b: 
+    responses:
+      200:
+        body:
+          application/json:
+            schema: "{}"
+  post:
+    body:
+      application/json: 
+        schema: Person
+/z/{e}:
+  uriParameters:
+   e:
+    type: number
+    minimum: 10

@@ -72,11 +72,12 @@ public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends
 	}
 	
 	protected List<? extends INamedParam> toParamList(Node childNodeWithKey) {
+		ArrayList<NamedParam>prms=new ArrayList<>();
 		if (childNodeWithKey==null){
-			return Collections.emptyList();
+			return prms;
 		}
 		List<Node> children = childNodeWithKey.getChildren();
-		ArrayList<NamedParam>prms=new ArrayList<>();
+		
 		TopLevelRamlModelBuilder topLevelRamlModelBuilder = new TopLevelRamlModelBuilder();
 		for (Node n:children){
 			KeyValueNode kv=(KeyValueNode) n;
@@ -86,7 +87,8 @@ public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends
 			if (!required){
 				typeName=typeName.substring(0, typeName.length()-1);
 			}			
-			AbstractType buildType = topLevelRamlModelBuilder.buildType((TopLevelRamlImpl) mdl, typeName,(TypeDeclarationNode) kv.getValue(), false);
+			Node value = kv.getValue();			
+			AbstractType buildType = topLevelRamlModelBuilder.buildType((TopLevelRamlImpl) mdl, typeName,value, false);
 			if (buildType.isOptional()){
 				required=false;
 			}

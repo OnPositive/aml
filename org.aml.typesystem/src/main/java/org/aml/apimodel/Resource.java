@@ -31,7 +31,6 @@ public interface Resource extends Annotable{
     List<Action> methods();
 
 
-    // --def-system-mod--
     String description();
 
 

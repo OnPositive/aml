@@ -10,6 +10,10 @@ import org.aml.apimodel.Response;
 import org.aml.apimodel.TopLevelModel;
 import org.raml.v2.internal.impl.commons.nodes.MethodNode;
 import org.raml.v2.internal.impl.commons.nodes.ResponseNode;
+import org.raml.v2.internal.impl.commons.nodes.TraitRefNode;
+import org.raml.yagi.framework.nodes.ArrayNode;
+import org.raml.yagi.framework.nodes.KeyValueNode;
+import org.raml.yagi.framework.nodes.KeyValueNodeImpl;
 import org.raml.yagi.framework.nodes.Node;
 
 public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> implements Action {
@@ -35,8 +39,20 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 	}
 	@Override
 	public ArrayList<String> getIs() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String>traits=new ArrayList<>();
+		Node childNodeWithKey = this.getChildNodeWithKey("is");
+		if (childNodeWithKey instanceof ArrayNode){
+			ArrayNode rr=(ArrayNode) childNodeWithKey;
+			
+			for (Node n:rr.getChildren()){
+				if (n instanceof TraitRefNode){
+					TraitRefNode tr=(TraitRefNode) n;
+					String value = tr.getValue();
+					traits.add(value);
+				}
+			}
+		}
+		return traits;
 	}
 
 	@Override
@@ -53,8 +69,8 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 		Node childNodeWithKey = this.getChildNodeWithKey("responses");
 		if (childNodeWithKey != null) {
 			for (Node n : childNodeWithKey.getChildren()) {
-				if (n instanceof ResponseNode){
-					ResponseNode rn=(ResponseNode) n;
+				if (n instanceof KeyValueNode){
+					KeyValueNode rn=(KeyValueNode) n;
 					result.add(new ResponseImpl(mdl,this,rn));
 				}
 			}

@@ -8,6 +8,7 @@ import java.util.Set;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.INamedParam.TypeKind;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
@@ -143,6 +144,10 @@ public class BasicTests extends TestCase{
 		boolean hasGet=false;
 		boolean hasC=false;
 		for (Resource r:raml.resources()){
+			if (r.relativeUri().equals("/z/{e}")){
+				List<? extends INamedParam> uriParameters = r.uriParameters();
+				TestCase.assertTrue(uriParameters.size()==1);
+			}
 			if (r.relativeUri().equals("/q")){
 				found=true;
 				TestCase.assertTrue(r.displayName().equals("QQ"));
@@ -180,6 +185,66 @@ public class BasicTests extends TestCase{
 						TestCase.assertEquals(t.getType(), "application/json");
 						TestCase.assertTrue(t.getTypeModel().isObject());
 						TestCase.assertTrue(t.getTypeModel().toPropertiesView().allProperties().size()==3);
+					}
+				}
+			}
+		}
+		TestCase.assertTrue(hasC);
+		TestCase.assertTrue(hasGet);
+		TestCase.assertTrue(found);
+	}
+	
+
+	@Test	
+	public void test12() {
+		Api raml = (Api) parse("/t10.raml");
+		boolean found=false;
+		boolean hasGet=false;
+		boolean hasC=false;
+		for (Resource r:raml.resources()){
+			if (r.relativeUri().equals("/z/{e}")){
+				List<? extends INamedParam> uriParameters = r.uriParameters();
+				TestCase.assertTrue(uriParameters.size()==1);
+				INamedParam namedParam = uriParameters.get(0);
+				TestCase.assertTrue(namedParam.getTypeKind()==TypeKind.NUMBER);
+				TestCase.assertTrue(namedParam.getMinimum().intValue()==10);
+			}
+			if (r.relativeUri().equals("/q")){
+				found=true;
+				TestCase.assertTrue(r.displayName().equals("QQ"));
+				for (Action c:r.methods()){
+					if (c.method().equals("get")){
+						hasGet=true;
+						ArrayList<String> is = c.getIs();
+						TestCase.assertTrue(is.size()==1);
+						TestCase.assertTrue(c.description().equals("get some stuff"));
+						List<INamedParam> queryParameters = (List<INamedParam>) c.queryParameters();
+						TestCase.assertEquals(queryParameters.size(),3);
+						for (INamedParam p:queryParameters){
+							TestCase.assertTrue(p.getTypeKind()==INamedParam.TypeKind.STRING);
+							if(p.getKey().equals("c")){
+								TestCase.assertFalse(p.isRequired());
+								hasC=true;
+							}
+						}
+						List<Response> responses = c.responses();
+						TestCase.assertTrue(responses.size()==1);
+						Response ar=responses.get(0);
+						TestCase.assertTrue(ar.code().equals("200"));
+						List<MimeType> body = ar.body();
+						TestCase.assertTrue(body.size()==1);
+						MimeType t=(MimeType) body.get(0);
+						TestCase.assertEquals(t.getType(), "application/json");
+						TestCase.assertTrue(t.getTypeModel().isExternal());
+						
+					}
+					if (c.method().equals("post")){
+						hasGet=true;
+						List<MimeType> body = c.body();
+						TestCase.assertTrue(body.size()==1);
+						MimeType t=(MimeType) body.get(0);
+						TestCase.assertEquals(t.getType(), "application/json");
+						TestCase.assertTrue(t.getTypeModel().isExternal());
 					}
 				}
 			}

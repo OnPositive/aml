@@ -9,11 +9,9 @@ import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
 import org.aml.apimodel.TopLevelModel;
 import org.raml.v2.internal.impl.commons.nodes.MethodNode;
-import org.raml.v2.internal.impl.commons.nodes.ResponseNode;
 import org.raml.v2.internal.impl.commons.nodes.TraitRefNode;
 import org.raml.yagi.framework.nodes.ArrayNode;
 import org.raml.yagi.framework.nodes.KeyValueNode;
-import org.raml.yagi.framework.nodes.KeyValueNodeImpl;
 import org.raml.yagi.framework.nodes.Node;
 
 public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> implements Action {

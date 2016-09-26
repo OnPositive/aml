@@ -3,7 +3,6 @@ package org.aml.typesystem.ramlreader;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Response;
 import org.aml.apimodel.TopLevelModel;
-import org.raml.v2.internal.impl.commons.nodes.ResponseNode;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 
 public class ResponseImpl extends AbstractWrappedNodeImpl<Action, KeyValueNode> implements Response{
@@ -17,6 +16,5 @@ public class ResponseImpl extends AbstractWrappedNodeImpl<Action, KeyValueNode> 
 	public String code() {
 		return getKey();
 	}
-
 
 }

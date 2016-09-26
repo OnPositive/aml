@@ -46,6 +46,7 @@ import org.raml.v2.internal.impl.v10.nodes.NativeTypeExpressionNode;
 import org.raml.v2.internal.impl.v10.nodes.PropertyNode;
 import org.raml.v2.internal.impl.v10.nodes.UnionTypeExpressionNode;
 import org.raml.v2.internal.utils.StreamUtils;
+import org.raml.yagi.framework.nodes.BooleanNode;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
 import org.raml.yagi.framework.nodes.NullNode;
@@ -237,7 +238,7 @@ public class TopLevelRamlModelBuilder {
 		if (tn instanceof SYObjectNode) {
 			// RAML 0.8
 			SYObjectNode sr = (SYObjectNode) tn;
-			AbstractType superType08 = getSuperType08(sr);
+			AbstractType superType08 = getSuperType08(sr, topLevelRamlImpl);
 			return TypeOps.derive(typeName,superType08);
 		}
 		if (tn instanceof TypeDeclarationNode) {
@@ -268,23 +269,7 @@ public class TopLevelRamlModelBuilder {
 					if (n.getName().equals(PROPERTIES)) {
 						Node value = n.getValue();
 						List<Node> ps = value.getChildren();
-						for (Node p : ps) {
-							PropertyNode pn = (PropertyNode) p;
-							TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
-							AbstractType buildType = buildType(topLevelRamlImpl, "", td, register);
-							boolean required = pn.isRequired();
-
-							String name = pn.getName();
-							if (name.startsWith("/") && name.endsWith("/") && name.length() != 1) {
-								if (name.length() != 2) {
-									result.declareMapProperty(name.substring(1, name.length() - 1), buildType);
-								} else {
-									result.declareAdditionalProperty(buildType);
-								}
-							} else {
-								result.declareProperty(name, buildType, !required);
-							}
-						}
+						parseProperties(topLevelRamlImpl, register, result, ps);
 						continue;
 					}
 
@@ -396,7 +381,58 @@ public class TopLevelRamlModelBuilder {
 		return null;
 	}
 
-	private AbstractType getSuperType08(Node na) {
+	private void parseProperties(TopLevelRamlImpl topLevelRamlImpl, boolean register, AbstractType result,
+			List<Node> ps) {
+		for (Node p : ps) {
+			KeyValueNode pn = (KeyValueNode) p;
+			TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
+			AbstractType buildType = buildType(topLevelRamlImpl, "", td, register);
+			boolean required = isRequired(pn);
+
+			String name = getPropertyName(pn);
+			if (name.startsWith("/") && name.endsWith("/") && name.length() != 1) {
+				if (name.length() != 2) {
+					result.declareMapProperty(name.substring(1, name.length() - 1), buildType);
+				} else {
+					result.declareAdditionalProperty(buildType);
+				}
+			} else {
+				result.declareProperty(name, buildType, !required);
+			}
+		}
+	}
+	
+	public boolean isRequired(KeyValueNode kv)
+    {
+        final StringNode key = (StringNode) kv.getKey();
+        return getRequiredNode(kv) instanceof BooleanNode ? ((BooleanNode) getRequiredNode(kv)).getValue() : !key.getValue().endsWith("?");
+    }
+	 public String getPropertyName(KeyValueNode pn)
+	    {
+	        final StringNode key = (StringNode) pn.getKey();
+	        final String keyValue = key.getValue();
+	        if (getRequiredNode(pn) == null)
+	        {
+	            // If required field is set then the ? should be ignored
+	            return keyValue.endsWith("?") ? keyValue.substring(0, keyValue.length() - 1) : keyValue;
+	        }
+	        else
+	        {
+	            return keyValue;
+	        }
+	    }
+
+	    private Node getRequiredNode(KeyValueNode v)
+	    {
+	        return v.getValue().get("required");
+	    }
+
+	
+
+	
+
+
+	private AbstractType getSuperType08(Node na,TopLevelRamlImpl raml) {
 		for (Node n : na.getChildren()) {
 			if (n instanceof KeyValueNode) {
 				KeyValueNode k = (KeyValueNode) n;
@@ -407,6 +443,12 @@ public class TopLevelRamlModelBuilder {
 					Object vl = toObject(k.getValue());
 					if (literalValue.equals("schema")) {
 						return TypeOps.derive("" + vl, BuiltIns.EXTERNAL);
+					}
+					if (literalValue.equals("formParameters")){
+						AbstractType derive = TypeOps.derive("" , BuiltIns.OBJECT);
+						List<Node> children = k.getValue().getChildren();
+						parseProperties(raml, false, derive, children);
+						return derive;
 					}
 					if (literalValue.equals("type")) {
 						return TypeOps.derive("", BuiltIns.getBuiltInTypes().getType("" + vl));

@@ -1,7 +1,6 @@
 package org.aml.typesystem.ramlreader;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.aml.apimodel.Annotable;
@@ -11,7 +10,6 @@ import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
-import org.raml.v2.internal.impl.commons.nodes.TypeDeclarationNode;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
 import org.raml.yagi.framework.nodes.ObjectNode;

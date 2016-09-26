@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
+import org.aml.typesystem.meta.restrictions.ExternalSchemaMeta;
 import org.aml.typesystem.meta.restrictions.RestrictionsOptimizer;
 
 /**
@@ -96,4 +97,11 @@ public class TypeOps {
 		return derive;
 	}
 
+	
+	public static AbstractType deriveExternal(String name,String schemaContent){
+		AbstractType derive = TypeOps.derive(name,BuiltIns.EXTERNAL);
+		derive.addMeta(new ExternalSchemaMeta(schemaContent));
+		return derive;
+		
+	}
 }

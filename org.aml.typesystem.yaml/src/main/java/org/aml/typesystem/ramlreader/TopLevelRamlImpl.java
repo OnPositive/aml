@@ -19,8 +19,8 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 	
 	protected transient Node original;
 	
-	protected transient HashMap<String,TypeDeclarationNode> typeDecls=new HashMap<>();
-	protected transient HashMap<String,TypeDeclarationNode> atypeDecls=new HashMap<>();
+	protected transient HashMap<String,Node> typeDecls=new HashMap<>();
+	protected transient HashMap<String,Node> atypeDecls=new HashMap<>();
 	
 	public TopLevelRamlImpl(Node original) {
 		super();
@@ -32,6 +32,8 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 		this.atypeDecls=n.atypeDecls;
 		this.topLevelTypes=n.topLevelTypes;
 		this.annotationTypes=n.annotationTypes;
+		this.topLevelTypes.allTypes().forEach(x->x.setSource(this));
+		this.annotationTypes.allTypes().forEach(x->x.setSource(this));
 	}
 	protected LinkedHashMap<String,LibraryImpl>usesMap=new LinkedHashMap<>();
 	

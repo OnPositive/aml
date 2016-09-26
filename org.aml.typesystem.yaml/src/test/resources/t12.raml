@@ -1,0 +1,14 @@
+#%RAML 0.8
+title: Hello
+traits:
+  - Hello:
+      queryParameters:
+        c:
+          required: false
+schemas:
+  - Person: "{}"
+/q:
+  post:
+    body:
+      application/json:
+        schema: Person

@@ -3,18 +3,26 @@ package org.aml.typesystem.ramlreader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aml.apimodel.Action;
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Response;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
+import org.aml.typesystem.meta.TypeInformation;
+import org.aml.typesystem.meta.facets.DisplayName;
 import org.aml.typesystem.meta.facets.Example;
 
 public class MimeTypeImpl implements MimeType {
 
 	protected AbstractType model;
+	protected MethodImpl owner;
+	protected Response owningResponse;
 
-	public MimeTypeImpl(NamedParam p) {
+	public MimeTypeImpl(NamedParam p,MethodImpl owner) {
 		this.model = p.getTypeModel();
+		
+		this.owner=owner;
 	}
 
 	public String getType() {
@@ -33,7 +41,20 @@ public class MimeTypeImpl implements MimeType {
 	}
 
 	public AbstractType getTypeModel() {
-		return model;
+		if (!model.isUnion()&&model.superTypes().size()==1){
+    		boolean canSkip=true;
+    		for (TypeInformation i:model.declaredMeta()){
+    			if (i instanceof DisplayName){
+    				continue;
+    			}
+    			canSkip=false;
+    		}
+    		if (canSkip&&!model.superType().isAnonimous()){
+    			return model.superType();
+    		}
+    	}
+		//okey,actual structure is complex;
+		return this.model.clone(this.getMethod().resource().getUri()+this.getMethod().method()+"Type");
 	}
 
 	@Override
@@ -44,6 +65,16 @@ public class MimeTypeImpl implements MimeType {
 			np.add(vp);
 		}
 		return np;
+	}
+
+	@Override
+	public Action getMethod() {
+		return owner;
+	}
+
+	@Override
+	public Response owningResponse() {
+		return owningResponse;
 	}
 
 }

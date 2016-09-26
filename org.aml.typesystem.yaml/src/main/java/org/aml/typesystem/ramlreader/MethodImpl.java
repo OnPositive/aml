@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.aml.apimodel.Action;
 import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
 import org.aml.apimodel.TopLevelModel;
@@ -74,6 +75,16 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public List<MimeType> body() {
+		return body(this);
+	}
+
+	@Override
+	public boolean hasBody() {
+		return hasBody(this);
 	}
 	
 }

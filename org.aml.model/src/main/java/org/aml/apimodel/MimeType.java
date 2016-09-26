@@ -19,4 +19,7 @@ public interface MimeType {
 
 	public AbstractType getTypeModel();
 
+	public Action getMethod();
+
+	public Response owningResponse();
 }

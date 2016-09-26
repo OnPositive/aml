@@ -34,6 +34,7 @@ import org.aml.typesystem.meta.facets.internal.OriginalName;
 import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 import org.aml.typesystem.meta.restrictions.AdditionalProperties;
 import org.aml.typesystem.meta.restrictions.Enum;
+import org.aml.typesystem.meta.restrictions.ExternalSchemaMeta;
 import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
 import org.aml.typesystem.meta.restrictions.IMatchesProperty;
 import org.aml.typesystem.meta.restrictions.KnownPropertyRestricton;
@@ -1227,9 +1228,10 @@ public abstract class AbstractType implements IType {
 
 	public String getExternalSchemaContent() {
 		if (this.isExternal()) {
-			AbstractType superType = this.superType();
-
-			return superType.name();
+			ExternalSchemaMeta oneMeta = this.oneMeta(ExternalSchemaMeta.class);
+			if (oneMeta!=null){
+				return oneMeta.getContent();
+			}
 		}
 		return null;
 	}

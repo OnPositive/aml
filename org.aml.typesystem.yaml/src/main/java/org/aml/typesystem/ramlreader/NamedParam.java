@@ -25,6 +25,9 @@ public class NamedParam implements INamedParam {
 		super();
 		this.type = type;		
 		this.required=required;
+		if (this.type.isAnonimous()){
+			throw new IllegalStateException();
+		}
 	}
 
 	public List<String> getEnumeration() {

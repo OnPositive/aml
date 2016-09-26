@@ -9,6 +9,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +40,7 @@ import org.aml.typesystem.meta.facets.Format;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.CompositeAnnotator;
+import org.jsonschema2pojo.ContentResolver;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.GsonAnnotator;
@@ -49,6 +52,9 @@ import org.jsonschema2pojo.rules.RuleFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JAnnotatable;
@@ -439,11 +445,49 @@ public class JavaWriter {
 			// this is JSON schema
 			if (externalSchemaContent.trim().startsWith("{")) {
 				GenerationConfig jsonSchemaGenerationConfig = new DefaultGenerationConfig();
-				SchemaMapper mp = new SchemaMapper(
-						new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(), new SchemaStore()),
-						new SchemaGenerator());
-				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
 				URL storeContentToTempFile = storeContentToTempFile(externalSchemaContent);
+				SchemaStore schemaStore = new SchemaStore() {
+					{
+						contentResolver = new ContentResolver() {
+
+							@Override
+							public JsonNode resolve(URI uri) {
+								String file;
+
+								try {
+									if (!storeContentToTempFile.equals(uri.toURL())) {
+										if (uri.getScheme().equals("file")) {
+											file = uri.toURL().getFile();
+											String nm = new File(file).getName();
+											ITypeLibrary source = range.getSource();
+											AbstractType type = source.types().getType(nm);
+											if (type!=null&&type.isExternal()){
+												String schema=type.getExternalSchemaContent();
+												return new ObjectMapper().readTree(schema);
+											}											
+										}
+									}
+								} catch (MalformedURLException e) {
+
+								} catch (JsonProcessingException e) {
+									
+								} catch (IOException e) {
+									
+								}
+
+								// TODO Auto-generated method stub
+								return super.resolve(uri);
+							}
+						};
+					}
+				};
+
+				SchemaMapper mp = new SchemaMapper(
+						new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(), schemaStore),
+						new SchemaGenerator());
+
+				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
+
 				URL json = storeContentToTempFile;
 				try {
 					JType t = mp.generate(getModel(),
@@ -530,9 +574,9 @@ public class JavaWriter {
 		return null;
 	}
 
-	static HashMap<String,Class<?>>formats=new HashMap<>();
-	
-	static{
+	static HashMap<String, Class<?>> formats = new HashMap<>();
+
+	static {
 		formats.put("int32", int.class);
 		formats.put("int64", long.class);
 		formats.put("int", int.class);
@@ -542,39 +586,39 @@ public class JavaWriter {
 		formats.put("int16", short.class);
 		formats.put("int8", byte.class);
 	}
-	
+
 	private JType numberType(AbstractType range, IProperty member) {
 		Format oneMeta = range.oneMeta(Format.class);
-		if (oneMeta==null&&member!=null){
-			oneMeta=member.range().oneMeta(Format.class);
+		if (oneMeta == null && member != null) {
+			oneMeta = member.range().oneMeta(Format.class);
 		}
-		String format=null;
-		
+		String format = null;
+
 		defaultNumberFormat annotation = member.getDeclaredAt().annotation(defaultNumberFormat.class, true);
-		if (annotation!=null){
-			format=annotation.value();
+		if (annotation != null) {
+			format = annotation.value();
 		}
-		if (range.isInteger()){
+		if (range.isInteger()) {
 			defaultIntegerFormat ia = member.getDeclaredAt().annotation(defaultIntegerFormat.class, true);
-			if (ia!=null){
-				format=ia.value();
+			if (ia != null) {
+				format = ia.value();
 			}
 		}
-		if (oneMeta!=null){
-			//int32, int64, int, long, float, double, int16, int8
-			format=oneMeta.value();			
+		if (oneMeta != null) {
+			// int32, int64, int, long, float, double, int16, int8
+			format = oneMeta.value();
 		}
-		if (format!=null){
+		if (format != null) {
 			Class<?> class1 = formats.get(format);
 			JType _ref = mdl._ref(class1);
-			if (class1!=null){
+			if (class1 != null) {
 				switch (config.getWrapperStrategy()) {
 				case NONE:
 					return _ref;
 				case ALWAYS:
 					return _ref.boxify();
 				case OPTIONAL:
-					return member != null && !member.isRequired()?_ref.boxify():_ref;
+					return member != null && !member.isRequired() ? _ref.boxify() : _ref;
 				default:
 					break;
 				}
@@ -668,9 +712,9 @@ public class JavaWriter {
 		}
 		return type.array();
 	}
-	
+
 	protected JInvocation toArrayInit(AbstractType range2, IProperty member) {
-		range2=range2.oneMeta(ComponentShouldBeOfType.class).range();
+		range2 = range2.oneMeta(ComponentShouldBeOfType.class).range();
 		JType type = getType(range2, false, false, member);
 		boolean containerStrategyCollection = config.containerStrategyCollection;
 		boolean set = false;
@@ -689,7 +733,7 @@ public class JavaWriter {
 				set = true;
 			}
 		}
-		if (containerStrategyCollection ) {
+		if (containerStrategyCollection) {
 			if (set) {
 				return JExpr._new(mdl.ref(LinkedHashSet.class).narrow(type));
 			}

@@ -33,18 +33,18 @@ public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends
 		return this.getChildWithKeyAs("displayName", String.class, this.getKey());		
 	}
 	@SuppressWarnings("unchecked")
-	protected List<MimeType> toMimeTypes(Node childNodeWithKey) {
+	protected List<MimeType> toMimeTypes(Node childNodeWithKey,MethodImpl method) {
 		List<NamedParam> paramList = (List<NamedParam>) toParamList(childNodeWithKey);
 		ArrayList<MimeType>mt=new ArrayList<>();
 		for (NamedParam p:paramList){
-			mt.add(new MimeTypeImpl(p));
+			mt.add(new MimeTypeImpl(p,method));
 		}
 		return mt;
 	}
 	
-	public List<MimeType> body() {
+	protected List<MimeType> body(MethodImpl method) {
 		Node childNodeWithKey = this.getChildNodeWithKey("body");
-		return toMimeTypes(childNodeWithKey);
+		return toMimeTypes(childNodeWithKey,method);
 	}
 
 
@@ -53,8 +53,8 @@ public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends
 		return toParamList(childNodeWithKey);
 	}
 
-	public  final  boolean hasBody() {
-		return !body().isEmpty();
+	protected  final  boolean hasBody(MethodImpl m) {
+		return !body(m).isEmpty();
 	}
 	
 	public String getKey() {

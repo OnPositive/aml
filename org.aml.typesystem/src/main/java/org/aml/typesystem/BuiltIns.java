@@ -60,6 +60,9 @@ public class BuiltIns {
 	/** Constant <code>INTEGER</code> */
 	public static final AbstractType INTEGER = TypeOps.derive("integer", NUMBER);
 
+
+	public static final AbstractType DATE = TypeOps.derive("date", SCALAR);
+	
 	/** Constant <code>DATETIME</code> */
 	public static final AbstractType DATETIME = TypeOps.derive("datetime", SCALAR);
 	/** Constant <code>TIME</code> */
@@ -104,6 +107,7 @@ public class BuiltIns {
 		NUMBER.addMeta(BasicMeta.BUILTIN);
 		INTEGER.addMeta(BasicMeta.BUILTIN);
 		builtInsRegostry.registerType(DATETIME);
+		builtInsRegostry.registerType(DATE);
 		builtInsRegostry.registerType(TIMEONLY);
 		builtInsRegostry.registerType(DATEONLY);
 		builtInsRegostry.registerType(DATETIMEONLY);
@@ -114,6 +118,7 @@ public class BuiltIns {
 		FILE.addMeta(BasicMeta.BUILTIN);
 		DATETIMEONLY.addMeta(BasicMeta.BUILTIN);
 		DATETIME.addMeta(BasicMeta.BUILTIN);
+		DATE.addMeta(BasicMeta.BUILTIN);
 		DATETIME.addMeta(new FacetDeclaration("format", BuiltIns.STRING));
 		NUMBER.addMeta(new InstanceOfRestriction(Number.class));
 		builtInsRegostry.registerType(NUMBER);

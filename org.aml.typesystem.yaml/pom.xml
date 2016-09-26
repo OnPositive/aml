@@ -23,6 +23,11 @@
   		<artifactId>raml-parser-2</artifactId>
   		<version>1.0.0</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.onpositive.aml</groupId>
+  		<artifactId>org.aml.apimodel</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
   </dependencies>
   <parent>
   	<groupId>com.onpositive.aml</groupId>

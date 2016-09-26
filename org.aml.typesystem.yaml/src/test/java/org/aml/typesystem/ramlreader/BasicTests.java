@@ -279,6 +279,32 @@ public class BasicTests extends TestCase{
 		
 	}
 	
+	@Test	
+	public void test14() {
+		Api raml = (Api) parse("/t12.raml");
+		boolean hasPost=false;
+		for (Resource r:raml.resources()){
+			
+			if (r.relativeUri().equals("/q")){
+				for (Action c:r.methods()){
+					
+					if (c.method().equals("post")){
+						hasPost=true;
+						List<MimeType> body = c.body();
+						TestCase.assertTrue(body.size()==1);
+						MimeType t=(MimeType) body.get(0);
+						//TestCase.assertEquals(t.getType(), "application/json");
+						TestCase.assertTrue(t.getTypeModel().isExternal());
+						String externalSchemaContent = t.getTypeModel().getExternalSchemaContent();
+						TestCase.assertTrue(externalSchemaContent.equals("{}"));
+					}
+				}
+			}
+		}
+		TestCase.assertTrue(hasPost);
+		
+	}
+	
 	private TopLevelModel parse(String res) {
 		String string = StreamUtils.toString(BasicTests.class.getResourceAsStream(res));
 		Node build = new RamlBuilder().build(string);

@@ -1,0 +1,30 @@
+#%RAML 1.0 Library
+annotationTypes:
+  Links:
+     type: Link[]
+     description: Related links
+  Id:
+    type: string
+    description: "Global id of the artifact"
+  Title: 
+    type: string  
+    description: "Short human readable name of the thing"
+  Tags: 
+    type: string[]
+    description: "Semantic tags associated with the thing"
+  GroupId:
+    type: string
+    description: "Group id of the artifact"
+  Authors: Author[]
+  Version: string
+types:
+  Author:
+    properties:
+      name: string
+      email: string
+      profiles?: string[]
+  Link:
+    properties:
+      title: string
+      url: string
+      role?: string

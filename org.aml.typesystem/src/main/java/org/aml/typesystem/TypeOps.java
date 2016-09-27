@@ -1,5 +1,6 @@
 package org.aml.typesystem;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -27,7 +28,21 @@ public class TypeOps {
 		if (ankestors.length == 0) {
 			throw new IllegalArgumentException("At least one ancestor is needed");
 		}
-		return new InheritedType(name, ankestors);
+		InheritedType inheritedType = new InheritedType(name, ankestors);
+		boolean hasNullable=false;
+		boolean hasNotNullable=false;
+		for (AbstractType t:ankestors){
+			if(t.isNullable()){
+				hasNullable=true;
+			}
+			else{
+				hasNotNullable=true;
+			}
+		}
+		if (hasNullable&&!hasNotNullable){
+			inheritedType.setNullable(true);
+		}
+		return inheritedType;
 	}
 	
 	/**
@@ -79,6 +94,7 @@ public class TypeOps {
 	 * @return a {@link org.aml.typesystem.UnionType} object.
 	 */
 	public static UnionType union(String name, AbstractType... option) {
+		
 		if (option.length == 0) {
 			throw new IllegalArgumentException("At least one option is needed");
 		}

@@ -8,11 +8,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -30,6 +25,7 @@ import javax.tools.ToolProvider;
 
 import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
+import org.junit.rules.TemporaryFolder;
 import org.raml.v2.api.loader.ClassPathResourceLoader;
 import org.raml.v2.internal.utils.StreamUtils;
 
@@ -39,6 +35,15 @@ import junit.framework.TestCase;
 
 public abstract class CompilerTestCase extends TestCase {
 
+	ArrayList<TemporaryFolder>folders=new ArrayList<>();
+	
+	@Override
+	protected void tearDown() throws Exception {
+		for (TemporaryFolder f:folders){
+			f.delete();
+		}
+	}
+	
 	protected static class LocalFileObject extends SimpleJavaFileObject{
 	
 			protected LocalFileObject(URI uri, Kind kind) {
@@ -79,7 +84,7 @@ public abstract class CompilerTestCase extends TestCase {
 		return compileAndLoadClass(path, typeName, false);
 	}
 	public Class<?>compileAndLoadClass(String path,String typeName,boolean supportSer){
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/"+path),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/"+path),
 				new ClassPathResourceLoader(), path);
 		JavaWriter wr = new JavaWriter();
 		if (supportSer){
@@ -101,9 +106,17 @@ public abstract class CompilerTestCase extends TestCase {
 
 	@SuppressWarnings({ "deprecation" })
 	public HashMap<String, Class<?>> compileAndTest(JCodeModel mdl, String... names) {
-		String path=BasicTests.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-		File fl=new File(path,"generated");
-		recDelete(fl);
+		TemporaryFolder folder=new TemporaryFolder();
+		try {
+			folder.create();
+			folders.add(folder);
+		} catch (IOException e1) {
+			TestCase.assertFalse(true);
+		}
+		try{
+		String path=BasicTest.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+		File fl=folder.getRoot();
+		//recDelete(fl);
 		fl.mkdirs();
 		
 		
@@ -166,28 +179,13 @@ public abstract class CompilerTestCase extends TestCase {
 			return result;
 		} catch (MalformedURLException e) {
 			throw new IllegalStateException();
-		}		
+		}	
+		} finally {
+			//folder.delete();
+		}
+		
 	}
 
-	private void recDelete(File fl) {
-		try {
-			Files.walkFileTree(Paths.get(fl.toURI()),new SimpleFileVisitor<java.nio.file.Path>(){
-				@Override
-				public FileVisitResult visitFile(java.nio.file.Path file, BasicFileAttributes attrs)
-						throws IOException {
-					Files.delete(file);
-					return FileVisitResult.CONTINUE;
-				}
-				@Override
-				public FileVisitResult postVisitDirectory(java.nio.file.Path dir, IOException exc) throws IOException {
-					Files.delete(dir);
-					return FileVisitResult.CONTINUE;
-				}
-				
-			});
-		} catch (IOException e) {
-			//throw new IllegalStateException();
-		}
-	}
+	
 
 }

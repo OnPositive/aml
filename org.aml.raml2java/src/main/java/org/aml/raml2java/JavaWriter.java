@@ -320,11 +320,6 @@ public class JavaWriter {
 
 	public JType getType(AbstractType range, boolean allowNotJava, boolean convertComplexToAnnotation,
 			IProperty member) {
-		if (member != null) {
-			if (range.isEffectivelyEmptyType()) {
-				return getType(range.superTypes().iterator().next(), allowNotJava, convertComplexToAnnotation, member);
-			}
-		}
 		if (range.isAnnotation()) {
 			if (config.getAnnotationConfig().skipDefinition(range)) {
 				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
@@ -333,18 +328,9 @@ public class JavaWriter {
 				return ref;
 			}
 		}
-		if (defined.containsKey(range)) {
-			return defined.get(range);
-		}
-		if (range.isBuiltIn()) {
-			if (range.isString()) {
-				return mdl._ref(String.class);
-			}
-			if (range.isFile()) {
-				return mdl._ref(byte[].class);
-			}
+		if (range.isScalar()&&!range.isAnnotationType()){
 			if (range.isBoolean()) {
-				if (config.wrapperStrategy == WrappersStrategy.ALWAYS) {
+				if (config.wrapperStrategy == WrappersStrategy.ALWAYS||range.isNullable()) {
 					return mdl._ref(Boolean.class);
 				}
 				if (config.wrapperStrategy == WrappersStrategy.OPTIONAL) {
@@ -357,10 +343,34 @@ public class JavaWriter {
 			if (range.isNumber()) {
 				return numberType(range, member);
 			}
+		}
+		if (range.isBuiltIn()) {
+			if (range.isString()) {
+				return mdl._ref(String.class);
+			}
+			if (range.isNill()) {
+				return mdl._ref(Object.class);
+			}
+			if (range.isFile()) {
+				return mdl._ref(byte[].class);
+			}
+			
 			if (range.isObject()) {
 				return mdl._ref(Object.class);
 			}
 		}
+		if (member != null) {
+			
+			if (range.isEffectivelyEmptyType()) {
+				
+				return getType(range.superTypes().iterator().next(), allowNotJava, convertComplexToAnnotation, member);
+			}
+		}
+		
+		if (defined.containsKey(range)) {
+			return defined.get(range);
+		}
+		
 
 		if (range.isAnonimous()) {
 			if (range.isArray()) {
@@ -589,10 +599,12 @@ public class JavaWriter {
 
 	private JType numberType(AbstractType range, IProperty member) {
 		Format oneMeta = range.oneMeta(Format.class);
-		if (oneMeta == null && member != null) {
+		String format = null;
+		if (member!=null){
+		if (oneMeta == null ) {
 			oneMeta = member.range().oneMeta(Format.class);
 		}
-		String format = null;
+		
 
 		defaultNumberFormat annotation = member.getDeclaredAt().annotation(defaultNumberFormat.class, true);
 		if (annotation != null) {
@@ -604,15 +616,20 @@ public class JavaWriter {
 				format = ia.value();
 			}
 		}
+		}
 		if (oneMeta != null) {
 			// int32, int64, int, long, float, double, int16, int8
 			format = oneMeta.value();
+		}
+		WrappersStrategy wrapperStrategy = config.getWrapperStrategy();
+		if (range.isNullable()){
+			wrapperStrategy=WrappersStrategy.ALWAYS;
 		}
 		if (format != null) {
 			Class<?> class1 = formats.get(format);
 			JType _ref = mdl._ref(class1);
 			if (class1 != null) {
-				switch (config.getWrapperStrategy()) {
+				switch (wrapperStrategy) {
 				case NONE:
 					return _ref;
 				case ALWAYS:
@@ -627,7 +644,7 @@ public class JavaWriter {
 		if (range.isInteger()) {
 			switch (config.getIntegerFormat()) {
 			case INT:
-				switch (config.getWrapperStrategy()) {
+				switch (wrapperStrategy) {
 				case NONE:
 					return mdl._ref(int.class);
 				case OPTIONAL:
@@ -644,7 +661,7 @@ public class JavaWriter {
 				return mdl._ref(BigInteger.class);
 
 			case LONG:
-				switch (config.getWrapperStrategy()) {
+				switch (wrapperStrategy) {
 				case NONE:
 					return mdl._ref(long.class);
 				case OPTIONAL:
@@ -663,13 +680,13 @@ public class JavaWriter {
 		}
 		switch (config.getDoubleFormat()) {
 		case DOUBLE:
-			switch (config.getWrapperStrategy()) {
+			switch (wrapperStrategy) {
 			case NONE:
 				return mdl._ref(double.class);
 			case OPTIONAL:
 				return member != null && !member.isRequired() ? mdl.ref(Double.class) : mdl._ref(double.class);
 			case ALWAYS:
-				return mdl.ref(Long.class);
+				return mdl.ref(Double.class);
 
 			default:
 				break;
@@ -775,6 +792,9 @@ public class JavaWriter {
 	}
 
 	public static String escape(String x) {
+		if (DefaultNameGenerator.isKeyword(x)){
+			x="_"+x;
+		}
 		StringBuilder bld = new StringBuilder();
 		for (int i = 0; i < x.length(); i++) {
 			char c = x.charAt(i);

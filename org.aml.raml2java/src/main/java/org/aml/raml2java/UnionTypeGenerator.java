@@ -63,6 +63,9 @@ public class UnionTypeGenerator implements ITypeGenerator {
 	private void generateProperty(JDefinedClass defineClass, AbstractType option,Set<AbstractType>allOptions) {
 		String name = writer.escape(option.name().toLowerCase());
 		JType propType = writer.getType(option, false, false, null);
+		if (propType.isPrimitive()){
+			propType=propType.boxify();
+		}
 		defineClass.field(JMod.PRIVATE, propType, name);
 		JMethod get = defineClass.method(JMod.PUBLIC, propType,
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));

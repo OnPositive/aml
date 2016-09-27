@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 
 import junit.framework.TestCase;
 
-public class SerializationTests extends CompilerTestCase {
+public class SerializationTest extends CompilerTestCase {
 
 	@Test
 	public void test0() {
@@ -159,14 +159,14 @@ public class SerializationTests extends CompilerTestCase {
 	
 	public Object loadObjectGson(Class<?> cl, String jsonPath) {
 		Object fromJson = new Gson()
-				.fromJson(new InputStreamReader(SerializationTests.class.getResourceAsStream(jsonPath)), cl);
+				.fromJson(new InputStreamReader(SerializationTest.class.getResourceAsStream(jsonPath)), cl);
 		return fromJson;
 	}
 
 	public Object loadObjectJackson(Class<?> clazz, String jsonPath) {
 		try {
 			return JacksonUtils.getReader().forType(clazz)
-					.readValue(new InputStreamReader(SerializationTests.class.getResourceAsStream(jsonPath)));
+					.readValue(new InputStreamReader(SerializationTest.class.getResourceAsStream(jsonPath)));
 		} catch (JsonProcessingException e) {
 			TestCase.assertTrue(false);
 		} catch (IOException e) {
@@ -188,7 +188,7 @@ public class SerializationTests extends CompilerTestCase {
 	}
 
 	static void assertAgainstJSON(Object obj, String jsonPath) {
-		JSONObject ob = new JSONObject(StreamUtils.toString(SerializationTests.class.getResourceAsStream(jsonPath)));
+		JSONObject ob = new JSONObject(StreamUtils.toString(SerializationTest.class.getResourceAsStream(jsonPath)));
 		assertObject(ob, obj);
 	}
 
@@ -240,7 +240,7 @@ public class SerializationTests extends CompilerTestCase {
 	}
 
 	public Object loadObjectJAXB(String xmlPath, Class<?> clazz) {
-		return JAXB.unmarshal(new InputStreamReader(SerializationTests.class.getResourceAsStream(xmlPath)), clazz);
+		return JAXB.unmarshal(new InputStreamReader(SerializationTest.class.getResourceAsStream(xmlPath)), clazz);
 	}
 
 	public static void assertProperty(Object obj, String pName, Object value) {

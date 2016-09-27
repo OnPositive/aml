@@ -13,7 +13,19 @@ public class DefaultNameGenerator implements INameGenerator{
 	protected String defaultPackageName;
 	protected HashSet<String>used=new HashSet<>();
 	
-	static String[] keywords=new String[]{"package","class","interface","private","public","protected","volatile","for","while","do","break","continue","if","synhronized","trasient","implements","extends","enum","goto","static"};
+	static String[] keywords=new String[]{"package","class","interface","private","public","protected","volatile","for","while","do","break","continue","if","synhronized","trasient","implements","extends","enum","goto","static","boolean","int","double","float","long","short","null","byte","char"};
+
+	
+	static HashSet<String>ks=new HashSet<>();
+	static{
+	for (String s:keywords){
+		ks.add(s);
+	}
+	}
+	
+	public static boolean isKeyword(String v){
+		return ks.contains(v);
+	}
 	
 	public DefaultNameGenerator(String string) {
 		this.defaultPackageName=string;

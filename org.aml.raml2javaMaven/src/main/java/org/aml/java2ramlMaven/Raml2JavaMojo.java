@@ -12,13 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.aml.raml2java.IClassCustomizer;
+import org.aml.raml2java.IPropertyCustomizer;
 import org.aml.raml2java.JavaGenerationConfig.DefaultIntegerFormat;
 import org.aml.raml2java.JavaGenerationConfig.DefaultNumberFormat;
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.raml2java.JavaGenerationConfig.WrappersStrategy;
-import org.aml.raml2java.BasicAnnotationProcessingConfig;
-import org.aml.raml2java.IClassCustomizer;
-import org.aml.raml2java.IPropertyCustomizer;
 import org.aml.raml2java.JavaWriter;
 import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;

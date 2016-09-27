@@ -24,11 +24,11 @@ import org.raml.v2.api.loader.ClassPathResourceLoader;
 
 import junit.framework.TestCase;
 
-public class BasicTests extends CompilerTestCase {
+public class BasicTest extends CompilerTestCase {
 
 	@Test
 	public void test0() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at0.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at0.raml"),
 				new ClassPathResourceLoader(), "at0.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -42,7 +42,7 @@ public class BasicTests extends CompilerTestCase {
 
 	@Test
 	public void test1() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at1.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at1.raml"),
 				new ClassPathResourceLoader(), "at1.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -59,7 +59,7 @@ public class BasicTests extends CompilerTestCase {
 
 	@Test
 	public void test2() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at2.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at2.raml"),
 				new ClassPathResourceLoader(), "at2.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -78,7 +78,7 @@ public class BasicTests extends CompilerTestCase {
 
 	@Test
 	public void test3() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at3.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at3.raml"),
 				new ClassPathResourceLoader(), "at3.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -102,7 +102,7 @@ public class BasicTests extends CompilerTestCase {
 
 	@Test
 	public void test4() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at4.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at4.raml"),
 				new ClassPathResourceLoader(), "at4.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -126,7 +126,7 @@ public class BasicTests extends CompilerTestCase {
 
 	@Test
 	public void test5() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at5.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at5.raml"),
 				new ClassPathResourceLoader(), "at5.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -141,7 +141,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test6() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at6.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at6.raml"),
 				new ClassPathResourceLoader(), "at6.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -156,7 +156,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test7() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at7.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at7.raml"),
 				new ClassPathResourceLoader(), "at7.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -179,7 +179,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test8() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at8.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at8.raml"),
 				new ClassPathResourceLoader(), "at8.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -203,7 +203,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test9() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at9.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at9.raml"),
 				new ClassPathResourceLoader(), "at9.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -226,7 +226,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test10() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at10.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at10.raml"),
 				new ClassPathResourceLoader(), "at10.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -250,7 +250,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test11() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/at11.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at11.raml"),
 				new ClassPathResourceLoader(), "at11.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -275,7 +275,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test12() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t1.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t1.raml"),
 				new ClassPathResourceLoader(), "t1.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -295,7 +295,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test13() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t2.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t2.raml"),
 				new ClassPathResourceLoader(), "t2.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -315,7 +315,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test14() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t3.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t3.raml"),
 				new ClassPathResourceLoader(), "t3.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -335,7 +335,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test15() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t4.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t4.raml"),
 				new ClassPathResourceLoader(), "t4.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -353,7 +353,7 @@ public class BasicTests extends CompilerTestCase {
 	}	
 	@Test
 	public void test16() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t5.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t5.raml"),
 				new ClassPathResourceLoader(), "t5.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -371,7 +371,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test17() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t5.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t5.raml"),
 				new ClassPathResourceLoader(), "t5.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -393,7 +393,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test18() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t6.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t6.raml"),
 				new ClassPathResourceLoader(), "t6.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -415,7 +415,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test19() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t7.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t7.raml"),
 				new ClassPathResourceLoader(), "t7.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -445,7 +445,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test20() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t8.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t8.raml"),
 				new ClassPathResourceLoader(), "t8.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -475,7 +475,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test21() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t9.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t9.raml"),
 				new ClassPathResourceLoader(), "t9.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -505,7 +505,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test22() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t9.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t9.raml"),
 				new ClassPathResourceLoader(), "t9.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -536,7 +536,7 @@ public class BasicTests extends CompilerTestCase {
 //	
 	@Test
 	public void test23() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t10.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t10.raml"),
 				new ClassPathResourceLoader(), "t10.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -560,7 +560,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test24() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t11.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t11.raml"),
 				new ClassPathResourceLoader(), "t11.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -585,7 +585,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test25() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t12.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t12.raml"),
 				new ClassPathResourceLoader(), "t12.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -617,7 +617,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test26() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t13.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t13.raml"),
 				new ClassPathResourceLoader(), "t13.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -648,7 +648,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test27() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t14.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t14.raml"),
 				new ClassPathResourceLoader(), "t14.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -680,7 +680,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test28() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t15.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t15.raml"),
 				new ClassPathResourceLoader(), "t15.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -712,7 +712,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test29() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t16.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t16.raml"),
 				new ClassPathResourceLoader(), "t16.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -744,7 +744,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test30() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t17.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t17.raml"),
 				new ClassPathResourceLoader(), "t17.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -776,7 +776,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test31() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t18.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t18.raml"),
 				new ClassPathResourceLoader(), "t18.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -802,7 +802,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test32() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t19.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t19.raml"),
 				new ClassPathResourceLoader(), "t19.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -829,7 +829,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test33() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t20.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t20.raml"),
 				new ClassPathResourceLoader(), "t20.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -859,7 +859,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test34() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t21.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t21.raml"),
 				new ClassPathResourceLoader(), "t21.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -887,7 +887,7 @@ public class BasicTests extends CompilerTestCase {
 
 	@Test
 	public void test35() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t35.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t35.raml"),
 				new ClassPathResourceLoader(), "t21.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -919,7 +919,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test36() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t29.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t29.raml"),
 				new ClassPathResourceLoader(), "t29.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -939,7 +939,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test37() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t29.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t29.raml"),
 				new ClassPathResourceLoader(), "t29.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.MIX_IN);
@@ -971,7 +971,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test38() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t37.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t37.raml"),
 				new ClassPathResourceLoader(), "t37.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -1003,7 +1003,7 @@ public class BasicTests extends CompilerTestCase {
 	
 	@Test
 	public void test39() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t37.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t37.raml"),
 				new ClassPathResourceLoader(), "t37.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -1029,7 +1029,7 @@ public class BasicTests extends CompilerTestCase {
 	}
 	@Test
 	public void test40() {
-		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTests.class.getResourceAsStream("/t45.raml"),
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t45.raml"),
 				new ClassPathResourceLoader(), "/t45.raml");
 		JavaWriter wr = new JavaWriter();
 		wr.setDefaultPackageName("org.aml.test");
@@ -1041,6 +1041,42 @@ public class BasicTests extends CompilerTestCase {
 			Method method = class1.getMethod("getZ");
 			Object vl=method.invoke(newInstance);
 			TestCase.assertTrue(vl.equals(2.0f));
+			method = class1.getMethod("getQ");
+			vl=method.invoke(newInstance);
+			TestCase.assertTrue(vl.equals("Hello"));
+			method = class1.getMethod("getV");
+			vl=method.invoke(newInstance);
+			TestCase.assertTrue(vl.equals(true));
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException e1) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void test41() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t40.raml"),
+				new ClassPathResourceLoader(), "/t40.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.TestTypeWithDefaults");
+		Class<?> class1 = compileAndTest.get("org.aml.test.TestTypeWithDefaults");
+		try {
+			Object newInstance = class1.newInstance();
+			Method method = class1.getMethod("getZ");
+			Object vl=method.invoke(newInstance);
+			TestCase.assertTrue(vl.equals(2.0));
 			method = class1.getMethod("getQ");
 			vl=method.invoke(newInstance);
 			TestCase.assertTrue(vl.equals("Hello"));

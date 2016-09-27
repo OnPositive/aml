@@ -1,0 +1,13 @@
+#%RAML 1.0 Library
+types:
+  TestTypeWithDefaults:
+    properties:
+      z:
+        type: number?
+        default: 2
+      q:
+        type: string | nil
+        default: "Hello"
+      v:
+        type: boolean?
+        default: true

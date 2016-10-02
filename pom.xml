@@ -157,7 +157,7 @@
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5</version>
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>

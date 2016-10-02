@@ -8,7 +8,7 @@
 		<plugins>
 			
 			<plugin>
-				<version>0.0.3</version>
+				<version>0.0.5</version>
 				<groupId>com.onpositive.aml</groupId>
 				<configuration>
 					<ramlFiles><value>./instagramTypes.raml</value></ramlFiles>

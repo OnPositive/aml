@@ -1,0 +1,12 @@
+#%RAML 1.0 Library
+uses:
+  r2j: ./raml2java.raml
+types:
+  Person:
+    (r2j.serializable):
+    (r2j.cloneable):
+    properties:
+      name: string
+      lastName: string
+      friends?: Person[]
+(r2j.equalsAndHashCode):

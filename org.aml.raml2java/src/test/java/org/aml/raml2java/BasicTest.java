@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +27,8 @@ import junit.framework.TestCase;
 
 public class BasicTest extends CompilerTestCase {
 
+	
+	
 	@Test
 	public void test0() {
 		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/at0.raml"),
@@ -1088,6 +1091,75 @@ public class BasicTest extends CompilerTestCase {
 		} catch (IllegalArgumentException e) {
 			TestCase.assertTrue(false);
 		} catch (InvocationTargetException e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+	}
+	class X implements Cloneable{
+		
+		@Override
+		public X clone()  {
+			try {
+				return (X) super.clone();
+			} catch (CloneNotSupportedException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+	}
+	
+	@Test
+	public void test42() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t41.raml"),
+				new ClassPathResourceLoader(), "/t41.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setGenerateHashCodeAndEquals(true);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Person");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Person");
+		try {
+			Object newInstance = class1.newInstance();
+			Object newInstance2 = class1.newInstance();
+			TestCase.assertTrue(newInstance.equals(newInstance2));
+			TestCase.assertEquals(newInstance.hashCode(), newInstance2.hashCode());
+		} catch (SecurityException | InstantiationException | IllegalAccessException e1) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+		try {			
+		} catch (SecurityException e) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
+			TestCase.assertTrue(false);
+		}
+	}
+	@Test
+	public void test43() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t42.raml"),
+				new ClassPathResourceLoader(), "t42.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Person");
+		Class<?> class1 = compileAndTest.get("org.aml.test.Person");
+		try {
+			Object newInstance = class1.newInstance();
+			Object newInstance2 = class1.newInstance();
+			TestCase.assertTrue(newInstance instanceof Serializable);
+			TestCase.assertTrue(newInstance instanceof Cloneable);
+			TestCase.assertTrue(newInstance.equals(newInstance2));
+			TestCase.assertEquals(newInstance.hashCode(), newInstance2.hashCode());
+		} catch (SecurityException | InstantiationException | IllegalAccessException e1) {
+			TestCase.assertTrue(false);
+		} catch (IllegalArgumentException e) {
 			TestCase.assertTrue(false);
 		}
 		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));

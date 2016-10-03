@@ -333,7 +333,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		}
 		JFieldVar field = null;
 		if (needField) {
-			field = defineClass.field(JMod.PRIVATE, propType, name);
+			field = defineClass.field(JMod.PROTECTED, propType, name);
 			if (p.range().isFile() && writer.getConfig().isGsonSupport()) {
 				if (!defineClass.getPackage().hasResourceFile("ByteArrayToBase64TypeAdapter.java")) {
 					String string = StreamUtils.toString(

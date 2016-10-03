@@ -38,6 +38,34 @@ public class JavaGenerationConfig {
 	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;
 	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;
 	
+	protected boolean hashCodeAndEquals;
+	protected boolean implementSerializable;
+	protected boolean implementClonable;
+	
+	public boolean isImplementClonable() {
+		return implementClonable;
+	}
+
+	public void setImplementClonable(boolean implementClonable) {
+		this.implementClonable = implementClonable;
+	}
+
+	public boolean isImplementSerializable() {
+		return implementSerializable;
+	}
+
+	public void setImplementSerializable(boolean implementSerializable) {
+		this.implementSerializable = implementSerializable;
+	}
+
+	public boolean isGenerateHashCodeAndEquals() {
+		return hashCodeAndEquals;
+	}
+
+	public void setGenerateHashCodeAndEquals(boolean hashCodeAndEquals) {
+		this.hashCodeAndEquals = hashCodeAndEquals;
+	}
+
 	public WrappersStrategy getWrapperStrategy() {
 		return wrapperStrategy;
 	}

@@ -58,6 +58,9 @@ public class FacetProcessingConfig implements IClassCustomizer{
 
 
 	void processFacets(AbstractType t, PropertyCustomizerParameters cp) {
+		if (t.isUnion()){
+			return;
+		}
 		HashSet<String> names = new HashSet<>();
 		for (AbstractType q : t.allSuperTypes()) {
 			names.add(q.name());

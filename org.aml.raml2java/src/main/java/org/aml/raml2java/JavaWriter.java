@@ -24,9 +24,12 @@ import java.util.Set;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.aml.java.mapping.cloneable;
 import org.aml.java.mapping.container;
 import org.aml.java.mapping.defaultIntegerFormat;
 import org.aml.java.mapping.defaultNumberFormat;
+import org.aml.java.mapping.equalsAndHashCode;
+import org.aml.java.mapping.serializable;
 import org.aml.raml2java.JavaGenerationConfig.WrappersStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
@@ -848,5 +851,14 @@ public class JavaWriter {
 
 	public void runCustomizers(ClassCustomizerParameters cp) {
 		config.classCustomizers.forEach(x -> x.customize(cp));
+		if (this.getConfig().isGenerateHashCodeAndEquals()||(cp.type.annotation(equalsAndHashCode.class, true)!=null)){
+			new HashCodeAndEqualsBuilder().customize(cp);
+		}
+		if (this.getConfig().isImplementSerializable()||(cp.type.annotation(serializable.class, true)!=null)){
+			new SerializableCustomizer().customize(cp);
+		}
+		if (this.getConfig().isImplementClonable()||(cp.type.annotation(cloneable.class, true)!=null)){
+			new ClonableCustomizer().customize(cp);
+		}
 	}
 }

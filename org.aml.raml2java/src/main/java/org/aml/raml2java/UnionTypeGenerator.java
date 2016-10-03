@@ -1,5 +1,6 @@
 package org.aml.raml2java;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.aml.typesystem.AbstractType;
@@ -57,6 +58,7 @@ public class UnionTypeGenerator implements ITypeGenerator {
 			writer.getModel()._package(defineClass.getPackage().name()).addResourceFile(new StringResourceFile(qName,writerCode));
 			defineClass.annotate(JsonSerialize.class).param("using", JExpr.dotclass(writer.getModel().directClass(adapterName)));
 		}
+		writer.runCustomizers(new ClassCustomizerParameters(writer, defineClass, t, new ArrayList<>()));
 		return defineClass;
 	}
 

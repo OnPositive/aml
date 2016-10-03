@@ -42,8 +42,7 @@ annotationTypes:
     enum: [long, int, int16, int32, int64, int8]
     default: int
     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
-  #Not supported yet
-  clonable:
+  cloneable:
     type: nil
     description: This marker annotation states that generated types should support cloning
     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
@@ -52,6 +51,7 @@ annotationTypes:
     description: This marker annotation states that generated types should be serializable
     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
   comparable:
+    #Not supported yet.
     type: string
     description: |
        This annotation states that generated types should be comparable,

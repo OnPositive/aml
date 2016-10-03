@@ -61,6 +61,7 @@ public class UnionTypeGenerator implements ITypeGenerator {
 	}
 
 	private void generateProperty(JDefinedClass defineClass, AbstractType option,Set<AbstractType>allOptions) {
+		String gset=writer.escape(option.name());
 		String name = writer.escape(option.name().toLowerCase());
 		JType propType = writer.getType(option, false, false, null);
 		if (propType.isPrimitive()){
@@ -68,11 +69,11 @@ public class UnionTypeGenerator implements ITypeGenerator {
 		}
 		defineClass.field(JMod.PRIVATE, propType, name);
 		JMethod get = defineClass.method(JMod.PUBLIC, propType,
-				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+				"get" + Character.toUpperCase(gset.charAt(0)) + gset.substring(1));
 		get.body()._return(JExpr.ref(name));
 		writer.annotate(get, option);
 		JMethod set = defineClass.method(JMod.PUBLIC, writer.getModel()._ref(void.class),
-				(option.isBoolean() ? "is" : "set") + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+				(option.isBoolean() ? "is" : "set") + Character.toUpperCase(gset.charAt(0)) + gset.substring(1));
 		set.param(propType, "value");
 		set.body().add(new JStatement() {
 

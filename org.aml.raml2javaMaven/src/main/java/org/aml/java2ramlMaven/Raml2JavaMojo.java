@@ -97,6 +97,8 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 	protected boolean implementClonable;//done
 	@Parameter
 	protected boolean generateBuilderMethods=true;//done
+	@Parameter
+	protected boolean includeJsr303Annotations=true;
 	
 	/** {@inheritDoc} */
 	@SuppressWarnings({ })
@@ -146,6 +148,7 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 				wr.getConfig().setImplementSerializable(implementSerializable);
 				wr.getConfig().setImplementClonable(implementClonable);
 				wr.getConfig().setGenerateBuilderMethods(generateBuilderMethods);
+				wr.getConfig().setIncludeJsr303Annotations(includeJsr303Annotations);
 				wr.write(build);
 				wr.getModel().build(outputFolder);
 			} catch (FileNotFoundException e) {

@@ -42,6 +42,10 @@ public class FacetProcessingConfig implements IClassCustomizer{
 		appendConfig(annotationsProcessingConfig);
 	}
 	
+	public void clear(){
+		configs.clear();
+	}
+	
 
 	public void appendConfig(AnnotationsProcessingConfig annotationsProcessingConfig) {
 		for (AnnotationConfig v:annotationsProcessingConfig.getConfiguration()){

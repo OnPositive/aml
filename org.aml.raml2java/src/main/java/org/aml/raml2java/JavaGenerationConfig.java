@@ -37,7 +37,9 @@ public class JavaGenerationConfig {
 	protected BasicAnnotationProcessingConfig annotationConfig;
 	protected DefaultIntegerFormat integerFormat=DefaultIntegerFormat.INT;
 	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;
-	
+	protected boolean includeJsr303Annotations=true;
+	protected FacetProcessingConfig cfg = new FacetProcessingConfig();
+
 	protected boolean hashCodeAndEquals;
 	protected boolean implementSerializable;
 	protected boolean implementClonable;
@@ -51,7 +53,19 @@ public class JavaGenerationConfig {
 		this.generateBuilderMethods = generateBuilderMethods;
 	}
 
-	
+	public boolean isIncludeJsr303Annotations() {
+		return includeJsr303Annotations;
+	}
+
+	public void setIncludeJsr303Annotations(boolean includeJsr303Annotations) {
+		this.includeJsr303Annotations = includeJsr303Annotations;
+		if (includeJsr303Annotations){
+			cfg=new FacetProcessingConfig();
+		}
+		else{
+			cfg.clear();
+		}
+	}
 	
 	public boolean isImplementClonable() {
 		return implementClonable;
@@ -120,8 +134,9 @@ public class JavaGenerationConfig {
 	public void setAnnotationConfig(BasicAnnotationProcessingConfig annotationConfig) {
 		this.annotationConfig = annotationConfig;
 	}
-
+	
 	public JavaGenerationConfig() {
+		
 		classCustomizers.add(new FacetProcessingConfig());
 		BasicAnnotationProcessingConfig basicAnnotationProcessingConfig = new BasicAnnotationProcessingConfig();
 		basicAnnotationProcessingConfig.addNamespaceToSkipDefinition(primarySuperType.class.getPackage().getName());

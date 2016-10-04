@@ -109,6 +109,7 @@ This chapter uses names of parameters used in Maven Plugin, however same options
 * `implementSerializable` - if set to true generated beans will implement `Serializable` interface
 * `implementClonable` - if set to true generated beans will implement `Clonable` interface, public `clone` method will also be generated
 * `generateBuilderMethods` - if set to true generated beans will have builder methods. Default `true`
+* `includeJsr303Annotations` - if set to true generated beans will have `javax.validation` annotations representing RAML types constraints when needed/possible. Default `true`
 
 
 ###Annotations processing

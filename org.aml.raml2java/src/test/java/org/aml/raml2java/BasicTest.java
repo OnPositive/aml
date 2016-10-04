@@ -1152,9 +1152,16 @@ public class BasicTest extends CompilerTestCase {
 		Class<?> class1 = compileAndTest.get("org.aml.test.Person");
 		try {
 			Object newInstance = class1.newInstance();
+			try {
+				Method m=class1.getMethod("withName", String.class);
+				TestCase.assertTrue(m.getReturnType()==class1);
+			} catch (NoSuchMethodException e) {
+				TestCase.assertTrue(false);
+			}
 			Object newInstance2 = class1.newInstance();
 			TestCase.assertTrue(newInstance instanceof Serializable);
 			TestCase.assertTrue(newInstance instanceof Cloneable);
+			TestCase.assertTrue(newInstance instanceof Comparable);
 			TestCase.assertTrue(newInstance.equals(newInstance2));
 			TestCase.assertEquals(newInstance.hashCode(), newInstance2.hashCode());
 		} catch (SecurityException | InstantiationException | IllegalAccessException e1) {

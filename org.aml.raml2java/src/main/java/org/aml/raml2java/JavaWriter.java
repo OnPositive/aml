@@ -25,6 +25,7 @@ import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.aml.java.mapping.cloneable;
+import org.aml.java.mapping.comparable;
 import org.aml.java.mapping.container;
 import org.aml.java.mapping.defaultIntegerFormat;
 import org.aml.java.mapping.defaultNumberFormat;
@@ -859,6 +860,9 @@ public class JavaWriter {
 		}
 		if (this.getConfig().isImplementClonable()||(cp.type.annotation(cloneable.class, true)!=null)){
 			new ClonableCustomizer().customize(cp);
+		}
+		if (this.getConfig().isImplementClonable()||(cp.type.annotation(comparable.class, true)!=null)){
+			new ComparableCustomizer().customize(cp);
 		}
 	}
 }

@@ -41,6 +41,17 @@ public class JavaGenerationConfig {
 	protected boolean hashCodeAndEquals;
 	protected boolean implementSerializable;
 	protected boolean implementClonable;
+	protected boolean generateBuilderMethods=true;
+	
+	public boolean isGenerateBuilderMethods() {
+		return generateBuilderMethods;
+	}
+
+	public void setGenerateBuilderMethods(boolean generateBuilderMethods) {
+		this.generateBuilderMethods = generateBuilderMethods;
+	}
+
+	
 	
 	public boolean isImplementClonable() {
 		return implementClonable;

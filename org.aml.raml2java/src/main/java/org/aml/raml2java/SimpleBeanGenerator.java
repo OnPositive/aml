@@ -387,6 +387,23 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				f.nl();
 			}
 		});
+		if (writer.getConfig().isGenerateBuilderMethods()){
+			JMethod builder = defineClass.method(JMod.PUBLIC, defineClass,
+					"with" + Character.toUpperCase(name.charAt(0))
+							+ name.substring(1));
+			builder.param(propType, "value");
+			builder.body().add(new JStatement() {
+
+				@Override
+				public void state(JFormatter f) {
+					f.p("this." + name + "=value;");
+					f.nl();
+					f.p("return this;");
+					f.nl();
+				}
+			});
+		}
+		
 		PropertyCustomizerParameters propCustomizer = new PropertyCustomizerParameters(writer, p, defineClass, get, set,
 				field);
 		writer.runCustomizers(propCustomizer);

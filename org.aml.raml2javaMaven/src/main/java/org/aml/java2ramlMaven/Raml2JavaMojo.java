@@ -89,6 +89,15 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 	@Parameter
 	protected DefaultNumberFormat doubleFormat=DefaultNumberFormat.DOUBLE;//done
 	
+	@Parameter
+	protected boolean hashCodeAndEquals;//done
+	@Parameter
+	protected boolean implementSerializable;//done
+	@Parameter
+	protected boolean implementClonable;//done
+	@Parameter
+	protected boolean generateBuilderMethods=true;//done
+	
 	/** {@inheritDoc} */
 	@SuppressWarnings({ })
 	@Override
@@ -133,7 +142,10 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 				wr.getConfig().setIntegerFormat(integerFormat);
 				wr.getConfig().setDoubleFormat(doubleFormat);
 				wr.getConfig().setAddGenerated(addGenerated);
-				
+				wr.getConfig().setGenerateHashCodeAndEquals(hashCodeAndEquals);
+				wr.getConfig().setImplementSerializable(implementSerializable);
+				wr.getConfig().setImplementClonable(implementClonable);
+				wr.getConfig().setGenerateBuilderMethods(generateBuilderMethods);
 				wr.write(build);
 				wr.getModel().build(outputFolder);
 			} catch (FileNotFoundException e) {

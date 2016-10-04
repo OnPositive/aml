@@ -103,6 +103,14 @@ This chapter uses names of parameters used in Maven Plugin, however same options
 * `wrappedTypesStrategy` - allows to choose strategy for wrrapping number and boolean types. Valid values: `NONE,OPTIONAL,ALWAYS`. Default `NONE`
 * `addGenerated` - allows to choose if `Generated` annotation should be added to generated Java types. Default `true`
 
+###Generated types customization related parameters
+
+* `hashCodeAndEquals` - if set to true raml2java will generate `hashCode` and `equals` methods for generated classes (note generated implementation uses, org.apache.commons.lang classes)
+* `implementSerializable` - if set to true generated beans will implement `Serializable` interface
+* `implementClonable` - if set to true generated beans will implement `Clonable` interface, public `clone` method will also be generated
+* `generateBuilderMethods` - if set to true generated beans will have builder methods. Default `true`
+
+
 ###Annotations processing
 
 * `annotationNamespacesToSkipDefinition` - allows to configure namespaces for annotation types which should not be defined by RAML2Java generator (assumed as preexisting)

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.aml.apimodel.Action;
+import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.TopLevelModel;
@@ -83,5 +84,10 @@ public class ResourceImpl extends AbstractWrappedNodeImpl<Resource,ResourceNode>
 	@Override
 	public String getUri() {
 		return node.getResourcePath();
+	}
+
+	@Override
+	public Api getApi() {
+		return (Api) mdl;
 	}
 }

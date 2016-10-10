@@ -37,7 +37,7 @@ public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends
 		List<NamedParam> paramList = (List<NamedParam>) toParamList(childNodeWithKey);
 		ArrayList<MimeType>mt=new ArrayList<>();
 		for (NamedParam p:paramList){
-			mt.add(new MimeTypeImpl(p,method));
+			mt.add(new MimeTypeImpl(p.getTypeModel(),method));
 		}
 		return mt;
 	}

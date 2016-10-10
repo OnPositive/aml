@@ -24,7 +24,7 @@ public class ResponseImpl extends AbstractWrappedNodeImpl<Action, KeyValueNode> 
 	public List<MimeType> body() {
 		List<MimeType> body = body((MethodImpl) this.parent);
 		for (MimeType m:body){
-			((MimeTypeImpl)m).owningResponse=this;
+			((MimeTypeImpl)m).setOwningReponse(this);
 		}
 		return body;
 	}

@@ -2,6 +2,8 @@ package org.aml.apimodel;
 
 import java.util.List;
 
+import org.aml.apimodel.impl.NamedParamImpl;
+
 public interface Resource extends Annotable{
 
     /**
@@ -41,5 +43,11 @@ public interface Resource extends Annotable{
 
 
 	String getUri();
+
+
+	Api getApi();
+
+
+	
 
 }

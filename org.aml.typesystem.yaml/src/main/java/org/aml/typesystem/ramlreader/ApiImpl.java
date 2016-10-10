@@ -28,4 +28,10 @@ public class ApiImpl extends TopLevelRamlImpl implements Api{
 		return resources.toArray(new Resource[resources.size()]);
 	}
 
+	@Override
+	public String title() {
+		return null;
+		
+	}
+
 }

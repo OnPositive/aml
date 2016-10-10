@@ -18,9 +18,7 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
-
-		</dependency>
-		
+		</dependency>		
 	</dependencies>
 	<parent>
 		<groupId>com.onpositive.aml</groupId>

@@ -20,10 +20,13 @@ public class PropertiesHandler implements IFacetHandler{
 				requiredIds.add(ar.getString(i));
 			}
 		}
-		for (String id:JSONObject.getNames(obj)){
+		String[] names = JSONObject.getNames(obj);
+		if(names!=null){
+		for (String id:names){
 			JSONObject propertyType = obj.getJSONObject(id);
 			AbstractType type = parser.getType(propertyType);
 			derivedType.declareProperty(id, type, !requiredIds.contains(id));
+		}
 		}
 		return derivedType;
 	}

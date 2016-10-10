@@ -47,4 +47,9 @@ public final class UnionType extends DerivedType {
 	public AbstractType noPolymorph() {
 		return this;
 	}
+	public Set<AbstractType> unionTypeFamily() {
+		Set<AbstractType> unionTypeFamily = super.unionTypeFamily();
+		unionTypeFamily.addAll(this.options());
+		return unionTypeFamily;
+	}
 }

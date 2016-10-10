@@ -1,0 +1,26 @@
+#%RAML 1.0
+---
+title: book
+version: 1.0
+mediaType: application/json
+types:
+   author:
+   book:
+     properties:
+      isbn:
+          description: "ISBN"
+          type: "string"
+      title:
+          description: "title"
+          type: "string"
+      genre:
+          description: "genre"
+          type: "string"
+      author:
+          type: author
+/books:
+  get:
+    description: Get all books
+    responses:
+      200:
+        body: book[]

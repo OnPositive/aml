@@ -58,4 +58,6 @@ public interface IProperty extends INamedEntity {
 	 * @return a {@link org.aml.typesystem.AbstractType} object.
 	 */
 	AbstractType range();
+
+	String description();
 }

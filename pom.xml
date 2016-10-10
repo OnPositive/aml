@@ -154,6 +154,7 @@
 		<module>org.aml.raml2java</module>
 		<module>org.aml.raml2javaMaven</module>
 		<module>org.aml.model</module>
+		<module>org.aml.typesystem.jsonschema</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

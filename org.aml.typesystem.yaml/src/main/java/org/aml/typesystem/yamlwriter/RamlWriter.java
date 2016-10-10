@@ -49,8 +49,7 @@ public class RamlWriter {
 	 * @param deriveObjectType a {@link org.aml.typesystem.AbstractType} object.
 	 * @return a {@link java.lang.String} object.
 	 */
-	public String store(AbstractType deriveObjectType) {
-		
+	public String store(AbstractType deriveObjectType) {		
 		return null;
 	}
 	

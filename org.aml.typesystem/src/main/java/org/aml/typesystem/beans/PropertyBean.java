@@ -1,6 +1,7 @@
 package org.aml.typesystem.beans;
 
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.meta.facets.Description;
 
 /**
  * <p>PropertyBean class.</p>
@@ -161,6 +162,15 @@ public class PropertyBean implements IProperty {
 	@Override
 	public String toString() {
 		return id+":"+type.name();
+	}
+
+	@Override
+	public String description() {
+		Description oneMeta = type.oneMeta(Description.class);
+		if (oneMeta!=null){
+			return oneMeta.value();
+		}
+		return null;
 	}
 
 }

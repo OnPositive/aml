@@ -33,6 +33,7 @@ import org.aml.typesystem.meta.facets.internal.NothingRestrictionWithLocation;
 import org.aml.typesystem.meta.facets.internal.OriginalName;
 import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 import org.aml.typesystem.meta.restrictions.AdditionalProperties;
+import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.Enum;
 import org.aml.typesystem.meta.restrictions.ExternalSchemaMeta;
 import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
@@ -1010,6 +1011,7 @@ public abstract class AbstractType implements IType {
 					}
 				}
 			}
+			
 			return ts;
 		}
 		return Collections.emptySet();
@@ -1299,5 +1301,13 @@ public abstract class AbstractType implements IType {
 	
 	public void setOptional(boolean b) {
 		this.optional=b;
+	}
+
+	public AbstractType componentType() {
+		ComponentShouldBeOfType oneMeta = this.oneMeta(ComponentShouldBeOfType.class);
+		if (oneMeta!=null){
+			return oneMeta.range();
+		}
+		return null;
 	}
 }

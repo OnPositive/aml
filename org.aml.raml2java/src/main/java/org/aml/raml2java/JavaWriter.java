@@ -25,6 +25,7 @@ import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.aml.java.mapping.cloneable;
+import org.aml.java.mapping.comparable;
 import org.aml.java.mapping.container;
 import org.aml.java.mapping.defaultIntegerFormat;
 import org.aml.java.mapping.defaultNumberFormat;
@@ -41,11 +42,11 @@ import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.Description;
 import org.aml.typesystem.meta.facets.Format;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
+import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.CompositeAnnotator;
 import org.jsonschema2pojo.ContentResolver;
 import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.GsonAnnotator;
 import org.jsonschema2pojo.Jackson2Annotator;
 import org.jsonschema2pojo.SchemaGenerator;
@@ -457,7 +458,31 @@ public class JavaWriter {
 			String externalSchemaContent = range.getExternalSchemaContent();
 			// this is JSON schema
 			if (externalSchemaContent.trim().startsWith("{")) {
-				GenerationConfig jsonSchemaGenerationConfig = new DefaultGenerationConfig();
+				DefaultGenerationConfig jsonSchemaGenerationConfig = new DefaultGenerationConfig(){
+					
+					public boolean isIncludeHashcodeAndEquals() {
+						return config.isGenerateHashCodeAndEquals();
+					};
+					
+					public org.jsonschema2pojo.AnnotationStyle getAnnotationStyle() {
+						if (config.isJacksonSupport()){
+							return AnnotationStyle.JACKSON2;
+						}
+						if (config.isGsonSupport()){
+							return AnnotationStyle.GSON;
+						}
+						return AnnotationStyle.NONE;
+					};
+					
+					@Override
+					public boolean isGenerateBuilders() {
+						return config.isGenerateBuilderMethods();
+					}
+					
+					public boolean isIncludeJsr303Annotations() {
+						return config.isIncludeJsr303Annotations();
+					};
+				};
 				URL storeContentToTempFile = storeContentToTempFile(externalSchemaContent);
 				SchemaStore schemaStore = new SchemaStore() {
 					{
@@ -859,6 +884,9 @@ public class JavaWriter {
 		}
 		if (this.getConfig().isImplementClonable()||(cp.type.annotation(cloneable.class, true)!=null)){
 			new ClonableCustomizer().customize(cp);
+		}
+		if (this.getConfig().isImplementClonable()||(cp.type.annotation(comparable.class, true)!=null)){
+			new ComparableCustomizer().customize(cp);
 		}
 	}
 }

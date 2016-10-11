@@ -33,6 +33,19 @@ public class Annotation extends TypeInformation implements ISimpleFacet,IAnnotat
 		this.value = value;
 		this.type=type2;
 	}
+	
+	public Annotation(String annotationName, Object value) {
+		super(false);
+		this.name = annotationName;
+		this.value = value;
+	}
+	
+	public Annotation(AbstractType type, Object value) {
+		super(false);
+		this.name = type.name();
+		this.value = value;
+		this.type=type;
+	}
 
 	/** {@inheritDoc} */
 	@Override

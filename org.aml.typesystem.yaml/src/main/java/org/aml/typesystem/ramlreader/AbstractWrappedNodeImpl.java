@@ -12,21 +12,22 @@ import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
-import org.raml.yagi.framework.nodes.ObjectNode;
 import org.raml.yagi.framework.nodes.SimpleTypeNode;
 import org.raml.yagi.framework.nodes.StringNode;
 
 public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends AnnotableImpl {
 
 	protected P parent;
-	protected T node;
 	protected TopLevelModel mdl;
 
 	public AbstractWrappedNodeImpl(TopLevelModel mdl,P parent,T node) {
-		super();
+		super(node);
 		this.parent=parent;
-		this.node=node;
 		this.mdl=mdl;
+	}
+	@Override
+	protected TopLevelRamlImpl getTopLevel() {
+		return (TopLevelRamlImpl) mdl;
 	}
 	
 	public String displayName() {		
@@ -58,8 +59,8 @@ public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends
 	}
 	
 	public String getKey() {
-		if (this.node instanceof KeyValueNode){
-			KeyValueNode kv=(KeyValueNode) this.node;
+		if (this.original instanceof KeyValueNode){
+			KeyValueNode kv=(KeyValueNode) this.original;
 			if (kv.getKey() instanceof SimpleTypeNode<?>){
 				SimpleTypeNode<?> nnm=(SimpleTypeNode<?>) kv.getKey();
 				return nnm.getLiteralValue();
@@ -110,80 +111,6 @@ public class AbstractWrappedNodeImpl<P extends Annotable,T extends Node> extends
 	
 	public String description() {		
 		return this.getChildWithKeyAs("description", String.class, null);		
-	}
-	protected<V> List<V> getChildWithType(Class<V>cl){
-		ArrayList<V>result=new ArrayList<>();
-		if (this.node instanceof KeyValueNode){
-			KeyValueNode kv=(KeyValueNode) this.node;
-			for (Node n:kv.getValue().getChildren()){
-				if (cl.isInstance(n)){
-					result.add(cl.cast(n));
-				}
-			}
-		}
-		return result;
-	}
-	protected<V> V getChildWithKeyAs(String key,Class<V>cl,V defaultValue){
-		if (this.node instanceof KeyValueNode){
-			KeyValueNode kv=(KeyValueNode) this.node;
-			return getFromKV(key, cl, kv,defaultValue);
-			
-		}
-		return defaultValue;
-	}
-	protected Node getChildNodeWithKey(String key) {
-		KeyValueNode kv=(KeyValueNode) this.node;
-		for (Node n:kv.getValue().getChildren()){
-			if (n instanceof KeyValueNode){
-				KeyValueNode node=(KeyValueNode) n;
-				if (node.getKey() instanceof StringNode){
-					StringNode nnm=(StringNode) node.getKey();
-					if (nnm.getValue().equals(key)){
-						Node value = node.getValue();
-						return value;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	private <V> V getFromKV(String key, Class<V> cl, KeyValueNode kv,V defaultValue) {
-		for (Node n:kv.getValue().getChildren()){
-			if (n instanceof KeyValueNode){
-				KeyValueNode node=(KeyValueNode) n;
-				if (node.getKey() instanceof StringNode){
-					StringNode nnm=(StringNode) node.getKey();
-					if (nnm.getValue().equals(key)){
-						Node value = node.getValue();
-						if (value instanceof SimpleTypeNode<?>){
-							SimpleTypeNode<?>vl=(SimpleTypeNode<?>) value;
-							if (cl.isInstance(vl.getValue())){
-								return cl.cast(vl.getValue());
-							}
-						}
-						if (value instanceof ObjectNode){
-							ObjectNode on=(ObjectNode) value;
-							List<Node> children = on.getChildren();
-							if (children.size()==1){
-								Node nm = children.get(0);
-								if (nm instanceof KeyValueNode){
-									KeyValueNode val=(KeyValueNode) nm;
-									Node actualValue=val.getValue();
-									if (actualValue instanceof SimpleTypeNode<?>){
-										SimpleTypeNode<?>st=(SimpleTypeNode<?>) actualValue;
-										if (cl.isInstance(st.getValue())){
-											return cl.cast(st.getValue());
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return null;
 	}
 
 }

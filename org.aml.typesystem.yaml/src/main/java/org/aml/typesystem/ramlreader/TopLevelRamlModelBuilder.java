@@ -125,17 +125,7 @@ public class TopLevelRamlModelBuilder {
 		for (AbstractType t : node.annotationTypes()) {
 			finishAnnotationBinding(node, t);
 		}
-		for (Node q : node.original.getChildren()) {
-			if (q instanceof AnnotationNode) {
-				AnnotationNode aNode = (AnnotationNode) q;
-				Node value = aNode.getValue();
-				Object val = toObject(value);
-				String literalValue = aNode.getKey().getLiteralValue();
-				Annotation as = new Annotation(literalValue.substring(1, literalValue.length() - 1), val, null);
-				bindAnnotation(node, as);
-				node.annotations.add(as);
-			}
-		}
+		
 	}
 
 	private void finishAnnotationBinding(TopLevelRamlImpl node, AbstractType t) {
@@ -151,7 +141,7 @@ public class TopLevelRamlModelBuilder {
 		}
 	}
 
-	private void bindAnnotation(TopLevelRamlImpl node, Annotation a) {
+	protected static void bindAnnotation(TopLevelRamlImpl node, Annotation a) {
 		String name = a.getName();
 		String namespace = null;
 		int indexOf = name.indexOf('.');
@@ -510,7 +500,7 @@ public class TopLevelRamlModelBuilder {
 		return BuiltIns.STRING;
 	}
 
-	Object toObject(Node n) {
+	public static Object toObject(Node n) {
 		if (n instanceof SimpleTypeNode<?>) {
 			SimpleTypeNode<?> si = (SimpleTypeNode<?>) n;
 			return si.getValue();

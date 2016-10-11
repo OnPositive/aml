@@ -34,6 +34,10 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 	public String getVersion() {
 		return version;
 	}
+	@Override
+	public String version() {
+		return version;
+	}
 
 	public void setVersion(String version) {
 		this.version = version;
@@ -76,6 +80,10 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 	@Override
 	public String title() {
 		return title;
+	}
+
+	public void addAnnotationType(AbstractType derive) {
+		this.atypes.registerType(derive);
 	}
 
 }

@@ -31,7 +31,7 @@ import org.raml.yagi.framework.nodes.Node;
 
 import junit.framework.TestCase;
 
-public class BasicTests extends TestCase{
+public class BasicTest extends TestCase{
 
 	@Test
 	public void test() {
@@ -304,9 +304,21 @@ public class BasicTests extends TestCase{
 		TestCase.assertTrue(hasPost);
 		
 	}
+	@Test	
+	public void test15() {
+		Api raml = (Api) parse("/t13.raml");
+		TestCase.assertEquals(raml.securityDefinitions().get(0).type(),"OAuth 2.0");
+		
+	}
+	@Test	
+	public void test16() {
+		Api raml = (Api) parse("/t14.raml");
+		TestCase.assertEquals(raml.securityDefinitions().get(0).type(),"OAuth 2.0");
+		TestCase.assertEquals(raml.securityDefinitions().get(0).settings().get("accessTokenUri"),"http");
+	}
 	
 	private TopLevelModel parse(String res) {
-		String string = StreamUtils.toString(BasicTests.class.getResourceAsStream(res));
+		String string = StreamUtils.toString(BasicTest.class.getResourceAsStream(res));
 		Node build = new RamlBuilder().build(string);
 		RamlHeader header=null;
 		try {

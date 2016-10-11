@@ -30,8 +30,11 @@ public class ApiImpl extends TopLevelRamlImpl implements Api{
 
 	@Override
 	public String title() {
-		return null;
-		
+		return this.getChildWithKeyAs("title", String.class, null);		
 	}
 
+	@Override
+	public String version() {
+		return this.getChildWithKeyAs("version", String.class, null);		
+	}
 }

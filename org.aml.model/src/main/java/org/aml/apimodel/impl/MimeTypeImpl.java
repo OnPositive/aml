@@ -8,6 +8,7 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Response;
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.DisplayName;
@@ -18,15 +19,25 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType{
 	protected AbstractType model;
 	protected Action owner;
 	protected Response owningResponse;
+	protected String name;
 
 	public MimeTypeImpl(AbstractType model,Action owner) {
 		this.model = model;
-		
+		this.name=model.name();
 		this.owner=owner;
+	}
+	public MimeTypeImpl(AbstractType model,Action owner,String name) {
+		this.model = model;		
+		this.owner=owner;
+		this.name=name;
 	}
 
 	public String getType() {
-		return model.name();
+		return name;
+	}
+	
+	public AbstractType getPlainModel(){
+		return this.model;
 	}
 
 	public String getExample() {
@@ -41,6 +52,9 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType{
 	}
 
 	public AbstractType getTypeModel() {
+		if (model.isBuiltIn()){
+			return model;
+		}
 		if (!model.isUnion()&&model.superTypes().size()==1){
     		boolean canSkip=true;
     		for (TypeInformation i:model.declaredMeta()){

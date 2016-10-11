@@ -23,7 +23,7 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 
 	@Override
 	public String method() {
-		return node.getName();
+		return ((MethodNode)original).getName();
 	}
 
 	@Override

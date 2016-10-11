@@ -1,33 +1,33 @@
 package org.aml.typesystem.ramlreader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.aml.apimodel.Library;
+import org.aml.apimodel.SecurityScheme;
 import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.TypeRegistryImpl;
 import org.raml.v2.api.model.common.ValidationResult;
-import org.raml.v2.internal.impl.commons.nodes.TypeDeclarationNode;
+import org.raml.v2.internal.impl.commons.nodes.SecuritySchemeNode;
 import org.raml.yagi.framework.nodes.Node;
 
 public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 
 	
-	protected transient Node original;
-	
 	protected transient HashMap<String,Node> typeDecls=new HashMap<>();
 	protected transient HashMap<String,Node> atypeDecls=new HashMap<>();
 	
 	public TopLevelRamlImpl(Node original) {
-		super();
+		super(original);
 		this.original = original;
 	}
 	public TopLevelRamlImpl(TopLevelRamlImpl n) {
-		this.original=n.original;
+		super(n.original);
 		this.typeDecls=n.typeDecls;
 		this.atypeDecls=n.atypeDecls;
 		this.topLevelTypes=n.topLevelTypes;
@@ -66,6 +66,22 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 	public String getVersion() {
 		return "1.0";
 	}
-
-	
+	@Override
+	protected TopLevelRamlImpl getTopLevel() {
+		return this;
+	}
+	@Override
+	public List<SecurityScheme> securityDefinitions() {
+		ArrayList<SecurityScheme>result=new ArrayList<>();
+		Node childNodeWithKey = this.getChildNodeWithKey("securitySchemes");
+		if (childNodeWithKey!=null){
+			for (Node n:childNodeWithKey.getChildren()){
+				if (n instanceof SecuritySchemeNode){
+					SecuritySchemeNode sn=(SecuritySchemeNode) n;
+					result.add(new SecuritySchemeImpl(this, this, sn));
+				}
+			}
+		}
+		return result;
+	}
 }

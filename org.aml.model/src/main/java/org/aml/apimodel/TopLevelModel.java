@@ -1,5 +1,6 @@
 package org.aml.apimodel;
 
+import java.util.List;
 import java.util.Map;
 
 import org.aml.typesystem.ITypeLibrary;
@@ -14,4 +15,6 @@ public interface TopLevelModel extends Annotable, ITypeLibrary{
 	ITypeRegistry annotationTypes();
 
 	Map<String,? extends Library>uses();
+	
+	List<SecurityScheme>securityDefinitions();
 }

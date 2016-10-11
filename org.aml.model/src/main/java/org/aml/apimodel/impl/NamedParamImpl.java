@@ -9,6 +9,7 @@ import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Description;
 import org.aml.typesystem.meta.facets.DisplayName;
 import org.aml.typesystem.meta.facets.Example;
+import org.aml.typesystem.meta.restrictions.Enum;
 import org.aml.typesystem.meta.restrictions.Pattern;
 import org.aml.typesystem.meta.restrictions.minmax.MaxLength;
 import org.aml.typesystem.meta.restrictions.minmax.Maximum;
@@ -20,17 +21,28 @@ public class NamedParamImpl extends AnnotableImpl implements INamedParam{
 	protected AbstractType type;
 	protected boolean required;
 	protected boolean repeat;
-
+	protected String name;
 	public NamedParamImpl(AbstractType type,boolean required,boolean repeat) {
 		super();
-		this.type = type;		
+		this.type = type;
+		this.name=type.name();
 		this.required=required;
 		if (this.type.isAnonimous()){
 			throw new IllegalStateException();
 		}
 	}
 
+	public NamedParamImpl(String string, AbstractType type, boolean required, boolean repeat) {
+		this.name=string;
+		this.required=required;
+		this.repeat=repeat;
+		this.type=type;
+	}
+
 	public List<String> getEnumeration() {
+		if (type.oneMeta(org.aml.typesystem.meta.restrictions.Enum.class)!=null){
+			return type.oneMeta(Enum.class).value();
+		}
 		return null;
 	}
 
@@ -56,8 +68,7 @@ public class NamedParamImpl extends AnnotableImpl implements INamedParam{
 	}
 
 	public String getKey() {
-		String name = type.name();		
-		return name;
+		return this.name;
 	}
 
 	public String getDefaultValue() {

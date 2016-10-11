@@ -1,0 +1,27 @@
+#%RAML 1.0 Api
+title: Hello
+securitySchemes:
+   t:
+     type: OAuth 2.0
+     settings:
+        accessTokenUri: dde
+        authorizationUri: 2
+        authorizationGrants: token
+       
+/persons:
+  get:
+
+    queryParameters:
+      count: string
+      offset: string
+    body:
+      application/json: object
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              name: string
+              lastName: string
+              age: integer

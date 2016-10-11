@@ -23,7 +23,7 @@ public class ResourceImpl extends AbstractWrappedNodeImpl<Resource,ResourceNode>
 
 	@Override
 	public String relativeUri() {
-		return this.node.getRelativeUri();
+		return ((ResourceNode)this.original).getRelativeUri();
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class ResourceImpl extends AbstractWrappedNodeImpl<Resource,ResourceNode>
 
 	@Override
 	public String getUri() {
-		return node.getResourcePath();
+		return ((ResourceNode)this.original).getResourcePath();
 	}
 
 	@Override

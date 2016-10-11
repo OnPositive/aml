@@ -5,4 +5,7 @@ public interface Api extends TopLevelModel{
 	Resource[] resources();
 
 	String title();
+	
+	String version();
+	
 }

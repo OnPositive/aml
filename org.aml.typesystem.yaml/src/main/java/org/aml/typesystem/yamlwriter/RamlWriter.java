@@ -20,6 +20,7 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
+import org.aml.apimodel.SecuredByConfig;
 import org.aml.apimodel.SecurityScheme;
 import org.aml.apimodel.impl.ApiImpl;
 import org.aml.apimodel.impl.MimeTypeImpl;
@@ -271,6 +272,13 @@ public class RamlWriter {
 			LinkedHashMap<Object, Object>result=new LinkedHashMap<>();
 			for (T v:value){
 				Object apply = func.apply(v);
+				if (apply instanceof Map){
+					@SuppressWarnings("rawtypes")
+					Map m=(Map) apply;
+					if (m.isEmpty()){
+						apply=NOVALUE;
+					}
+				}
 				result.put(keyFunc.apply(v), apply);
 			}
 			target.put(prefix, result);
@@ -279,6 +287,7 @@ public class RamlWriter {
 	
 	private LinkedHashMap<String,Object>dumpMethod(Action a){
 		LinkedHashMap<String, Object>mp=new LinkedHashMap<>();
+		dumpCollection("securedBy", mp, a.securedBy(), this::dumpSecuredBy, s->s.name());
 		addScalarField("description", mp, a, a::description);
 		addScalarField("displayName", mp, a, a::displayName);
 		dumpCollection("queryParameters", mp, a.queryParameters(), this::dumpNamedParam, this::typeKey);
@@ -288,7 +297,9 @@ public class RamlWriter {
 		addAnnotations(a,mp);
 		return mp;
 	}
-	
+	private LinkedHashMap<String,Object> dumpSecuredBy(SecuredByConfig r) {
+		return r.settings();
+	}
 	private LinkedHashMap<String,Object> dumpResponse(Response r) {
 		LinkedHashMap<String, Object>mp=new LinkedHashMap<>();
 		dumpCollection("headers", mp, r.headers(), this::dumpNamedParam, this::typeKey);

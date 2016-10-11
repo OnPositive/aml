@@ -8,6 +8,7 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
+import org.aml.apimodel.SecuredByConfig;
 import org.aml.apimodel.TopLevelModel;
 import org.raml.v2.internal.impl.commons.nodes.MethodNode;
 import org.raml.v2.internal.impl.commons.nodes.TraitRefNode;
@@ -85,6 +86,16 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 	@Override
 	public boolean hasBody() {
 		return hasBody(this);
+	}
+
+	@Override
+	public ArrayList<SecuredByConfig> securedBy() {
+		ArrayList<SecuredByConfig>results=new ArrayList<>();
+		Node childNodeWithKey = this.getChildNodeWithKey("securedBy");
+		for (Node n:childNodeWithKey.getChildren()){
+			results.add(new SecuredByImpl(mdl, this, n));
+		}
+		return results;
 	}
 	
 }

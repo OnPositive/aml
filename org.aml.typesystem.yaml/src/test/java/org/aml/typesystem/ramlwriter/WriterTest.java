@@ -7,6 +7,7 @@ import org.aml.apimodel.Api;
 import org.aml.apimodel.impl.ActionImpl;
 import org.aml.apimodel.impl.ApiImpl;
 import org.aml.apimodel.impl.NamedParamImpl;
+import org.aml.apimodel.impl.SecuredByConfigImpl;
 import org.aml.apimodel.impl.SecuritySchemeImpl;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
@@ -151,6 +152,27 @@ public class WriterTest extends TestCase{
 		TestCase.assertTrue(!buildApi.hasErrors());		
 		Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"");
 		TestCase.assertTrue(Arrays.equals((Object[])((List<Object>) api.securityDefinitions().get(0).settings().get("scopes")).toArray(), new Object[]{"a","b"}));
+	}
+	
+	public void test7(){
+		ApiImpl model=new ApiImpl();
+		ActionImpl orCreateMethod = model.getOrCreateResource("persons").getOrCreateMethod("get");
+		model.setTitle("hello");
+		SecuritySchemeImpl e = new SecuritySchemeImpl();
+		e.setName("oauth2");
+		e.settings().put("accessTokenUri","http");
+		e.settings().put("authorizationUri","http");
+		e.settings().put("authorizationGrants","password");
+		e.setType("OAuth 2.0");
+		e.settings().put("scopes", new String[]{"a","b"});
+		orCreateMethod.securedBy().add(new SecuredByConfigImpl("oauth2").with("scopes",new String[]{"c"}));
+		model.securityDefinitions().add(e);
+		String store = new RamlWriter().store(model);		
+		RamlModelResult buildApi = new RamlModelBuilder().buildApi(store, "");	
+		TestCase.assertTrue(!buildApi.hasErrors());		
+		Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"");
+		Object os=api.resources()[0].methods().get(0).securedBy().get(0).settings().get("scopes");
+		TestCase.assertEquals(os.toString(), "[c]");
 	}
 	
 }

@@ -1,9 +1,14 @@
 #%RAML 1.0
 title: Hello
 securitySchemes:
-   oath2.0:
+   oath:
      type: OAuth 2.0
      settings:
        accessTokenUri: http
        authorizationUri: dd
        authorizationGrants: password
+/g:
+  get:
+    securedBy:
+      oath:
+        scopes: [c]

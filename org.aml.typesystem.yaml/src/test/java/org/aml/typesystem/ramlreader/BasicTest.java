@@ -195,6 +195,7 @@ public class BasicTest extends TestCase{
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Test	
 	public void test12() {
 		Api raml = (Api) parse("/t10.raml");
@@ -315,6 +316,19 @@ public class BasicTest extends TestCase{
 		Api raml = (Api) parse("/t14.raml");
 		TestCase.assertEquals(raml.securityDefinitions().get(0).type(),"OAuth 2.0");
 		TestCase.assertEquals(raml.securityDefinitions().get(0).settings().get("accessTokenUri"),"http");
+	}
+	
+	@Test	
+	public void test17() {
+		Api raml = (Api) parse("/t14.raml");
+		Object os=raml.resources()[0].methods().get(0).securedBy().get(0).settings().get("scopes");
+		TestCase.assertEquals(os.toString(), "[c]");
+	}
+	@Test	
+	public void test18() {
+		Api raml = (Api) parse("/t13.raml");
+		Object os=raml.resources()[0].methods().get(0).securedBy().get(0).settings().get("scopes");
+		TestCase.assertEquals(os.toString(), "[c]");
 	}
 	
 	private TopLevelModel parse(String res) {

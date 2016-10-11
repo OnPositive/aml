@@ -28,11 +28,17 @@ public interface Action extends Annotable{
      **/
     List<String> protocols();
 
-
-
+    /**
+     * 
+     * @return description of this method
+     */
     String description();
 
 
+    /**
+     * 
+     * @return display name associated with this method
+     */
     String displayName();
     
     /**
@@ -56,5 +62,12 @@ public interface Action extends Annotable{
 	boolean hasBody();
 
 	ArrayList<String> getIs();
+	
+	
+	/**
+	 * 
+	 * @return security schemes configuration associated with this method
+	 */
+	ArrayList<SecuredByConfig>securedBy();
 
 }

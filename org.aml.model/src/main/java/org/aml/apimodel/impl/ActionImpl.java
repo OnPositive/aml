@@ -8,6 +8,7 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
+import org.aml.apimodel.SecuredByConfig;
 import org.aml.typesystem.AbstractType;
 
 public class ActionImpl extends AnnotableImpl implements Action{
@@ -15,6 +16,15 @@ public class ActionImpl extends AnnotableImpl implements Action{
 	protected String httpMethod;
 	protected Resource resource;
 	protected String description;
+	protected String displayName;
+	protected ArrayList<INamedParam>headers=new ArrayList<>();
+	protected ArrayList<Response>responses=new ArrayList<>();
+	protected ArrayList<INamedParam>queryParameters=new ArrayList<>();
+	protected ArrayList<String>protocols=new ArrayList<>();
+	protected ArrayList<String>traits=new ArrayList<>();
+	protected ArrayList<MimeType>body=new ArrayList<>();
+	protected ArrayList<SecuredByConfig>securedBy=new ArrayList<>();
+	
 	public String getHttpMethod() {
 		return httpMethod;
 	}
@@ -38,13 +48,6 @@ public class ActionImpl extends AnnotableImpl implements Action{
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-	protected String displayName;
-	protected ArrayList<INamedParam>headers=new ArrayList<>();
-	protected ArrayList<Response>responses=new ArrayList<>();
-	protected ArrayList<INamedParam>queryParameters=new ArrayList<>();
-	protected ArrayList<String>protocols=new ArrayList<>();
-	protected ArrayList<String>traits=new ArrayList<>();
-	protected ArrayList<MimeType>body=new ArrayList<>();
 	
 	public ActionImpl(String httpMethod) {
 		this.httpMethod=httpMethod;
@@ -119,6 +122,7 @@ public class ActionImpl extends AnnotableImpl implements Action{
 		e.mimeType.add(e2);
 		this.responses.add(e);
 	}
+	
 	public void addBody(String mime, AbstractType type) {
 		MimeTypeImpl e2 = new MimeTypeImpl(type, this,mime);
 		this.body.add(e2);
@@ -126,5 +130,10 @@ public class ActionImpl extends AnnotableImpl implements Action{
 
 	public void addQueryParameter(NamedParamImpl namedParamImpl) {
 		this.queryParameters.add(namedParamImpl);
+	}
+
+	@Override
+	public ArrayList<SecuredByConfig> securedBy() {
+		return securedBy;
 	}
 }

@@ -2,6 +2,7 @@ package org.aml.typesystem.yamlwriter;
 
 import java.io.BufferedWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +23,7 @@ import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
 import org.aml.apimodel.SecuredByConfig;
 import org.aml.apimodel.SecurityScheme;
+import org.aml.apimodel.Trait;
 import org.aml.apimodel.impl.ApiImpl;
 import org.aml.apimodel.impl.MimeTypeImpl;
 import org.aml.typesystem.AbstractType;
@@ -262,21 +264,24 @@ public class RamlWriter {
 		}
 		return tps;
 	}
-	protected void dumpResources(Resource[] res,LinkedHashMap<String, Object>map){
-		for (Resource r:res){
+
+	protected void dumpResources(Resource[] res, LinkedHashMap<String, Object> map) {
+		for (Resource r : res) {
 			map.put(r.relativeUri(), dumpResource(r));
 		}
 	}
-	protected<T> void dumpCollection(String prefix,LinkedHashMap<String, Object>target,Collection<T> value,Function<T, Object>func,Function<T, Object>keyFunc){
-		if (!value.isEmpty()){
-			LinkedHashMap<Object, Object>result=new LinkedHashMap<>();
-			for (T v:value){
+
+	protected <T> void dumpCollection(String prefix, LinkedHashMap<String, Object> target, Collection<T> value,
+			Function<T, Object> func, Function<T, Object> keyFunc) {
+		if (!value.isEmpty()) {
+			LinkedHashMap<Object, Object> result = new LinkedHashMap<>();
+			for (T v : value) {
 				Object apply = func.apply(v);
-				if (apply instanceof Map){
+				if (apply instanceof Map) {
 					@SuppressWarnings("rawtypes")
-					Map m=(Map) apply;
-					if (m.isEmpty()){
-						apply=NOVALUE;
+					Map m = (Map) apply;
+					if (m.isEmpty()) {
+						apply = NOVALUE;
 					}
 				}
 				result.put(keyFunc.apply(v), apply);
@@ -284,84 +289,121 @@ public class RamlWriter {
 			target.put(prefix, result);
 		}
 	}
-	
-	private LinkedHashMap<String,Object>dumpMethod(Action a){
-		LinkedHashMap<String, Object>mp=new LinkedHashMap<>();
-		dumpCollection("securedBy", mp, a.securedBy(), this::dumpSecuredBy, s->s.name());
+
+	private LinkedHashMap<String, Object> dumpMethod(Action a) {
+		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
+		dumpCollection("securedBy", mp, a.securedBy(), this::dumpSecuredBy, s -> s.name());
 		addScalarField("description", mp, a, a::description);
 		addScalarField("displayName", mp, a, a::displayName);
+		addScalarField("is", mp, a, a::getIs);
 		dumpCollection("queryParameters", mp, a.queryParameters(), this::dumpNamedParam, this::typeKey);
 		dumpCollection("headers", mp, a.headers(), this::dumpNamedParam, this::typeKey);
-		dumpCollection("body", mp, a.body(), this::dumpMimeType, (k)->k.getType());
-		dumpCollection("responses", mp, a.responses(), this::dumpResponse, (k)->Integer.parseInt(k.code()));
-		addAnnotations(a,mp);
+		dumpCollection("body", mp, a.body(), this::dumpMimeType, (k) -> k.getType());
+		dumpCollection("responses", mp, a.responses(), this::dumpResponse, (k) -> Integer.parseInt(k.code()));
+		addAnnotations(a, mp);
 		return mp;
 	}
-	private LinkedHashMap<String,Object> dumpSecuredBy(SecuredByConfig r) {
+	private LinkedHashMap<String, Object> dumpTrait(Trait a) {
+		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
+		dumpCollection("securedBy", mp, a.securedBy(), this::dumpSecuredBy, s -> s.name());
+		addScalarField("description", mp, a, a::description);
+		addScalarField("displayName", mp, a, a::displayName);
+		addScalarField("is", mp, a, a::getIs);
+		dumpCollection("queryParameters", mp, a.queryParameters(), this::dumpNamedParam, this::typeKey);
+		dumpCollection("headers", mp, a.headers(), this::dumpNamedParam, this::typeKey);
+		dumpCollection("body", mp, a.body(), this::dumpMimeType, (k) -> k.getType());
+		dumpCollection("responses", mp, a.responses(), this::dumpResponse, (k) -> Integer.parseInt(k.code()));
+		addAnnotations(a, mp);
+		return mp;
+	}
+
+	private LinkedHashMap<String, Object> dumpSecuredBy(SecuredByConfig r) {
 		return r.settings();
 	}
-	private LinkedHashMap<String,Object> dumpResponse(Response r) {
-		LinkedHashMap<String, Object>mp=new LinkedHashMap<>();
+
+	private LinkedHashMap<String, Object> dumpResponse(Response r) {
+		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		dumpCollection("headers", mp, r.headers(), this::dumpNamedParam, this::typeKey);
-		dumpCollection("body", mp, r.body(), this::dumpMimeType, (k)->k.getType());
-		addAnnotations(r,mp);
+		dumpCollection("body", mp, r.body(), this::dumpMimeType, (k) -> k.getType());
+		addAnnotations(r, mp);
 		return mp;
 	}
-	private String typeKey(INamedParam k){
-		return k.getKey()+(k.isRequired()?"":"?");
+
+	private String typeKey(INamedParam k) {
+		return k.getKey() + (k.isRequired() ? "" : "?");
 	}
-	
+
 	private Object dumpNamedParam(INamedParam r) {
 		return typeRespresentation(r.getTypeModel());
 	}
+
 	private Object dumpMimeType(MimeType r) {
-		AbstractType typeModel =( (MimeTypeImpl)r).getPlainModel();
+		AbstractType typeModel = ((MimeTypeImpl) r).getPlainModel();
 		return typeRespresentation(typeModel);
 	}
 
 	private LinkedHashMap<String, Object> dumpResource(Resource r) {
-		LinkedHashMap<String, Object>mp=new LinkedHashMap<>();
+		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		dumpCollection("uriParameters", mp, r.uriParameters(), this::dumpNamedParam, this::typeKey);
 		addScalarField("description", mp, r, r::description);
 		addScalarField("displayName", mp, r, r::displayName);
-		dumpResources(r.resources().toArray(new Resource[r.resources().size()]),mp);
-		for (Action a:r.methods()){
+		dumpResources(r.resources().toArray(new Resource[r.resources().size()]), mp);
+		for (Action a : r.methods()) {
 			mp.put(a.method(), dumpMethod(a));
 		}
-		addAnnotations(r,mp);
+		addAnnotations(r, mp);
 		return mp;
 	}
+
 	private LinkedHashMap<String, Object> dumpSecurityScheme(SecurityScheme r) {
-		LinkedHashMap<String, Object>mp=new LinkedHashMap<>();
+		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		mp.put("type", r.type());
-		mp.put("settings",r.settings());
-		addAnnotations(r,mp);
+		addScalarField("description", mp, r, r::description);
+		mp.put("settings", r.settings());
+		addAnnotations(r, mp);
 		return mp;
-		
+
 	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected static void addScalarField(String name,LinkedHashMap tr,Object source,Supplier<Object>acc){
-		Object vl=acc.get();
-		if (vl!=null){
+	protected static void addScalarField(String name, LinkedHashMap tr, Object source, Supplier<Object> acc) {
+		Object vl = acc.get();
+		if (vl != null) {
+			if (vl instanceof Collection){
+				Collection<?>c=(Collection<?>) vl;
+				if (c.isEmpty()){
+					return;
+				}
+			}
 			tr.put(name, vl);
 		}
 	}
 
 	public String store(ApiImpl model) {
 		LinkedHashMap<String, Object> toStore = new LinkedHashMap<>();
-		addScalarField("title", toStore, model, model::getTitle);		
+		addScalarField("title", toStore, model, model::getTitle);
 		addScalarField("version", toStore, model, model::getVersion);
 		addScalarField("baseUri", toStore, model, model::getBaseUrl);
-		dumpCollection("securitySchemes", toStore, model.securityDefinitions(), this::dumpSecurityScheme, s->s.name());
-		dumpTypes(model.types(), model.annotationTypes(), toStore);	
+		if (!model.getUsesLocations().isEmpty()) {
+			toStore.put("uses", model.getUsesLocations());
+		}
+		addAnnotations(model, toStore);
+		dumpCollection("securitySchemes", toStore, model.securityDefinitions(), this::dumpSecurityScheme,
+				s -> s.name());
+		dumpCollection("traits", toStore, model.getTraits(), this::dumpTrait,
+				s -> s.name());
+		dumpCollection("securedBy", toStore, model.getSecuredBy(), this::dumpSecuredBy,
+				s -> s.name());
+		
+		dumpTypes(model.types(), model.annotationTypes(), toStore);
 		String header = RAML_1_0_API;
-		dumpResources(model.resources(),toStore);
-		addAnnotations(model,toStore);
+		dumpResources(model.resources(), toStore);
+		
 		return dumpMap(toStore, header);
 	}
 
 	private void addAnnotations(Annotable model, LinkedHashMap<String, Object> toStore) {
-		for (Annotation a:model.annotations()){
+		for (Annotation a : model.annotations()) {
 			toStore.put(a.facetName(), a.value());
 		}
 	}

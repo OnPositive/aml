@@ -136,4 +136,10 @@ public class ActionImpl extends AnnotableImpl implements Action{
 	public ArrayList<SecuredByConfig> securedBy() {
 		return securedBy;
 	}
+
+	public void addSecurityScopes(String name, String[] scopes) {
+		SecuredByConfigImpl e = new SecuredByConfigImpl(name);
+		e.settings().put("scopes", scopes);
+		securedBy.add(e);	
+	}
 }

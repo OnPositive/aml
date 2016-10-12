@@ -9,6 +9,15 @@ public class SecuritySchemeImpl extends AnnotableImpl implements SecurityScheme{
 
 	protected String name;
 	protected String type;
+	protected String description;
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	protected HashMap<String, Object>settings=new HashMap<>();
 	
 	public String getName() {
@@ -40,6 +49,11 @@ public class SecuritySchemeImpl extends AnnotableImpl implements SecurityScheme{
 	@Override
 	public Map<String, Object> settings() {
 		return settings;
+	}
+
+	@Override
+	public String description() {
+		return description;
 	}
 
 }

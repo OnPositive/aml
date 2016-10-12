@@ -8,6 +8,7 @@ import java.util.Map;
 import org.aml.apimodel.Library;
 import org.aml.apimodel.SecurityScheme;
 import org.aml.apimodel.TopLevelModel;
+import org.aml.apimodel.Trait;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.TypeRegistryImpl;
@@ -18,6 +19,21 @@ public class TopLevelModelImpl extends AnnotableImpl implements TopLevelModel{
 	protected TypeRegistryImpl types=new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected TypeRegistryImpl atypes=new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected LinkedHashMap<String, Library>uses=new LinkedHashMap<>();
+
+	protected LinkedHashMap<String,String>usesLocations=new LinkedHashMap<>();
+	protected ArrayList<Trait>traits=new ArrayList<>();
+	public ArrayList<Trait> getTraits() {
+		return traits;
+	}
+
+	public LinkedHashMap<String, String> getUsesLocations() {
+		return usesLocations;
+	}
+
+	public void setUsesLocations(LinkedHashMap<String, String> usesLocations) {
+		this.usesLocations = usesLocations;
+	}
+
 	protected ArrayList<SecurityScheme>securityDefinitions=new ArrayList<>();
 	@Override
 	public String getVersion() {
@@ -43,7 +59,5 @@ public class TopLevelModelImpl extends AnnotableImpl implements TopLevelModel{
 	public List<SecurityScheme> securityDefinitions() {
 		return securityDefinitions;
 	}
-
-	
 	
 }

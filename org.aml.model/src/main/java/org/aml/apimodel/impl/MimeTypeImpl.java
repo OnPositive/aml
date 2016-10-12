@@ -8,7 +8,6 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Response;
 import org.aml.typesystem.AbstractType;
-import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.DisplayName;

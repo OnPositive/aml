@@ -57,7 +57,7 @@ public class JSONSchemaParser {
 	static IFacetHandler[] allHandlers = new IFacetHandler[] { new TitleHandler(), new DescriptionHandler(),
 			new FormatHandler(), new PropertiesHandler(), new IdHandler(), new TypeHandler(), MINIMUM, MAXIMUM, PATTERN,
 			MINLENGTH, MAXLENGTH, MINITEMS, MAXITEMS, REQUIRED, $SCHEMA, DEFINITIONS, UNIQUE_ITEMS, MINPROPERTIES,
-			MAXPROPERTIES ,ITEMS,$REF,ADDITIONALPROPERTIES,ENUM,ONEOF,ANYOF,ALLOF,DEFAULT,ENUM_DESCRIPTIONS,new SkipFacetHandler("annotations")};
+			MAXPROPERTIES ,ITEMS,$REF,ADDITIONALPROPERTIES,ENUM,ONEOF,ANYOF,ALLOF,DEFAULT,ENUM_DESCRIPTIONS,new SkipFacetHandler("annotations"),readOnly};
 
 	static {
 		for (IFacetHandler h : allHandlers) {
@@ -91,7 +91,34 @@ public class JSONSchemaParser {
 			}			
 			return buildType(tName, resolveReference, tName!=null);			
 		}
+		if (object.has("format")){
+			String f=object.getString("format");
+			if (f.equals("date-time")){
+				type=BuiltIns.DATETIME.name();
+				object.remove("format");
+			}
+			if (f.equals("int32")){
+				type=BuiltIns.INTEGER.name();
+				//object.remove("format");
+			}
+			if (f.equals("uint32")){
+				type=BuiltIns.INTEGER.name();
+				object.put("format", "int32");
+			}
+			if (f.equals("uint64")){
+				type=BuiltIns.INTEGER.name();
+				object.put("format", "int64");
+			}
+			if (f.equals("int64")){
+				type=BuiltIns.INTEGER.name();
+				//object.remove("format");
+			}
+		}
+		if (type.equals("string")){
+			object.remove("format");
+		}
 		AbstractType baseType = getBaseType(type);
+		
 		AbstractType derivedType=null;
 		if (object.has("oneOf")){
 			JSONArray arr=object.getJSONArray("oneOf");

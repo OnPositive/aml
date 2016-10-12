@@ -12,7 +12,4 @@ public class MimeTypeImpl extends org.aml.apimodel.impl.MimeTypeImpl {
 	public void setOwningReponse(ResponseImpl responseImpl) {
 		this.owningResponse=responseImpl;
 	}
-
-	
-
 }

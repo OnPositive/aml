@@ -9,4 +9,6 @@ public interface SecurityScheme extends Annotable {
 	String type();
 
 	Map<String, Object> settings();
+	
+	String description();
 }

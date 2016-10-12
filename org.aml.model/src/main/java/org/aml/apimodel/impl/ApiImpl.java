@@ -7,11 +7,18 @@ import java.util.Optional;
 
 import org.aml.apimodel.Api;
 import org.aml.apimodel.Resource;
+import org.aml.apimodel.SecuredByConfig;
 import org.aml.typesystem.AbstractType;
 
 public class ApiImpl extends TopLevelModelImpl implements Api {
 
 	protected ArrayList<Resource> resources = new ArrayList<>();
+	protected ArrayList<SecuredByConfig> securedBy=new ArrayList<>();
+	
+	public ArrayList<SecuredByConfig> getSecuredBy() {
+		return securedBy;
+	}
+
 	protected String title;
 	protected String baseUrl;
 
@@ -86,4 +93,9 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 		this.atypes.registerType(derive);
 	}
 
+	public void addSecuredBy(SecuredByConfigImpl securedByConfigImpl) {
+		securedBy.add(securedByConfigImpl);
+	}
+
+	
 }

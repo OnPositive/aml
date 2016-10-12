@@ -64,7 +64,7 @@ public abstract class AnnotableImpl implements Annotable{
 			return getFromKV(key, cl, kv,defaultValue);
 			
 		}
-		return defaultValue;
+		return getNodeWithKey(key, cl, this.original);
 	}
 
 	protected Node getChildNodeWithKey(String key) {
@@ -89,7 +89,12 @@ public abstract class AnnotableImpl implements Annotable{
 	}
 
 	private <V> V getFromKV(String key, Class<V> cl, KeyValueNode kv, V defaultValue) {
-		for (Node n:kv.getValue().getChildren()){
+		Node val=kv.getValue();
+		return getNodeWithKey(key, cl, val);
+	}
+
+	private <V> V getNodeWithKey(String key, Class<V> cl, Node inode) {
+		for (Node n:inode.getChildren()){
 			if (n instanceof KeyValueNode){
 				KeyValueNode node=(KeyValueNode) n;
 				if (node.getKey() instanceof StringNode){

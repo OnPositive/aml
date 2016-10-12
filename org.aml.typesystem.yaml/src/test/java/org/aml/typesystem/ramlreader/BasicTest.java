@@ -331,6 +331,13 @@ public class BasicTest extends TestCase{
 		TestCase.assertEquals(os.toString(), "[c]");
 	}
 	
+	@Test	
+	public void test19() {
+		Api raml = (Api) parse("/t15.raml");
+		TestCase.assertEquals(raml.documentation().size(), 1);
+		TestCase.assertEquals(raml.documentation().get(0).getTitle(), "d");
+	}
+	
 	private TopLevelModel parse(String res) {
 		String string = StreamUtils.toString(BasicTest.class.getResourceAsStream(res));
 		Node build = new RamlBuilder().build(string);

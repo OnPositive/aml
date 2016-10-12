@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -17,6 +18,7 @@ import java.util.function.Supplier;
 
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Annotable;
+import org.aml.apimodel.DocumentationItem;
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
@@ -341,6 +343,21 @@ public class RamlWriter {
 		AbstractType typeModel = ((MimeTypeImpl) r).getPlainModel();
 		return typeRespresentation(typeModel);
 	}
+	
+	private Object dumpDocumentationItem(DocumentationItem r) {
+		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
+		mp.put("title", r.getTitle());
+		mp.put("content", r.getContent());
+		return mp;
+	}
+	private Object dumpDocumentationItems(List<DocumentationItem> r) {
+		ArrayList<Object>results=new ArrayList<>();
+		for (DocumentationItem i:r){
+			results.add(dumpDocumentationItem(i));
+		}
+		return results;
+	}
+	
 
 	private LinkedHashMap<String, Object> dumpResource(Resource r) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
@@ -398,7 +415,9 @@ public class RamlWriter {
 		dumpTypes(model.types(), model.annotationTypes(), toStore);
 		String header = RAML_1_0_API;
 		dumpResources(model.resources(), toStore);
-		
+		if (!model.getDocumentation().isEmpty()){
+			toStore.put("documentation", dumpDocumentationItems(model.getDocumentation()));
+		}
 		return dumpMap(toStore, header);
 	}
 

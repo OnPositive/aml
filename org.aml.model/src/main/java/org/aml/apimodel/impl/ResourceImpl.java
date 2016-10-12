@@ -112,4 +112,12 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 	public void addUriParameter(NamedParamImpl namedParamImpl) {
 		this.uriParams.add(namedParamImpl);
 	}
+
+	public void setDescription(String documentation) {
+		this.description=documentation;
+	}
+
+	public void setRelativeUri(String path) {
+		this.relativeUrl=path;
+	}
 }

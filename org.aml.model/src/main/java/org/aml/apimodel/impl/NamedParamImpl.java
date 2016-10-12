@@ -152,4 +152,15 @@ public class NamedParamImpl extends AnnotableImpl implements INamedParam{
 		return this.type;
 	}
 
+	public void setType(AbstractType integer) {
+		this.type=integer;
+	}
+
+	public void setRequired(boolean b) {
+		this.required=b;
+	}
+
+	
+
+	
 }

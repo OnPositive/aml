@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.aml.apimodel.Api;
+import org.aml.apimodel.DocumentationItem;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.SecuredByConfig;
 import org.aml.typesystem.AbstractType;
@@ -14,7 +15,12 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 
 	protected ArrayList<Resource> resources = new ArrayList<>();
 	protected ArrayList<SecuredByConfig> securedBy=new ArrayList<>();
+	protected List<DocumentationItem> documentation=new ArrayList<>();
 	
+	public List<DocumentationItem> getDocumentation() {
+		return documentation;
+	}
+
 	public ArrayList<SecuredByConfig> getSecuredBy() {
 		return securedBy;
 	}
@@ -95,6 +101,15 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 
 	public void addSecuredBy(SecuredByConfigImpl securedByConfigImpl) {
 		securedBy.add(securedByConfigImpl);
+	}
+
+	public void setDocumentation(List<DocumentationItem> arrayList) {
+		this.documentation=arrayList;	
+	}
+
+	@Override
+	public List<DocumentationItem> documentation() {
+		return documentation;
 	}
 
 	

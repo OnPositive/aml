@@ -43,6 +43,10 @@ public class ResponseImpl extends AnnotableImpl implements Response{
 		return !this.body().isEmpty();
 	}
 
+	public void setDescription(String description) {
+		this.description=description;
+	}
+
 	
 
 }

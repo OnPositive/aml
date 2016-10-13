@@ -400,6 +400,7 @@ public class RamlWriter {
 		addScalarField("title", toStore, model, model::getTitle);
 		addScalarField("version", toStore, model, model::getVersion);
 		addScalarField("baseUri", toStore, model, model::getBaseUrl);
+		addScalarField("mediaType", toStore, model, model::getMediaType);
 		if (!model.getUsesLocations().isEmpty()) {
 			toStore.put("uses", model.getUsesLocations());
 		}

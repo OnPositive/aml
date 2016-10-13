@@ -9,7 +9,7 @@ import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.Resource;
 
-public class ResourceImpl extends AnnotableImpl implements Resource{
+public class ResourceImpl extends AnnotableImpl implements Resource,Comparable<Resource>{
 
 	protected ArrayList<Resource>resources=new ArrayList<>();
 	protected ArrayList<Action>methods=new ArrayList<>();
@@ -55,7 +55,7 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 	}
 
 	@Override
-	public List<? extends INamedParam> uriParameters() {
+	public List<INamedParam> uriParameters() {
 		return uriParams;
 	}
 
@@ -77,9 +77,10 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 	}
 
 	private ResourceImpl getOrCreateResourceWithSegment(String string) {
-		Optional<Resource> findFirst = this.resources.stream().filter(x -> x.relativeUri().equals("/"+string)).findFirst();
+		final String relativeUrl = "/"+string;
+		Optional<Resource> findFirst = getResourceOpt(relativeUrl);
 		return (ResourceImpl) findFirst.orElseGet(() -> {
-			ResourceImpl resource = new ResourceImpl("/"+string);
+			ResourceImpl resource = new ResourceImpl(relativeUrl);
 			resource.parent=this;
 			this.resources.add(resource);
 			return resource;
@@ -120,4 +121,12 @@ public class ResourceImpl extends AnnotableImpl implements Resource{
 	public void setRelativeUri(String path) {
 		this.relativeUrl=path;
 	}
+
+	public void update(String relativeUri, ResourceImpl res) {
+		
+	}
+
+	
+
+	
 }

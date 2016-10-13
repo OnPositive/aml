@@ -1,7 +1,6 @@
 package org.aml.typesystem.ramlreader;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.aml.apimodel.Api;
@@ -21,14 +20,14 @@ public class ApiImpl extends TopLevelRamlImpl implements Api{
 	}
 
 	@Override
-	public Resource[] resources() {
+	public List<Resource> resources() {
 		ArrayList<Resource>resources=new ArrayList<>();
 		for (Node n: this.original.getChildren()){
 			if (n instanceof ResourceNode){
 				resources.add(new ResourceImpl(this,null,(ResourceNode) n));
 			}
 		}
-		return resources.toArray(new Resource[resources.size()]);
+		return resources;
 	}
 
 	@Override

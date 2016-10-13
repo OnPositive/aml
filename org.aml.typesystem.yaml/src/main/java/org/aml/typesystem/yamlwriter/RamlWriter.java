@@ -2,7 +2,6 @@ package org.aml.typesystem.yamlwriter;
 
 import java.io.BufferedWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -267,7 +266,7 @@ public class RamlWriter {
 		return tps;
 	}
 
-	protected void dumpResources(Resource[] res, LinkedHashMap<String, Object> map) {
+	protected void dumpResources(List<Resource> res, LinkedHashMap<String, Object> map) {
 		for (Resource r : res) {
 			map.put(r.relativeUri(), dumpResource(r));
 		}
@@ -364,7 +363,7 @@ public class RamlWriter {
 		dumpCollection("uriParameters", mp, r.uriParameters(), this::dumpNamedParam, this::typeKey);
 		addScalarField("description", mp, r, r::description);
 		addScalarField("displayName", mp, r, r::displayName);
-		dumpResources(r.resources().toArray(new Resource[r.resources().size()]), mp);
+		dumpResources(r.resources(), mp);
 		for (Action a : r.methods()) {
 			mp.put(a.method(), dumpMethod(a));
 		}

@@ -60,8 +60,8 @@ public class WriterTest extends TestCase{
 		
 		TestCase.assertTrue(!buildApi.hasErrors());
 		Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"");
-		TestCase.assertTrue(api.resources()[0].methods().get(0).queryParameters().get(0).isRequired());
-		TestCase.assertTrue(!api.resources()[0].methods().get(0).queryParameters().get(1).isRequired());
+		TestCase.assertTrue(api.resources().get(0).methods().get(0).queryParameters().get(0).isRequired());
+		TestCase.assertTrue(!api.resources().get(0).methods().get(0).queryParameters().get(1).isRequired());
 	}
 	
 	public void test2(){
@@ -82,9 +82,9 @@ public class WriterTest extends TestCase{
 		
 		TestCase.assertTrue(!buildApi.hasErrors());
 		Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"");
-		TestCase.assertTrue(api.resources()[0].methods().get(0).queryParameters().get(0).isRequired());
-		TestCase.assertTrue(!api.resources()[0].methods().get(0).queryParameters().get(1).isRequired());
-		TestCase.assertTrue(api.resources()[0].methods().get(0).responses().get(0).body().get(0).getTypeModel().name().equals("Person"));
+		TestCase.assertTrue(api.resources().get(0).methods().get(0).queryParameters().get(0).isRequired());
+		TestCase.assertTrue(!api.resources().get(0).methods().get(0).queryParameters().get(1).isRequired());
+		TestCase.assertTrue(api.resources().get(0).methods().get(0).responses().get(0).body().get(0).getTypeModel().name().equals("Person"));
 	}
 	
 	public void test3(){
@@ -104,9 +104,9 @@ public class WriterTest extends TestCase{
 		RamlModelResult buildApi = new RamlModelBuilder().buildApi(store, "");		
 		TestCase.assertTrue(!buildApi.hasErrors());
 		Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"");
-		TestCase.assertTrue(api.resources()[0].methods().get(0).queryParameters().get(0).isRequired());
-		TestCase.assertTrue(!api.resources()[0].methods().get(0).queryParameters().get(1).isRequired());
-		TestCase.assertTrue(api.resources()[0].methods().get(0).responses().get(0).body().get(0).getTypeModel().name().equals("Person"));
+		TestCase.assertTrue(api.resources().get(0).methods().get(0).queryParameters().get(0).isRequired());
+		TestCase.assertTrue(!api.resources().get(0).methods().get(0).queryParameters().get(1).isRequired());
+		TestCase.assertTrue(api.resources().get(0).methods().get(0).responses().get(0).body().get(0).getTypeModel().name().equals("Person"));
 	}
 	
 	public void test4(){
@@ -132,7 +132,7 @@ public class WriterTest extends TestCase{
 		RamlModelResult buildApi = new RamlModelBuilder().buildApi(store, "");		
 		TestCase.assertTrue(!buildApi.hasErrors());		
 		Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"");
-		TestCase.assertTrue(api.resources()[0].methods().get(0).annotations().get(0).value().equals("Hello"));
+		TestCase.assertTrue(api.resources().get(0).methods().get(0).annotations().get(0).value().equals("Hello"));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -171,7 +171,7 @@ public class WriterTest extends TestCase{
 		RamlModelResult buildApi = new RamlModelBuilder().buildApi(store, "");	
 		TestCase.assertTrue(!buildApi.hasErrors());		
 		Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"");
-		Object os=api.resources()[0].methods().get(0).securedBy().get(0).settings().get("scopes");
+		Object os=api.resources().get(0).methods().get(0).securedBy().get(0).settings().get("scopes");
 		TestCase.assertEquals(os.toString(), "[c]");
 	}
 	

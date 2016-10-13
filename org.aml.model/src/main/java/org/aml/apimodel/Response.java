@@ -3,7 +3,7 @@ package org.aml.apimodel;
 import java.util.List;
 
 
-public interface Response extends Annotable{
+public interface Response extends Annotable,IHasBody{
 	String code();
 
 	/**
@@ -23,5 +23,6 @@ public interface Response extends Annotable{
 	String description();
 
 	boolean hasBody();
+
 
 }

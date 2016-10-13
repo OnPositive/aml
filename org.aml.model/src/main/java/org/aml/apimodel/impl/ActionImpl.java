@@ -84,12 +84,12 @@ public class ActionImpl extends AnnotableImpl implements Action{
 	}
 
 	@Override
-	public List<? extends INamedParam> queryParameters() {
+	public List<INamedParam> queryParameters() {
 		return queryParameters;
 	}
 
 	@Override
-	public List<? extends INamedParam> headers() {
+	public List<INamedParam> headers() {
 		return headers;
 	}
 

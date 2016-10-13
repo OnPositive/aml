@@ -8,6 +8,7 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Response;
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.DisplayName;
@@ -24,6 +25,10 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType{
 		this.model = model;
 		this.name=model.name();
 		this.owner=owner;
+	}
+	public MimeTypeImpl() {
+		this.model = BuiltIns.OBJECT;
+		this.name="application/json";		
 	}
 	public MimeTypeImpl(AbstractType model,Action owner,String name) {
 		this.model = model;		
@@ -74,7 +79,7 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType{
 	public List<INamedParam> getFormParameters() {
 		ArrayList<INamedParam> np = new ArrayList<>();
 		for (IProperty p : model.toPropertiesView().allProperties()) {
-			NamedParamImpl vp=new NamedParamImpl(p.range(), !p.isRequired(), false);
+			NamedParamImpl vp=new NamedParamImpl(p.id(),p.range(), !p.isRequired(), false);
 			np.add(vp);
 		}
 		return np;
@@ -88,6 +93,12 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType{
 	@Override
 	public Response owningResponse() {
 		return owningResponse;
+	}
+	public void setTypeModel(AbstractType t) {
+		this.model=t;
+	}
+	public void setName(String s) {
+		this.name=s;
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public interface Action extends Annotable{
+public interface Action extends Annotable,IHasBody{
 
 	/**
      * Method that can be called
@@ -69,5 +69,14 @@ public interface Action extends Annotable{
 	 * @return security schemes configuration associated with this method
 	 */
 	ArrayList<SecuredByConfig>securedBy();
-
+	
+	default INamedParam header(String name){
+		return this.headers().stream().filter(x -> x.getKey().equals(name)).findFirst().orElse(null);
+	}
+	default INamedParam queryParam(String name){
+		return this.queryParameters().stream().filter(x -> x.getKey().equals(name)).findFirst().orElse(null);
+	}
+	default Response response(String name){
+		return this.responses().stream().filter(x -> x.code().equals(name)).findFirst().orElse(null);
+	}
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.TypeOps;
@@ -22,6 +23,8 @@ import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.FacetRestriction;
 import org.aml.typesystem.meta.restrictions.IRangeRestriction;
 import org.aml.typesystem.meta.restrictions.RestrictionsList;
+import org.raml.v2.api.RamlModelBuilder;
+import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.loader.CompositeResourceLoader;
 import org.raml.v2.api.loader.ResourceLoader;
 import org.raml.v2.api.loader.UrlResourceLoader;
@@ -582,5 +585,15 @@ public class TopLevelRamlModelBuilder {
 			return null;
 		}
 		return build(build, header);
+	}
+
+	public static TopLevelModel build(String raml) {
+		final CompositeResourceLoader loader = new CompositeResourceLoader(new UrlResourceLoader());
+		final TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(raml, loader,"");
+		final RamlModelResult buildApi = new RamlModelBuilder(loader).buildApi(raml, "");
+		if (buildApi.hasErrors()){
+			return null;
+		}
+		return build;
 	}
 }

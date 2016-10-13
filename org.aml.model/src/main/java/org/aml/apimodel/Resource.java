@@ -1,8 +1,9 @@
 package org.aml.apimodel;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface Resource extends Annotable{
+public interface Resource extends Annotable,Comparable<Resource>,IHasResources{
 
     /**
      * Relative URL of this resource from the parent resource
@@ -45,7 +46,20 @@ public interface Resource extends Annotable{
 
 	Api getApi();
 
-
+	default int compareTo(Resource o) {
+		return relativeUri().compareTo(o.relativeUri());
+	}
 	
+	default Optional<? extends INamedParam> uriParameterOpt(String name) {
+		return this.uriParameters().stream().filter(x -> x.getKey().equals(name)).findFirst();
+	}
 
+	default INamedParam uriParameter(String name) {
+	  return uriParameterOpt(name).orElse(null);
+	}
+
+
+	default Action method(String name){
+		return this.methods().stream().filter(x -> x.method().equals(name)).findFirst().orElse(null);
+	}
 }

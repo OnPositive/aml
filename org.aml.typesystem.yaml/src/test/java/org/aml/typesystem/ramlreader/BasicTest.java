@@ -321,13 +321,13 @@ public class BasicTest extends TestCase{
 	@Test	
 	public void test17() {
 		Api raml = (Api) parse("/t14.raml");
-		Object os=raml.resources()[0].methods().get(0).securedBy().get(0).settings().get("scopes");
+		Object os=raml.resources().get(0).methods().get(0).securedBy().get(0).settings().get("scopes");
 		TestCase.assertEquals(os.toString(), "[c]");
 	}
 	@Test	
 	public void test18() {
 		Api raml = (Api) parse("/t13.raml");
-		Object os=raml.resources()[0].methods().get(0).securedBy().get(0).settings().get("scopes");
+		Object os=raml.resources().get(0).methods().get(0).securedBy().get(0).settings().get("scopes");
 		TestCase.assertEquals(os.toString(), "[c]");
 	}
 	

@@ -1,10 +1,16 @@
 package org.aml.apimodel.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.aml.apimodel.INamedParam;
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.BuiltIns;
+import org.aml.typesystem.TypeOps;
+import org.aml.typesystem.beans.ISimpleFacet;
+import org.aml.typesystem.meta.FacetRegistry;
+import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Description;
 import org.aml.typesystem.meta.facets.DisplayName;
@@ -26,10 +32,7 @@ public class NamedParamImpl extends AnnotableImpl implements INamedParam{
 		super();
 		this.type = type;
 		this.name=type.name();
-		this.required=required;
-		if (this.type.isAnonimous()){
-			throw new IllegalStateException();
-		}
+		this.required=required;		
 	}
 
 	public NamedParamImpl(String string, AbstractType type, boolean required, boolean repeat) {
@@ -37,6 +40,11 @@ public class NamedParamImpl extends AnnotableImpl implements INamedParam{
 		this.required=required;
 		this.repeat=repeat;
 		this.type=type;
+	}
+
+	public NamedParamImpl() {
+		this.type=BuiltIns.STRING;
+		this.name="param";
 	}
 
 	public List<String> getEnumeration() {
@@ -160,7 +168,52 @@ public class NamedParamImpl extends AnnotableImpl implements INamedParam{
 		this.required=b;
 	}
 
-	
+	public void setName(String paramName) {
+		this.name=paramName;
+	}
 
-	
+	public void setDescription(String text) {
+		final Class<? extends ISimpleFacet> clazz = Description.class;
+		setFacet(text, clazz);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setFacet(Object value, final Class<? extends ISimpleFacet> clazz) {
+		checkType();
+		ISimpleFacet f=this.type.oneMeta(clazz);
+		if (f==null){
+			f=(ISimpleFacet) FacetRegistry.facet(FacetRegistry.getFacetName((Class<? extends TypeInformation>) clazz));
+			this.type.addMeta((TypeInformation) f);
+		}
+		f.setValue(value);
+	}
+
+	private void checkType() {
+		if (this.type.isBuiltIn()){
+			this.type=TypeOps.derive("", this.type);
+		}
+	}
+
+	public void setDefaultValue(String trim) {
+		setFacet(trim, Default.class);
+	}
+
+	public void setMaximum(BigDecimal valueOf) {
+		setFacet(valueOf.doubleValue(),Maximum.class);
+	}
+	public void setMinimum(BigDecimal valueOf) {
+		setFacet(valueOf.doubleValue(),Minimum.class);
+	}
+
+	public void setPattern(String pattern) {
+		setFacet(pattern,Pattern.class);
+	}
+
+	public void setRepeat(boolean boolValue) {
+		this.repeat=true;
+	}
+
+	public void setEnumeration(ArrayList<String> list) {
+		setFacet(list, Enum.class);
+	}
 }

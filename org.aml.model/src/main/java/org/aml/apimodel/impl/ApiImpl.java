@@ -11,12 +11,16 @@ import org.aml.apimodel.Resource;
 import org.aml.apimodel.SecuredByConfig;
 import org.aml.typesystem.AbstractType;
 
+
 public class ApiImpl extends TopLevelModelImpl implements Api {
 
 	protected ArrayList<Resource> resources = new ArrayList<>();
 	protected ArrayList<SecuredByConfig> securedBy=new ArrayList<>();
 	protected List<DocumentationItem> documentation=new ArrayList<>();
+	protected List<String>protocols=new ArrayList<>();
+	protected List<String>mediaTypes=new ArrayList<>();
 	
+
 	public List<DocumentationItem> getDocumentation() {
 		return documentation;
 	}
@@ -63,8 +67,8 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 	}
 
 	@Override
-	public Resource[] resources() {
-		return resources.toArray(new Resource[resources.size()]);
+	public List<Resource> resources() {
+		return resources;
 	}
 
 	public void addType(AbstractType t) {
@@ -111,6 +115,23 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 	public List<DocumentationItem> documentation() {
 		return documentation;
 	}
+
+	public void setProtocols(List<String> protocols) {
+		this.protocols=protocols;
+	}
+
+	public List<String> getProtocols() {
+		return protocols;
+	}
+
+	public List<String> getMediaType() {
+		return mediaTypes;
+	}
+	
+	public void setMediaTypes(List<String> mediaTypes) {
+		this.mediaTypes = mediaTypes;
+	}
+
 
 	
 }

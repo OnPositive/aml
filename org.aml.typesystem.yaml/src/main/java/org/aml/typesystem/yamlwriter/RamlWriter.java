@@ -340,7 +340,12 @@ public class RamlWriter {
 
 	private Object dumpMimeType(MimeType r) {
 		AbstractType typeModel = ((MimeTypeImpl) r).getPlainModel();
-		return typeRespresentation(typeModel);
+		if (typeModel!=null){
+			return typeRespresentation(typeModel);
+		}
+		else{
+			return null;
+		}
 	}
 	
 	private Object dumpDocumentationItem(DocumentationItem r) {

@@ -175,4 +175,9 @@ public class PropertyViewImpl implements IPropertyView {
 	public IProperty getProperty(String s) {
 		return allprops.get(s);
 	}
+
+	@Override
+	public IProperty property(String name) {
+		return allprops.get(name);
+	}
 }

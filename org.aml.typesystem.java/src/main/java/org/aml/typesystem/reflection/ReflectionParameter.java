@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 
 import org.aml.typesystem.IAnnotationModel;
 import org.aml.typesystem.IParameterModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>ReflectionParameter class.</p>
@@ -181,5 +182,10 @@ public class ReflectionParameter implements IParameterModel{
 	@Override
 	public IAnnotationModel[] getAnnotations() {
 		return model;
+	}
+
+	@Override
+	public ITypeModel getType() {
+		return this.type;
 	}
 }

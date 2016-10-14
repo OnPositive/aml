@@ -40,4 +40,6 @@ public interface IPropertyView extends INamedEntity {
 	 */
 	List<IProperty> allFacets();
 
+	IProperty property(String name);
+
 }

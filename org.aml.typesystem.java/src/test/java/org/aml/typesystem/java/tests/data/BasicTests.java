@@ -32,7 +32,7 @@ public class BasicTests {
 		Set<String> propertySet = type.propertySet();
 		Assert.assertTrue(propertySet.contains("name"));
 		Assert.assertTrue(propertySet.size()==5);
-		IProperty property = new PropertyViewImpl(type).getProperty("managed");
+		IProperty property = new PropertyViewImpl(type).property("managed");
 		AbstractType range = property.range();
 		ComponentShouldBeOfType meta = range.oneMeta(ComponentShouldBeOfType.class);
 		junit.framework.Assert.assertTrue(meta.range().name().equals("Person"));
@@ -42,7 +42,7 @@ public class BasicTests {
 	public void test2() {
 		JavaTypeBuilder javaTypeBuilder = new JavaTypeBuilder();
 		AbstractType type = javaTypeBuilder.getType(new ReflectionType(NestedArray.class));
-		IProperty property = new PropertyViewImpl(type).getProperty("items");
+		IProperty property = new PropertyViewImpl(type).property("items");
 		AbstractType range = property.range();
 		ComponentShouldBeOfType meta = range.oneMeta(ComponentShouldBeOfType.class);
 		meta=meta.range().oneMeta(ComponentShouldBeOfType.class);
@@ -53,7 +53,7 @@ public class BasicTests {
 	public void test3() {
 		JavaTypeBuilder javaTypeBuilder = new JavaTypeBuilder();
 		AbstractType type = javaTypeBuilder.getType(new ReflectionType(ClassWithCollection.class));
-		IProperty property = new PropertyViewImpl(type).getProperty("teamMembers");
+		IProperty property = new PropertyViewImpl(type).property("teamMembers");
 		AbstractType range = property.range();
 		ComponentShouldBeOfType meta = range.oneMeta(ComponentShouldBeOfType.class);
 		junit.framework.Assert.assertTrue(meta.range().name().equals("Person"));

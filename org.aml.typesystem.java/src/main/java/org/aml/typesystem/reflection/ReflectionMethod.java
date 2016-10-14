@@ -103,15 +103,7 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 	}
 
 	
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>getBodyType.</p>
-	 */
-	@Override
-	public ITypeModel getBodyType() {
-		return null;
-	}
+	
 
 
 	/** {@inheritDoc} */

@@ -24,4 +24,5 @@ public interface IParameterModel extends IBasicModel{
 	boolean required();
 	
 	
+	ITypeModel getType();
 }

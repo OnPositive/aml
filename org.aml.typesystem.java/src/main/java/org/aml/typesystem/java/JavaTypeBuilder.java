@@ -66,6 +66,9 @@ public class JavaTypeBuilder {
 	 * @return a {@link org.aml.typesystem.AbstractType} object.
 	 */
 	public AbstractType getType(ITypeModel mdl) {
+		if (mdl==null){
+			return null;
+		}
 		if (mdl.getFullyQualifiedName().equals(Object.class.getName())) {
 			return BuiltIns.OBJECT;
 		}

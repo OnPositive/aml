@@ -30,12 +30,7 @@ public interface IMethodModel extends IBasicModel,IMember, IGenericElement {
 	 */
 	ITypeModel getReturnedType();
 	
-	/**
-	 * <p>getBodyType.</p>
-	 *
-	 * @return information about body type
-	 */
-	ITypeModel getBodyType();
+	
 
 	/**
 	 * {@inheritDoc}

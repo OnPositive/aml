@@ -79,6 +79,7 @@ public class TopLevelRamlModelBuilder {
 	RamlHeader header;
 
 	public LibraryImpl buildUsesMaps(Node node) {
+		
 		if (ramlGraph.containsKey(id(node))) {
 			return ramlGraph.get(id(node));
 		}
@@ -92,8 +93,10 @@ public class TopLevelRamlModelBuilder {
 			if (c instanceof LibraryLinkNode) {
 				LibraryLinkNode link = (LibraryLinkNode) c;
 				Node libraryContent = link.getRefNode();
-				LibraryImpl impl = buildUsesMaps(libraryContent);
-				result.usesMap.put(namespace, impl);
+				if (libraryContent!=null){
+					LibraryImpl impl = buildUsesMaps(libraryContent);
+					result.usesMap.put(namespace, impl);
+				}
 			}
 		}));
 		value = getValue(node, TYPES);

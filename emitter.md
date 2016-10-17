@@ -1,4 +1,4 @@
-#AML RAML Emitter
+#RAML Emitter
 
 AML features an emitter for RAML files which allows to transfer instances of [common model](https://github.com/OnPositive/aml/tree/master/org.aml.model/src/main/java/org/aml/apimodel)
 into RAML text.

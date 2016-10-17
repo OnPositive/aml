@@ -6,23 +6,24 @@ into RAML text.
 using this model is as simple as:
 
 ```java
-    ApiImpl model=new ApiImpl();
-		model.setTitle("Hello");
-		ActionImpl orCreateMethod = model.getOrCreateResource("/api/persons").getOrCreateMethod("get");
-    orCreateMethod.addBody("application/json", BuiltIns.OBJECT);
-		AbstractType deriveObjectType = TypeOps.deriveObjectType("Person");
-		deriveObjectType.declareProperty("name", BuiltIns.STRING,false);
-		deriveObjectType.declareProperty("lastName", BuiltIns.STRING,false);
-		deriveObjectType.declareProperty("age", BuiltIns.INTEGER,false);	
-		orCreateMethod.addResponse("200","application/json", deriveObjectType);
-		model.addType(deriveObjectType);
-		orCreateMethod.addQueryParameter(new NamedParamImpl("count",BuiltIns.STRING, true, true));
-		orCreateMethod.addQueryParameter(new NamedParamImpl("offset",BuiltIns.STRING, false, true));
-		String store = new RamlWriter().store(model);
+ApiImpl model=new ApiImpl();
+model.setTitle("Hello");
+ActionImpl orCreateMethod = model.getOrCreateResource("/api/persons").getOrCreateMethod("get");
+orCreateMethod.addBody("application/json", BuiltIns.OBJECT);
+AbstractType deriveObjectType = TypeOps.deriveObjectType("Person");
+deriveObjectType.declareProperty("name", BuiltIns.STRING,false);
+deriveObjectType.declareProperty("lastName", BuiltIns.STRING,false);
+deriveObjectType.declareProperty("age", BuiltIns.INTEGER,false);	
+orCreateMethod.addResponse("200","application/json", deriveObjectType);
+model.addType(deriveObjectType);
+orCreateMethod.addQueryParameter(new NamedParamImpl("count",BuiltIns.STRING, true, true));
+orCreateMethod.addQueryParameter(new NamedParamImpl("offset",BuiltIns.STRING, false, true));
+String store = new RamlWriter().store(model);
+
 ```
 Which will produce following RAML code:
 
-```
+```raml
 #%RAML 1.0
 title: Hello
 types:
@@ -45,4 +46,7 @@ types:
           body:
             application/json: Person
 ```            
+
+Key class here is [RAML Writer](https://github.com/OnPositive/aml/blob/master/org.aml.typesystem.yaml/src/main/java/org/aml/typesystem/yamlwriter/RamlWriter.java)
+
 

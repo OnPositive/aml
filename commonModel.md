@@ -10,8 +10,6 @@ Building an API model is handled by `org.aml.typesystem.yaml` artifact and is as
 
 ```java
 Api api=(Api) new TopLevelRamlModelBuilder().build(store, new CompositeResourceLoader(),"some.raml");
-TestCase.assertTrue(api.resources().get(0).methods().get(0).queryParameters().get(0).isRequired());
-TestCase.assertTrue(!api.resources().get(0).methods().get(0).queryParameters().get(1).isRequired());
 ```
 
 Key class here is [TopLevelRamlModelBuilder](https://github.com/OnPositive/aml/blob/master/org.aml.typesystem.yaml/src/main/java/org/aml/typesystem/ramlreader/TopLevelRamlModelBuilder.java)

@@ -120,6 +120,11 @@ public class SerializationTest extends CompilerTestCase {
 	public void test19() {
 		assertValue("t39.raml", "Person", "/s11.json", "/s11.json", null);
 	}
+	
+	@Test
+	public void test46() {
+		assertValue("t46.raml", "H", "/s46.json", "/s46t.json", null);
+	}
 	private Class<?> assertValue(String ramlPath, String className, String jsonPath, String plainJsonPath, String xmlPath) {
 		Class<?> clazz = compileAndLoadClass(ramlPath, className, true);
 		Object object = loadObjectGson(clazz, jsonPath);
@@ -188,8 +193,15 @@ public class SerializationTest extends CompilerTestCase {
 	}
 
 	static void assertAgainstJSON(Object obj, String jsonPath) {
+		try{
 		JSONObject ob = new JSONObject(StreamUtils.toString(SerializationTest.class.getResourceAsStream(jsonPath)));
 		assertObject(ob, obj);
+		}
+		catch (Exception e) {
+			JSONArray ob = new JSONArray(StreamUtils.toString(SerializationTest.class.getResourceAsStream(jsonPath)));
+			assertObject(ob, obj);
+			
+		}
 	}
 
 	private static void assertObject(Object json, Object obj) {

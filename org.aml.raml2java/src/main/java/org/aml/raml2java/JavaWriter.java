@@ -34,6 +34,7 @@ import org.aml.java.mapping.serializable;
 import org.aml.raml2java.JavaGenerationConfig.WrappersStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
+import org.aml.typesystem.IType;
 import org.aml.typesystem.ITypeLibrary;
 import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.beans.IProperty;
@@ -362,8 +363,9 @@ public class JavaWriter {
 			if (range.isObject()) {
 				return mdl._ref(Object.class);
 			}
+			return mdl._ref(String.class);
 		}
-		if (member != null) {
+		if (member != null||range.isAnonimous()) {
 			
 			if (range.isEffectivelyEmptyType()) {
 				
@@ -385,7 +387,7 @@ public class JavaWriter {
 			if (range.isString()) {
 				if (range.isEnumType()) {
 					if (member != null) {
-						AbstractType derive = TypeOps.derive(typePropertyName(member), BuiltIns.STRING);
+						AbstractType derive = TypeOps.derive(typePropertyName(member, range), BuiltIns.STRING);
 						derive.metaInfo.addAll(range.meta());
 						JType define = new EnumTypeGenerator(this).define(derive);
 						defined.put(range, define);
@@ -396,7 +398,7 @@ public class JavaWriter {
 
 			if (range.isUnion()) {
 				UnionTypeGenerator ug = new UnionTypeGenerator(this);
-				AbstractType derive = TypeOps.derive(typePropertyName(member),
+				AbstractType derive = TypeOps.derive(typePropertyName(member, range),
 						range.superTypes().toArray(new AbstractType[range.superTypes().size()]));
 				for (TypeInformation t : range.meta()) {
 					derive.addMeta(t.clone());
@@ -407,9 +409,9 @@ public class JavaWriter {
 			}
 			if (range.isObject()) {
 				if (!range.directPropertySet().isEmpty() || range.superTypes().size() > 1) {
-					AbstractType derive = TypeOps.derive(typePropertyName(member),
+					AbstractType derive = TypeOps.derive(typePropertyName(member, range),
 							range.superTypes().toArray(new AbstractType[range.superTypes().size()]));
-					for (TypeInformation t : range.meta()) {
+					for (TypeInformation t : range.declaredMeta()) {
 						derive.addMeta(t.clone());
 					}
 					return getType(derive, false, false, null);
@@ -608,6 +610,9 @@ public class JavaWriter {
 					e.printStackTrace();
 				}
 			}
+		}
+		if (range.isArray()){
+			return toArray(range.componentType(), null, false);
 		}
 		return null;
 	}
@@ -814,8 +819,12 @@ public class JavaWriter {
 		}
 		return json;
 	}
+	int count=0;
 
-	private String typePropertyName(IProperty member) {
+	private String typePropertyName(IProperty member, IType range) {
+		if (member==null){
+			return "Anonimous"+(count++);
+		}
 		return member.getDeclaredAt().name() + member.id();
 	}
 

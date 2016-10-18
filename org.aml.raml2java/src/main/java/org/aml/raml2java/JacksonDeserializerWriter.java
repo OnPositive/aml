@@ -5,11 +5,15 @@ import org.aml.typesystem.acbuilder.AcElement;
 import org.aml.typesystem.acbuilder.AcElementKind;
 import org.aml.typesystem.acbuilder.AcScheme;
 import org.aml.typesystem.acbuilder.CompositeAcElement;
+import org.aml.typesystem.acbuilder.CompositeAcElement.TypeFamily;
+
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JStatement;
+import com.sun.codemodel.JType;
 
 public class JacksonDeserializerWriter extends GenericAcAdapterWriter{
 
@@ -54,7 +58,18 @@ public class JacksonDeserializerWriter extends GenericAcAdapterWriter{
 			@Override
 			public void state(JFormatter f) {
 				String name = getName(target, writer);
-				f.p("union.set"+Character.toUpperCase(name.charAt(0))+name.substring(1)+"(codec.readValue(vl.traverse(), "+getJavaTypeName(target, writer)+".class));");
+				if (ac.getFamily()==TypeFamily.ARRAY&&writer.getConfig().containerStrategyCollection){
+					JType type = writer.getType(target);
+					if (type.erasure()!=type){
+						String elementName=((JClass) type).getTypeParameters().get(0).fullName();
+						String vv="com.fasterxml.jackson.databind.type.CollectionType.construct("+type.erasure().fullName()+".class,com.fasterxml.jackson.databind.type.SimpleType.construct("+elementName+".class))";
+						
+						f.p("union.set"+Character.toUpperCase(name.charAt(0))+name.substring(1)+"(codec.readValue(vl.traverse(), "+vv+"));");
+					}
+				}
+				else{
+					f.p("union.set"+Character.toUpperCase(name.charAt(0))+name.substring(1)+"(codec.readValue(vl.traverse(), "+getJavaTypeName(target, writer)+".class));");
+				}
 				f.nl();
 				f.p("return union;");
 				f.nl();

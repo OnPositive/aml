@@ -5,11 +5,15 @@ import org.aml.typesystem.acbuilder.AcElement;
 import org.aml.typesystem.acbuilder.AcElementKind;
 import org.aml.typesystem.acbuilder.AcScheme;
 import org.aml.typesystem.acbuilder.CompositeAcElement;
+import org.aml.typesystem.acbuilder.CompositeAcElement.TypeFamily;
+
 import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFormatter;
 import com.sun.codemodel.JStatement;
+import com.sun.codemodel.JType;
 
 public class GsonAcElementWriter extends GenericAcAdapterWriter{
 
@@ -50,7 +54,21 @@ public class GsonAcElementWriter extends GenericAcAdapterWriter{
 			@Override
 			public void state(JFormatter f) {
 				String name = getName(target, writer);
-				f.p("union.set"+Character.toUpperCase(name.charAt(0))+name.substring(1)+"(gson.fromJson(vl,"+getJavaTypeName(target, writer)+".class));");
+				if (ac.getFamily()==TypeFamily.ARRAY&&writer.getConfig().containerStrategyCollection){
+					JType type = writer.getType(target);
+					if (type.erasure()!=type){
+						String elementName=((JClass) type).getTypeParameters().get(0).fullName();
+						String vv="new SimpleParameterizedType("+type.erasure().fullName()+".class,"+elementName+".class)";
+						
+						f.p("union.set"+Character.toUpperCase(name.charAt(0))+name.substring(1)+"(gson.fromJson(vl, "+vv+"));");
+					}
+					else{
+					f.p("union.set"+Character.toUpperCase(name.charAt(0))+name.substring(1)+"(gson.fromJson(vl,"+getJavaTypeName(target, writer)+".class));");
+					}
+				}
+				else{
+					f.p("union.set"+Character.toUpperCase(name.charAt(0))+name.substring(1)+"(gson.fromJson(vl,"+getJavaTypeName(target, writer)+".class));");
+				}
 				f.nl();
 				f.p("return union;");
 				f.nl();

@@ -19,7 +19,7 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 	protected List<DocumentationItem> documentation=new ArrayList<>();
 	protected List<String>protocols=new ArrayList<>();
 	protected List<String>mediaTypes=new ArrayList<>();
-	
+	protected String description;
 
 	public List<DocumentationItem> getDocumentation() {
 		return documentation;
@@ -31,6 +31,7 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 
 	protected String title;
 	protected String baseUrl;
+	
 
 	public String getBaseUrl() {
 		return baseUrl;
@@ -132,6 +133,11 @@ public class ApiImpl extends TopLevelModelImpl implements Api {
 		this.mediaTypes = mediaTypes;
 	}
 
-
+	public void setDescription(String service) {
+		this.description=service;
+	}
+	public String description(){
+		return this.description;
+	}
 	
 }

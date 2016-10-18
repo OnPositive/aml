@@ -6,6 +6,7 @@ import java.util.List;
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Response;
+import org.aml.typesystem.AbstractType;
 
 public class ResponseImpl extends AnnotableImpl implements Response{
 
@@ -24,7 +25,7 @@ public class ResponseImpl extends AnnotableImpl implements Response{
 	}
 
 	@Override
-	public List<? extends INamedParam> headers() {
+	public List<INamedParam> headers() {
 		return headers;
 	}
 
@@ -42,9 +43,18 @@ public class ResponseImpl extends AnnotableImpl implements Response{
 	public boolean hasBody() {
 		return !this.body().isEmpty();
 	}
+	
+	
 
 	public void setDescription(String description) {
 		this.description=description;
+	}
+
+	public void setResponseTypePayload(AbstractType createType) {
+		for (MimeType m:mimeType){
+			MimeTypeImpl impl=(MimeTypeImpl) m;
+			impl.model=createType;
+		}
 	}
 
 	

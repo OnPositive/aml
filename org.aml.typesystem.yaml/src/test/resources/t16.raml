@@ -1,0 +1,31 @@
+#%RAML 1.0 Library
+types:
+  Exchange:
+    type: object
+    properties:
+      value: integer
+      in: integer
+      out: integer
+  Sale:
+    type: object
+    properties:
+      machineId: string
+      trayId: string
+      dateAndTime: datetime-only
+      exchange: Exchange
+  SaleDetail:
+    type: object
+    properties:
+      dateAndTime: datetime-only
+      value: integer
+      machineId: string
+      productId: string
+  SaleDetails:
+    type: array
+    items: SaleDetail
+  SalesSummary:
+    type: object
+    properties:
+      count: integer
+      totalValue: integer
+      sales: SaleDetails

@@ -115,12 +115,13 @@ public class ActionImpl extends AnnotableImpl implements Action{
 		return this.httpMethod;
 	}
 
-	public void addResponse(String code, String mime, AbstractType type) {
+	public ResponseImpl addResponse(String code, String mime, AbstractType type) {
 		ResponseImpl e = new ResponseImpl(code);
 		MimeTypeImpl e2 = new MimeTypeImpl(type, this,mime);
 		e2.owningResponse=e;
 		e.mimeType.add(e2);
 		this.responses.add(e);
+		return e;
 	}
 	
 	public void addBody(String mime, AbstractType type) {

@@ -324,6 +324,7 @@ public class RamlWriter {
 
 	private LinkedHashMap<String, Object> dumpResponse(Response r) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
+		addScalarField("description", mp,r, r::description);
 		dumpCollection("headers", mp, r.headers(), this::dumpNamedParam, this::typeKey);
 		dumpCollection("body", mp, r.body(), this::dumpMimeType, (k) -> k.getType());
 		addAnnotations(r, mp);
@@ -405,6 +406,7 @@ public class RamlWriter {
 		addScalarField("title", toStore, model, model::getTitle);
 		addScalarField("version", toStore, model, model::getVersion);
 		addScalarField("baseUri", toStore, model, model::getBaseUrl);
+		addScalarField("description", toStore, model, model::description);
 		addScalarField("mediaType", toStore, model, model::getMediaType);
 		if (!model.getUsesLocations().isEmpty()) {
 			toStore.put("uses", model.getUsesLocations());

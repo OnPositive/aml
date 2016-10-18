@@ -20,6 +20,7 @@ import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.XMLFacet;
+import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.FacetRestriction;
 import org.aml.typesystem.meta.restrictions.IRangeRestriction;
 import org.aml.typesystem.meta.restrictions.RestrictionsList;
@@ -71,15 +72,16 @@ public class TopLevelRamlModelBuilder {
 	private static final String USES = "uses";
 	private static final String TYPES = "types";
 	private static final String SCHEMAS = "schemas";
-	
+
 	private static final String ANNOTATIONTYPES = "annotationTypes";
+	private static final Object ITEMS = "items";
 
 	protected Map<Object, LibraryImpl> ramlGraph = new HashMap<>();
 
 	RamlHeader header;
 
 	public LibraryImpl buildUsesMaps(Node node) {
-		
+
 		if (ramlGraph.containsKey(id(node))) {
 			return ramlGraph.get(id(node));
 		}
@@ -93,7 +95,7 @@ public class TopLevelRamlModelBuilder {
 			if (c instanceof LibraryLinkNode) {
 				LibraryLinkNode link = (LibraryLinkNode) c;
 				Node libraryContent = link.getRefNode();
-				if (libraryContent!=null){
+				if (libraryContent != null) {
 					LibraryImpl impl = buildUsesMaps(libraryContent);
 					result.usesMap.put(namespace, impl);
 				}
@@ -102,15 +104,15 @@ public class TopLevelRamlModelBuilder {
 		value = getValue(node, TYPES);
 		value.ifPresent(x -> x.getChildren().forEach(l -> {
 			KeyValueNode t = (KeyValueNode) l;
-			
+
 			// result.topLevelTypes.put(t.getName(), BuiltIns.NOTHING);
-			result.typeDecls.put(((StringNode)t.getKey()).getLiteralValue(),  t.getValue());
+			result.typeDecls.put(((StringNode) t.getKey()).getLiteralValue(), t.getValue());
 		}));
 		value = getValue(node, SCHEMAS);
 		value.ifPresent(x -> x.getChildren().forEach(l -> {
 			KeyValueNode t = (KeyValueNode) l;
 			// result.topLevelTypes.put(t.getName(), BuiltIns.NOTHING);
-			result.typeDecls.put(((StringNode)t.getKey()).getLiteralValue(),  t.getValue());
+			result.typeDecls.put(((StringNode) t.getKey()).getLiteralValue(), t.getValue());
 		}));
 		value = getValue(node, ANNOTATIONTYPES);
 		value.ifPresent(x -> x.getChildren().forEach(l -> {
@@ -131,7 +133,7 @@ public class TopLevelRamlModelBuilder {
 		for (AbstractType t : node.annotationTypes()) {
 			finishAnnotationBinding(node, t);
 		}
-		
+
 	}
 
 	private void finishAnnotationBinding(TopLevelRamlImpl node, AbstractType t) {
@@ -178,13 +180,13 @@ public class TopLevelRamlModelBuilder {
 		if (tn instanceof UnionTypeExpressionNode) {
 			UnionTypeExpressionNode un = (UnionTypeExpressionNode) tn;
 			List<TypeExpressionNode> of = un.of();
-			Stream<AbstractType> map = of.stream().map(t -> buildSuperType(node, t)).filter(x->!x.isNill());
+			Stream<AbstractType> map = of.stream().map(t -> buildSuperType(node, t)).filter(x -> !x.isNill());
 			Object[] array = map.toArray();
 			int count = array.length;
-			if (array.length==1){
+			if (array.length == 1) {
 				AbstractType abstractType = (AbstractType) array[0];
-				if (abstractType.isNumber()||abstractType.isBoolean()){
-					abstractType=TypeOps.derive("", abstractType);
+				if (abstractType.isNumber() || abstractType.isBoolean()) {
+					abstractType = TypeOps.derive("", abstractType);
 					abstractType.setNullable(true);
 				}
 				return abstractType;
@@ -206,7 +208,7 @@ public class TopLevelRamlModelBuilder {
 				return resolveType;
 			}
 			AbstractType resolveType = resolveType(node, typeName);
-			if (resolveType==null&&typeName.equals("date")){
+			if (resolveType == null && typeName.equals("date")) {
 				return BuiltIns.DATE;
 			}
 			return resolveType;
@@ -218,7 +220,7 @@ public class TopLevelRamlModelBuilder {
 		if (tn instanceof ExternalSchemaTypeExpressionNode) {
 			ExternalSchemaTypeExpressionNode en = (ExternalSchemaTypeExpressionNode) tn;
 			// TODO FIX ME
-			return TypeOps.deriveExternal(en.getLiteralValue(),en.getLiteralValue());
+			return TypeOps.deriveExternal(en.getLiteralValue(), en.getLiteralValue());
 		}
 		throw new IllegalStateException();
 	}
@@ -238,7 +240,7 @@ public class TopLevelRamlModelBuilder {
 
 	protected AbstractType buildType(TopLevelRamlImpl topLevelRamlImpl, String typeName, Node tn, boolean register) {
 		AbstractType innerBuild = innerBuild(topLevelRamlImpl, typeName, tn, register);
-		if (innerBuild!=null&&!innerBuild.isBuiltIn()){
+		if (innerBuild != null && !innerBuild.isBuiltIn()) {
 			innerBuild.setSource(topLevelRamlImpl);
 		}
 		return innerBuild;
@@ -246,13 +248,13 @@ public class TopLevelRamlModelBuilder {
 
 	private AbstractType innerBuild(TopLevelRamlImpl topLevelRamlImpl, String typeName, Node tn, boolean register) {
 		if (tn instanceof ArrayNode) {
-			ArrayList<AbstractType>ts=new ArrayList<>();
+			ArrayList<AbstractType> ts = new ArrayList<>();
 			List<Node> children = tn.getChildren();
-			for (Node n:children){
+			for (Node n : children) {
 				AbstractType buildType = buildType(topLevelRamlImpl, typeName, n, false);
 				ts.add(buildType);
 			}
-			
+
 			return TypeOps.union(typeName, ts.toArray(new AbstractType[ts.size()]));
 		}
 		if (tn instanceof NullNode) {
@@ -272,8 +274,8 @@ public class TopLevelRamlModelBuilder {
 		if (tn instanceof StringNode) {
 			// RAML 0.8 global schema declaration
 			StringNode sr = (StringNode) tn;
-			AbstractType deriveExternal = TypeOps.deriveExternal(typeName,sr.getLiteralValue());
-			if (register){
+			AbstractType deriveExternal = TypeOps.deriveExternal(typeName, sr.getLiteralValue());
+			if (register) {
 				topLevelRamlImpl.topLevelTypes.registerType(deriveExternal);
 			}
 			return deriveExternal;
@@ -282,7 +284,7 @@ public class TopLevelRamlModelBuilder {
 			// RAML 0.8
 			SYObjectNode sr = (SYObjectNode) tn;
 			AbstractType superType08 = getSuperType08(sr, topLevelRamlImpl);
-			return TypeOps.derive(typeName,superType08);
+			return TypeOps.derive(typeName, superType08);
 		}
 		if (tn instanceof TypeDeclarationNode) {
 			TypeDeclarationNode ts = (TypeDeclarationNode) tn;
@@ -307,12 +309,21 @@ public class TopLevelRamlModelBuilder {
 			for (Node node : facets) {
 				if (node instanceof FacetNode) {
 					FacetNode n = (FacetNode) node;
-
+					if (n.getName().equals(ITEMS)) {
+						Node value = n.getValue();
+						if (value != null) {
+							AbstractType buildType = buildType(topLevelRamlImpl,  "", value, register);
+							result.addMeta(new ComponentShouldBeOfType(buildType));
+							continue;
+						}
+					}
 					if (n.getName().equals(PROPERTIES)) {
 						Node value = n.getValue();
-						List<Node> ps = value.getChildren();
-						parseProperties(topLevelRamlImpl, register, result, ps, false);
-						continue;
+						if (value != null) {
+							List<Node> ps = value.getChildren();
+							parseProperties(topLevelRamlImpl, register, result, ps, false);
+							continue;
+						}
 					}
 
 					Node value = n.getValue();
@@ -340,7 +351,7 @@ public class TopLevelRamlModelBuilder {
 					KeyValueNode kv = (KeyValueNode) node;
 					SimpleTypeNode b = (SimpleTypeNode) kv.getKey();
 					String literalValue = b.getLiteralValue();
-					if (literalValue.equals(REQUIRED)) {
+					if (literalValue!=null&&literalValue.equals(REQUIRED)) {
 						Object object = toObject(kv.getValue());
 						if (object instanceof Boolean) {
 							Boolean bl = (Boolean) object;
@@ -357,13 +368,15 @@ public class TopLevelRamlModelBuilder {
 					}
 					if (literalValue.equals(FACETS)) {
 						Node value = kv.getValue();
-						List<Node> ps = value.getChildren();
-						for (Node p : ps) {
-							CustomFacetDefinitionNode pn = (CustomFacetDefinitionNode) p;
-							TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
-							AbstractType buildType = buildType(topLevelRamlImpl, "", td, register);
-							FacetDeclaration fd = new FacetDeclaration(pn.getFacetName(), buildType);
-							result.addMeta(fd);
+						if (value != null) {
+							List<Node> ps = value.getChildren();
+							for (Node p : ps) {
+								CustomFacetDefinitionNode pn = (CustomFacetDefinitionNode) p;
+								TypeDeclarationNode td = (TypeDeclarationNode) pn.getValue();
+								AbstractType buildType = buildType(topLevelRamlImpl, "", td, register);
+								FacetDeclaration fd = new FacetDeclaration(pn.getFacetName(), buildType);
+								result.addMeta(fd);
+							}
 						}
 						continue;
 					}
@@ -429,10 +442,9 @@ public class TopLevelRamlModelBuilder {
 			KeyValueNode pn = (KeyValueNode) p;
 			Node value = pn.getValue();
 			String name = getPropertyName(pn);
-			AbstractType buildType = buildType(topLevelRamlImpl, useNames?name:"", value, register);
+			AbstractType buildType = buildType(topLevelRamlImpl, useNames ? name : "", value, register);
 			boolean required = isRequired(pn);
 
-			
 			if (name.startsWith("/") && name.endsWith("/") && name.length() != 1) {
 				if (name.length() != 2) {
 					result.declareMapProperty(name.substring(1, name.length() - 1), buildType);
@@ -444,38 +456,32 @@ public class TopLevelRamlModelBuilder {
 			}
 		}
 	}
-	
-	public boolean isRequired(KeyValueNode kv)
-    {
-        final StringNode key = (StringNode) kv.getKey();
-        return getRequiredNode(kv) instanceof BooleanNode ? ((BooleanNode) getRequiredNode(kv)).getValue() : !key.getValue().endsWith("?");
-    }
-	 public String getPropertyName(KeyValueNode pn)
-	    {
-	        final StringNode key = (StringNode) pn.getKey();
-	        final String keyValue = key.getValue();
-	        if (getRequiredNode(pn) == null)
-	        {
-	            // If required field is set then the ? should be ignored
-	            return keyValue.endsWith("?") ? keyValue.substring(0, keyValue.length() - 1) : keyValue;
-	        }
-	        else
-	        {
-	            return keyValue;
-	        }
-	    }
 
-	    private Node getRequiredNode(KeyValueNode v)
-	    {
-	    	if (v.getValue() instanceof ArrayNode){
-	    		return null;
-	    	}
-	        return v.getValue().get("required");
-	    }
-	
+	public boolean isRequired(KeyValueNode kv) {
+		final StringNode key = (StringNode) kv.getKey();
+		return getRequiredNode(kv) instanceof BooleanNode ? ((BooleanNode) getRequiredNode(kv)).getValue()
+				: !key.getValue().endsWith("?");
+	}
 
+	public String getPropertyName(KeyValueNode pn) {
+		final StringNode key = (StringNode) pn.getKey();
+		final String keyValue = key.getValue();
+		if (getRequiredNode(pn) == null) {
+			// If required field is set then the ? should be ignored
+			return keyValue.endsWith("?") ? keyValue.substring(0, keyValue.length() - 1) : keyValue;
+		} else {
+			return keyValue;
+		}
+	}
 
-	private AbstractType getSuperType08(Node na,TopLevelRamlImpl raml) {
+	private Node getRequiredNode(KeyValueNode v) {
+		if (v.getValue() instanceof ArrayNode) {
+			return null;
+		}
+		return v.getValue().get("required");
+	}
+
+	private AbstractType getSuperType08(Node na, TopLevelRamlImpl raml) {
 		for (Node n : na.getChildren()) {
 			if (n instanceof KeyValueNode) {
 				KeyValueNode k = (KeyValueNode) n;
@@ -484,15 +490,15 @@ public class TopLevelRamlModelBuilder {
 					StringNode sn = (StringNode) key;
 					String literalValue = sn.getLiteralValue();
 					Object vl = toObject(k.getValue());
-					String typeName = ""+vl;
+					String typeName = "" + vl;
 					if (literalValue.equals("schema")) {
-						if (raml.topLevelTypes.hasDeclaration(typeName)){
+						if (raml.topLevelTypes.hasDeclaration(typeName)) {
 							return raml.topLevelTypes.getType(typeName);
 						}
 						return TypeOps.deriveExternal("", typeName);
 					}
-					if (literalValue.equals("formParameters")){
-						AbstractType derive = TypeOps.derive("" , BuiltIns.OBJECT);
+					if (literalValue.equals("formParameters")) {
+						AbstractType derive = TypeOps.derive("", BuiltIns.OBJECT);
 						List<Node> children = k.getValue().getChildren();
 						parseProperties(raml, false, derive, children, true);
 						return derive;
@@ -592,9 +598,9 @@ public class TopLevelRamlModelBuilder {
 
 	public static TopLevelModel build(String raml) {
 		final CompositeResourceLoader loader = new CompositeResourceLoader(new UrlResourceLoader());
-		final TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(raml, loader,"");
+		final TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(raml, loader, "");
 		final RamlModelResult buildApi = new RamlModelBuilder(loader).buildApi(raml, "");
-		if (buildApi.hasErrors()){
+		if (buildApi.hasErrors()) {
 			return null;
 		}
 		return build;

@@ -1220,5 +1220,49 @@ public class BasicTest extends CompilerTestCase {
 			TestCase.assertTrue(false);
 		}
 	}
+	
+	@Test
+	public void test45() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/testComplete1.raml"),
+				new ClassPathResourceLoader(), "testComplete1.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setJacksonSupport(true);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+//		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.H");
+//		Class<?> class1 = compileAndTest.get("org.aml.test.H");
+//		try {
+//			Object newInstance = class1.newInstance();
+//			try {
+//				Method m=class1.getMethod("getSalesSummary");
+//				
+//			} catch (NoSuchMethodException e) {
+//				TestCase.assertTrue(false);
+//			}
+//			try {
+//				Method m=class1.getMethod("getSaleDetails");				
+//			} catch (NoSuchMethodException e) {
+//				TestCase.assertTrue(false);
+//			}
+////			Object newInstance2 = class1.newInstance();
+////			TestCase.assertTrue(newInstance instanceof Serializable);
+////			TestCase.assertTrue(newInstance instanceof Cloneable);
+////			TestCase.assertTrue(newInstance instanceof Comparable);
+////			TestCase.assertTrue(newInstance.equals(newInstance2));
+////			TestCase.assertEquals(newInstance.hashCode(), newInstance2.hashCode());
+//		} catch (SecurityException | InstantiationException | IllegalAccessException e1) {
+//			TestCase.assertTrue(false);
+//		} catch (IllegalArgumentException e) {
+//			TestCase.assertTrue(false);
+//		}
+//		//TestCase.assertTrue(class1.getSuperclass().getSimpleName().equals("Person"));
+//		try {			
+//		} catch (SecurityException e) {
+//			TestCase.assertTrue(false);
+//		} catch (IllegalArgumentException e) {
+//			TestCase.assertTrue(false);
+//		}
+		TestCase.assertEquals(true, true);
+	}
 }
 

@@ -41,6 +41,7 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 
 	protected TypeRegistryImpl topLevelTypes=new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected TypeRegistryImpl annotationTypes=new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
+	private List<ValidationResult> validation=new ArrayList<>();
 
 	
 	@Override
@@ -60,7 +61,7 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 		return true;
 	}
 	public List<ValidationResult> validationResults() {
-		return null;
+		return validation;
 	}
 	@Override
 	public String getVersion() {
@@ -83,5 +84,8 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 			}
 		}
 		return result;
+	}
+	public void setValidationResults(List<ValidationResult> validationResults) {
+		this.validation=validationResults;
 	}
 }

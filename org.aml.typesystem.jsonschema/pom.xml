@@ -18,16 +18,13 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
-		</dependency>		
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>com.onpositive.aml</groupId>
 		<artifactId>org.aml.parent</artifactId>
-<<<<<<< HEAD
+
 		<version>0.0.10</version>
-=======
-		<version>0.0.9</version>
->>>>>>> branch 'master' of https://github.com/petrochenko-pavel-a/aml.git
 		<relativePath>..</relativePath>
 	</parent>
 	<distributionManagement>

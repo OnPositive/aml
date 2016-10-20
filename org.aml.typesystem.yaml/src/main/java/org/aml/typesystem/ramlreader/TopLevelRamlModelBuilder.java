@@ -29,6 +29,7 @@ import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.loader.CompositeResourceLoader;
 import org.raml.v2.api.loader.ResourceLoader;
 import org.raml.v2.api.loader.UrlResourceLoader;
+import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.RamlFragment;
 import org.raml.v2.internal.impl.RamlBuilder;
 import org.raml.v2.internal.impl.commons.RamlHeader;
@@ -204,8 +205,11 @@ public class TopLevelRamlModelBuilder {
 			}
 			String typeName = namedNode.getLiteralValue();
 			if (nameSpace != null) {
-				AbstractType resolveType = resolveType(node.usesMap.get(nameSpace), typeName);
-				return resolveType;
+				LibraryImpl topLevelRamlImpl = node.usesMap.get(nameSpace);
+				if (topLevelRamlImpl != null) {
+					AbstractType resolveType = resolveType(topLevelRamlImpl, typeName);
+					return resolveType;
+				}
 			}
 			AbstractType resolveType = resolveType(node, typeName);
 			if (resolveType == null && typeName.equals("date")) {
@@ -312,7 +316,7 @@ public class TopLevelRamlModelBuilder {
 					if (n.getName().equals(ITEMS)) {
 						Node value = n.getValue();
 						if (value != null) {
-							AbstractType buildType = buildType(topLevelRamlImpl,  "", value, register);
+							AbstractType buildType = buildType(topLevelRamlImpl, "", value, register);
 							result.addMeta(new ComponentShouldBeOfType(buildType));
 							continue;
 						}
@@ -351,7 +355,7 @@ public class TopLevelRamlModelBuilder {
 					KeyValueNode kv = (KeyValueNode) node;
 					SimpleTypeNode b = (SimpleTypeNode) kv.getKey();
 					String literalValue = b.getLiteralValue();
-					if (literalValue!=null&&literalValue.equals(REQUIRED)) {
+					if (literalValue != null && literalValue.equals(REQUIRED)) {
 						Object object = toObject(kv.getValue());
 						if (object instanceof Boolean) {
 							Boolean bl = (Boolean) object;
@@ -594,9 +598,17 @@ public class TopLevelRamlModelBuilder {
 		} catch (InvalidHeaderException e) {
 			return null;
 		}
+		List<ValidationResult> validationResults = buildApi.getValidationResults();
+		try{
 		TopLevelRamlImpl build2 = build(build, header);
-		build2.setValidationResults(buildApi.getValidationResults());
+		build2.setValidationResults(validationResults);
 		return build2;
+		}catch (Exception e) {
+			TopLevelRamlImpl build2 = new TopLevelRamlImpl(build);
+			build2.setValidationResults(validationResults);
+			e.printStackTrace();
+			return build2;
+		}
 	}
 
 	public static TopLevelModel build(String raml) {

@@ -58,6 +58,9 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 	}
 	
 	public boolean isOk() {
+		if (this.validation!=null&&!this.validationResults().isEmpty()){
+			return false;
+		}
 		return true;
 	}
 	public List<ValidationResult> validationResults() {

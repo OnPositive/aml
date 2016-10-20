@@ -296,7 +296,9 @@ public class TopLevelRamlModelBuilder {
 			ArrayList<AbstractType> superTypes = new ArrayList<>();
 			for (TypeExpressionNode n : baseTypes) {
 				AbstractType superType = buildSuperType(topLevelRamlImpl, n);
-				superTypes.add(superType);
+				if (superType!=null){
+					superTypes.add(superType);
+				}
 			}
 			AbstractType result = TypeOps.derive(typeName, superTypes.toArray(new AbstractType[superTypes.size()]));
 			if (ts.getParent() instanceof AnnotationTypeNode) {

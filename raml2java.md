@@ -123,7 +123,7 @@ This chapter uses names of parameters used in Maven Plugin, however same options
 
 ###Annotations on RAML types that are supported
 
-[Currently Supportd Annotations](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml)
+[Currently Supported Annotations](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml)
 
 ###External types
 

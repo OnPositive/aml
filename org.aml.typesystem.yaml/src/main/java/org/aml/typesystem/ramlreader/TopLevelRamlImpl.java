@@ -34,6 +34,8 @@ public class TopLevelRamlImpl extends AnnotableImpl implements TopLevelModel{
 		this.annotationTypes=n.annotationTypes;
 		this.topLevelTypes.allTypes().forEach(x->x.setSource(this));
 		this.annotationTypes.allTypes().forEach(x->x.setSource(this));
+		this.usesMap=n.usesMap;
+		this.validation=n.validation;
 	}
 	protected LinkedHashMap<String,LibraryImpl>usesMap=new LinkedHashMap<>();
 	

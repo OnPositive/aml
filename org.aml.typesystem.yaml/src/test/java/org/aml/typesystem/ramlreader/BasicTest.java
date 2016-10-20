@@ -45,6 +45,15 @@ public class BasicTest extends TestCase{
 	}
 	
 	@Test
+	public void test81() {
+		TopLevelModel raml = parse("/t17.raml");
+		AbstractType type = raml.types().getType("Z");
+		TestCase.assertTrue(type.isString());
+		type = raml.types().getType("X");
+		TestCase.assertTrue(type.isObject());		
+	}
+	
+	@Test
 	public void test2() {
 		TopLevelModel raml = parse("/t2.raml");
 		AbstractType type = raml.types().getType("Animal");

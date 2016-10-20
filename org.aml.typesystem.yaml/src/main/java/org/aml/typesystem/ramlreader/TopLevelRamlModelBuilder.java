@@ -592,13 +592,18 @@ public class TopLevelRamlModelBuilder {
 
 	public TopLevelRamlImpl build(String ramlBuffer, ResourceLoader loader, String readerLocation) {
 		CompositeResourceLoader rs = new CompositeResourceLoader(loader, new UrlResourceLoader());
-		Node build = new RamlBuilder().build(ramlBuffer, loader, readerLocation);
+		Node build = new RamlBuilder().build(ramlBuffer, rs, readerLocation);
 		RamlModelResult buildApi = new RamlModelBuilder(loader).buildApi(ramlBuffer, readerLocation);
 		RamlHeader header = null;
 		try {
 			header = RamlHeader.parse(ramlBuffer);
 		} catch (InvalidHeaderException e) {
 			return null;
+		}
+		if (header.getFragment()!=null){
+			if (header.getFragment()!=RamlFragment.Library&&header.getFragment()!=RamlFragment.Extension&&header.getFragment()!=RamlFragment.Overlay){
+				return null;
+			}
 		}
 		List<ValidationResult> validationResults = buildApi.getValidationResults();
 		try{

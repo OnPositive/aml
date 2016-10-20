@@ -601,7 +601,7 @@ public class TopLevelRamlModelBuilder {
 			return null;
 		}
 		if (header.getFragment()!=null){
-			if (header.getFragment()!=RamlFragment.Library&&header.getFragment()!=RamlFragment.Extension&&header.getFragment()!=RamlFragment.Overlay){
+			if (header.getFragment()!=RamlFragment.Default&&header.getFragment()!=RamlFragment.Library&&header.getFragment()!=RamlFragment.Extension&&header.getFragment()!=RamlFragment.Overlay){
 				return null;
 			}
 		}

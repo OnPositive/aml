@@ -121,6 +121,13 @@ This chapter uses names of parameters used in Maven Plugin, however same options
 * `skipAllAnnotationDefinitions` - shortcut to prevent tool from annotation types generation
 * `skipAllAnnotationReferences` - shortcut to prevent tool from annotations generation
 
+###Annotations on RAML types that are supported
+
+[Currently Supportd Annotations](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml)
+
+###External types
+
+External  types are converted by JSONSchema2Pojo (JSON Schema) and JAXB (XSD)
 
 #Examples
 

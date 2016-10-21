@@ -126,6 +126,10 @@ public class ResourceImpl extends AnnotableImpl implements Resource,Comparable<R
 		
 	}
 
+	public void setDisplayName(String displayName) {
+		this.displayName=displayName;
+	}
+
 	
 
 	

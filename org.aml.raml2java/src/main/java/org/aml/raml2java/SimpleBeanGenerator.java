@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.aml.java.mapping.javaName;
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.beans.IProperty;
@@ -24,12 +25,14 @@ import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.raml.v2.internal.utils.StreamUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
@@ -268,7 +271,12 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 	}
 
 	private void generateProperty(JDefinedClass defineClass, IProperty p, Extras ext) {
-		String name = writer.propNameGenerator.name(p);
+		String oname = writer.propNameGenerator.name(p);
+		javaName annotation = p.range().annotation(javaName.class, false);
+		if (annotation != null) {
+			oname = annotation.value();
+		}
+		String name = oname;
 		JType propType = writer.getType(p.range(), false, false, p);
 		JExpression initExpr = null;
 		if (p.isMap() || p.isAdditional()) {
@@ -291,28 +299,23 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 						initExpr = JExpr.lit("" + dv.value());
 					}
 					if (p.range().isBoolean()) {
-						initExpr = JExpr.lit(Boolean.parseBoolean(""+dv.value()));
+						initExpr = JExpr.lit(Boolean.parseBoolean("" + dv.value()));
 					}
-					
+
 					else if (p.range().isNumber()) {
 						String name2 = propType.name().toLowerCase();
-						if(name2.equals("float")){
-							initExpr = JExpr.lit(Float.parseFloat(((""+dv.value()))));
-						}
-						else if(name2.equals("double")){
-							initExpr = JExpr.lit(Double.parseDouble(((""+dv.value()))));	
-						}
-						else if(name2.equals("short")){
-							initExpr = JExpr.lit(Double.parseDouble(((""+dv.value()))));	
-						}
-						else if(name2.equals("long")){
-							initExpr = JExpr.lit(Long.parseLong(((""+dv.value()))));	
-						}
-						else if(name2.equals("byte")){
-							initExpr = JExpr.lit(Byte.parseByte(((""+dv.value()))));	
-						}
-						else{
-							initExpr = JExpr.lit(Double.parseDouble(((""+dv.value()))));
+						if (name2.equals("float")) {
+							initExpr = JExpr.lit(Float.parseFloat((("" + dv.value()))));
+						} else if (name2.equals("double")) {
+							initExpr = JExpr.lit(Double.parseDouble((("" + dv.value()))));
+						} else if (name2.equals("short")) {
+							initExpr = JExpr.lit(Double.parseDouble((("" + dv.value()))));
+						} else if (name2.equals("long")) {
+							initExpr = JExpr.lit(Long.parseLong((("" + dv.value()))));
+						} else if (name2.equals("byte")) {
+							initExpr = JExpr.lit(Byte.parseByte((("" + dv.value()))));
+						} else {
+							initExpr = JExpr.lit(Double.parseDouble((("" + dv.value()))));
 						}
 					}
 				}
@@ -332,6 +335,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 
 		}
 		JFieldVar field = null;
+		boolean usesCustomName = !p.id().equals(name);
 		if (needField) {
 			field = defineClass.field(JMod.PROTECTED, propType, name);
 			if (p.range().isFile() && writer.getConfig().isGsonSupport()) {
@@ -349,8 +353,12 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			if (writer.getConfig().isGsonSupport()) {
 				if (p.isMap() || p.isAdditional()) {
 					field.annotate(Expose.class).param("serialize", false).param("deserialize", false);
-				}
+				} 
+				if (usesCustomName) {
+						field.annotate(SerializedName.class).param("value", p.id());
+				}				
 			}
+
 			if (writer.getConfig().isJacksonSupport()) {
 				if (p.isMap() || p.isAdditional()) {
 					field.annotate(JsonIgnore.class);
@@ -365,6 +373,11 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		if (p.range().hasDirectMeta(Description.class)) {
 			get.javadoc().add(p.range().oneMeta(Description.class).value());
 		}
+		if (writer.getConfig().isJacksonSupport()) {
+			if (usesCustomName) {
+				get.annotate(JsonProperty.class).param("value", p.id());
+			}
+		}
 		JExpression ref = JExpr.ref(name);
 		if (ts != null && !ts.equals(propType)) {
 			ref = JExpr.cast(propType, ref);
@@ -373,6 +386,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 
 		}
+
 		get.body()._return(ref);
 		writer.annotate(get, p.range());
 		JMethod set = defineClass.method(JMod.PUBLIC, writer.getModel()._ref(void.class),
@@ -387,10 +401,9 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				f.nl();
 			}
 		});
-		if (writer.getConfig().isGenerateBuilderMethods()){
+		if (writer.getConfig().isGenerateBuilderMethods()) {
 			JMethod builder = defineClass.method(JMod.PUBLIC, defineClass,
-					"with" + Character.toUpperCase(name.charAt(0))
-							+ name.substring(1));
+					"with" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 			builder.param(propType, "value");
 			builder.body().add(new JStatement() {
 
@@ -403,7 +416,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 				}
 			});
 		}
-		
+
 		PropertyCustomizerParameters propCustomizer = new PropertyCustomizerParameters(writer, p, defineClass, get, set,
 				field);
 		writer.runCustomizers(propCustomizer);

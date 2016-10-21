@@ -2,6 +2,7 @@ package org.aml.raml2java;
 
 import java.util.HashSet;
 
+import org.aml.java.mapping.javaName;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.IAnnotation;
 import org.aml.typesystem.meta.TypeInformation;
@@ -37,6 +38,10 @@ public class DefaultNameGenerator implements INameGenerator{
 	public String fullyQualifiedName(AbstractType t) {
 		String name = t.name();
 		name=JavaWriter.escape(name);
+		javaName annotation = t.annotation(javaName.class, false);
+		if (annotation!=null){
+			name=annotation.value();
+		}
 		for (String s:keywords){
 			if (name.equals(s)){
 				name=Character.toUpperCase(name.charAt(0))+name.substring(1);

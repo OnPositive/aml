@@ -1,0 +1,40 @@
+#%RAML 1.0
+title: A
+uses:
+  r2j: raml2java.raml
+types:
+
+  Exchange:
+    (r2j.javaName): JavaExchange
+    type: object
+    properties:
+      value: integer
+
+      in:
+        type: integer
+        (r2j.javaName): inputProperty
+      out: integer
+  Sale:
+    type: object
+    properties:
+      machineId: string
+      trayId: string
+      dateAndTime: datetime-only
+      exchange: Exchange
+  SaleDetail:
+    type: object
+    properties:
+      dateAndTime: datetime-only
+      value: integer
+      machineId: string
+      productId: string
+  SaleDetails:
+    type: array
+    items: SaleDetail
+  SalesSummary:
+    type: object
+    properties:
+      count: integer
+      totalValue: integer
+      sales: SaleDetails
+  H:  SalesSummary | SaleDetails

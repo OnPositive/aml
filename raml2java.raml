@@ -30,6 +30,10 @@ annotationTypes:
        desired type of the container type when mapping array types. When used on type container
        serves as default for all contained types.
      default: list
+  javaName: 
+     type: string
+     description: Allows to specify name of the generated java type or java property
+     allowedTargets: [TypeDeclaration]  
   defaultNumberFormat:
     description: This annotation allows to configure default java representation for number values
     type: string

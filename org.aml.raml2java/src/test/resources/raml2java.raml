@@ -1,6 +1,6 @@
 #%RAML 1.0 Library
 uses:
-  commons: ./commons.raml
+  commons: "https://raw.githubusercontent.com/apiregistry/commons/master/commons.raml"
 usage: |
   This library contains set of annotations which may be used to, customize mapping
   of RAML types to Java as well as a set of similar languages (Scala,e.t.c)
@@ -30,6 +30,10 @@ annotationTypes:
        desired type of the container type when mapping array types. When used on type container
        serves as default for all contained types.
      default: list
+  javaName:
+     type: string
+     description: Allows to specify name of the generated java type or java property
+     allowedTargets: [TypeDeclaration]
   defaultNumberFormat:
     description: This annotation allows to configure default java representation for number values
     type: string
@@ -42,7 +46,6 @@ annotationTypes:
     enum: [long, int, int16, int32, int64, int8]
     default: int
     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
-  #Not supported yet
   cloneable:
     type: nil
     description: This marker annotation states that generated types should support cloning
@@ -52,6 +55,7 @@ annotationTypes:
     description: This marker annotation states that generated types should be serializable
     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
   comparable:
+    #Not supported yet.
     type: string
     description: |
        This annotation states that generated types should be comparable,

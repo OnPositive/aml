@@ -165,3 +165,25 @@ types:
       location: string
       vehicles: Vehicle[]
  ```
+ 
+ ###How I can customize Java name of property or generated type
+ 
+ You may annotate files or types with r2j annotation `javaName`, as in this sample:
+ 
+ ```raml
+ #%RAML 1.0
+title: Sample
+uses:
+  r2j: raml2java.raml
+types:
+
+  Exchange:
+    (r2j.javaName): JavaExchange
+    type: object
+    properties:
+      value: integer
+      in:
+        type: integer
+        (r2j.javaName): inputProperty
+      out: integer
+```      

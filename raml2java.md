@@ -84,6 +84,13 @@ When developing in Eclipse, you must manage lifecycle mapping. For this purpose 
 
 This chapter uses names of parameters used in Maven Plugin, however same options are accessible for programmatical access through `JavaGenerationConfig` class.
 
+##Configuration through annotations
+
+One of most flexible ways to configure Raml to Java is to add few annotations to your RAMLs.
+
+[Currently Supported Annotations](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml)
+
+
 ##Input and output related options
 
 * `outputFolder` - folder to write Java files
@@ -121,9 +128,6 @@ This chapter uses names of parameters used in Maven Plugin, however same options
 * `skipAllAnnotationDefinitions` - shortcut to prevent tool from annotation types generation
 * `skipAllAnnotationReferences` - shortcut to prevent tool from annotations generation
 
-###Annotations on RAML types that are supported
-
-[Currently Supported Annotations](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml)
 
 ###External types
 

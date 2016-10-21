@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.aml.java.mapping.extendExisting;
 import org.aml.java.mapping.javaName;
 import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.typesystem.AbstractType;
@@ -75,8 +76,17 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		AbstractType superType = t.superType();
 		boolean hasAdditionalOrMap = false;
 		boolean hasMap = false;
-
 		Extras ext = new Extras();
+		extendExisting annotation = t.annotation(extendExisting.class, true);
+		boolean noInheritance=false;
+		if (annotation!=null){
+			noInheritance=true;
+			JType type = writer.getModel().directClass(annotation.value());
+			defineClass._extends((JClass) type);
+			superType=null;
+			noInheritance=true;
+		}
+		
 		if (superType != null) {
 			JType type = writer.getType(superType);
 			defineClass._extends((JClass) type);
@@ -90,7 +100,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 			;
 		} else {
-			if (this.writer.getConfig().multipleInheritance == MultipleInheritanceStrategy.MIX_IN) {
+			if (this.writer.getConfig().multipleInheritance == MultipleInheritanceStrategy.MIX_IN&&!noInheritance) {
 				AbstractType primarySuper = null;
 				int pcount = 0;
 				for (AbstractType st : t.superTypes()) {

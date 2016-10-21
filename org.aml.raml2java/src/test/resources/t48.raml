@@ -1,0 +1,12 @@
+#%RAML 1.0 Library
+uses:
+  r2j: raml2java.raml
+types:
+  QMap:
+    (r2j.mapsToExisting): java.util.LinkedHashMap
+    type: object
+  W:
+    (r2j.extendExisting): javax.swing.JFrame
+    (r2j.implementsExisting): [javax.swing.WindowConstants]
+    properties:
+      map: QMap

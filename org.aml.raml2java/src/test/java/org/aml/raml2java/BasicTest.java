@@ -10,8 +10,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -1262,6 +1265,27 @@ public class BasicTest extends CompilerTestCase {
 //		} catch (IllegalArgumentException e) {
 //			TestCase.assertTrue(false);
 //		}
+		TestCase.assertEquals(true, true);
+	}
+	@Test
+	public void test46() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/t48.raml"),
+				new ClassPathResourceLoader(), "t48.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.getConfig().setJacksonSupport(true);
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.W");
+		Class<?> class1 = compileAndTest.get("org.aml.test.W");
+		TestCase.assertTrue(class1.getInterfaces()[0]==WindowConstants.class);
+		TestCase.assertTrue(class1.getSuperclass()==JFrame.class);
+		try {
+			TestCase.assertTrue(class1.getDeclaredMethod("getMap").getReturnType()==LinkedHashMap.class);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		
 		TestCase.assertEquals(true, true);
 	}
 }

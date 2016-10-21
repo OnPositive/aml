@@ -186,4 +186,24 @@ types:
         type: integer
         (r2j.javaName): inputProperty
       out: integer
+      
+###How I can to map RAML type to existing Java type, How I can to specify existing super class or existing super interfaces
+You should use `mapsToExisting` , `extendExisting` , `implementsExisting` r2j annotations
+
+Example: 
+
+```raml 
+#%RAML 1.0 Library
+uses:
+  r2j: raml2java.raml
+types:
+  QMap:
+    (r2j.mapsToExisting): java.util.LinkedHashMap
+    type: object
+  W:
+    (r2j.extendExisting): javax.swing.JFrame
+    (r2j.implementsExisting): [javax.swing.WindowConstants]
+    properties:
+      map: QMap
+ 
 ```      

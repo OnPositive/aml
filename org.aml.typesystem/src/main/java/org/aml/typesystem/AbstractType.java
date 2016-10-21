@@ -1,9 +1,11 @@
 package org.aml.typesystem;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -1277,10 +1279,24 @@ public abstract class AbstractType implements IType {
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 						if (method.getName().equals("value")){
-							return a.value();	
+							return convert(method,a.value());	
 						}
 						Map<String,Object>os=(Map<String, Object>) a.value();
-						return os.get(method.getName());								
+						Object object = os.get(method.getName());
+						return convert(method, object);								
+					}
+
+					private Object convert(Method method, Object object) {
+						if (method.getReturnType().isArray()){
+							Collection<?>c=(Collection<?>) object;
+							Object arr=Array.newInstance(method.getReturnType().getComponentType(), c.size());
+							int num=0;
+							for (Object o:c){
+								Array.set(arr, num++, o);
+							}
+							return arr;
+						}
+						return object;
 					}
 				};
 				return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, h));

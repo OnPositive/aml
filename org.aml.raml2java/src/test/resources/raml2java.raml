@@ -34,6 +34,23 @@ annotationTypes:
      type: string
      description: Allows to specify name of the generated java type or java property
      allowedTargets: [TypeDeclaration]
+  implementsExisting:
+     type: string[]
+     description: |
+        Allows to specify additional existing interfaces which should be implemented by type.
+        Framework assumes that interface declarations already exists on class path
+     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  extendExisting:
+        type: string
+        description: |
+           Allows to specify existing superclass which should be extended by type.
+           Framework assumes that superclass declaration already exists on class path
+        allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  mapsToExisting:
+        type: string
+        description: |
+           Allows to specify fully qualified name of existing class which should be mapped to this type
+        allowedTargets: [TypeDeclaration]
   defaultNumberFormat:
     description: This annotation allows to configure default java representation for number values
     type: string

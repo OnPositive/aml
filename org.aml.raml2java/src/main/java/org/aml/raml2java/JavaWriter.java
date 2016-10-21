@@ -30,6 +30,8 @@ import org.aml.java.mapping.container;
 import org.aml.java.mapping.defaultIntegerFormat;
 import org.aml.java.mapping.defaultNumberFormat;
 import org.aml.java.mapping.equalsAndHashCode;
+import org.aml.java.mapping.implementsExisting;
+import org.aml.java.mapping.mapsToExisting;
 import org.aml.java.mapping.serializable;
 import org.aml.raml2java.JavaGenerationConfig.WrappersStrategy;
 import org.aml.typesystem.AbstractType;
@@ -325,6 +327,10 @@ public class JavaWriter {
 
 	public JType getType(AbstractType range, boolean allowNotJava, boolean convertComplexToAnnotation,
 			IProperty member) {
+		mapsToExisting annotation = range.annotation(mapsToExisting.class, false);
+		if (annotation!=null){
+			return this.mdl.directClass(annotation.value());
+		}
 		if (range.isAnnotation()) {
 			if (config.getAnnotationConfig().skipDefinition(range)) {
 				String fullyQualifiedName = nameGenerator.fullyQualifiedName(range);
@@ -885,6 +891,9 @@ public class JavaWriter {
 
 	public void runCustomizers(ClassCustomizerParameters cp) {
 		config.classCustomizers.forEach(x -> x.customize(cp));
+		if (cp.type.annotation(implementsExisting.class, true)!=null){
+			new ImplementsExistingCustomizer().customize(cp);
+		}
 		if (this.getConfig().isGenerateHashCodeAndEquals()||(cp.type.annotation(equalsAndHashCode.class, true)!=null)){
 			new HashCodeAndEqualsBuilder().customize(cp);
 		}

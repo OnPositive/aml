@@ -33,9 +33,12 @@ public class AnnotationTypeGenerator implements ITypeGenerator {
 		}
 		if (!t.isObject()) {
 			AbstractType wrapped=TypeOps.derive(t.name(), BuiltIns.OBJECT);
+			
 			if (!t.isNill()){
 			wrapped.declareProperty("value", t.clone(""),false);			
 			}
+			
+			wrapped.setSource(t.getSource());
 			return define(wrapped);
 		}
 		if (t.isObject()) {

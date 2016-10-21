@@ -128,5 +128,33 @@ There are following example projects at this moment:
 
 * [Simple Example using types from Instagram API definition](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.raml2java.simple) 
 * [More complex example, demoing annotations, multiple inheritance and unions](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.raml2java.annotations)
+* [Fine grained target package configuration](https://github.com/OnPositive/aml/tree/master/examples/org.aml.example.multiPackage)
 
-To run example project you should go to project directory and execute `mvn compile` from command line, Java classes will be generated to `/generated-sources/main/java` 
+To run example project you should go to project directory and execute `mvn compile` from command line, Java classes will be generated to `/generated-sources/main/java`
+
+#FAQ
+ 
+ ###How I can configure raml files custom packages?
+ 
+ You may annotate files or types with r2j annotations, as in this sample:
+ 
+ ```raml
+ #%RAML 1.0 Library
+uses:
+  lib: ./libs/lib.raml
+  j2r: https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml
+annotationTypes:
+  FieldConfig:
+    type: object
+    (j2r.package): org.aml.annotations #only affects FieldConfig class
+    properties:
+      order: int
+      caption: string
+(j2r.package): org.aml.models.vehicles #per file default setting
+types:
+  
+  VehiclesAtLocation:
+    properties:
+      location: string
+      vehicles: Vehicle[]
+ ```

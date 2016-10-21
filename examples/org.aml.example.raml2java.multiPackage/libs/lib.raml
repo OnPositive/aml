@@ -1,0 +1,17 @@
+#%RAML 1.0 Library
+uses:
+  j2r: https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml
+(j2r.package):  org.aml.models.lib
+types:
+  BusinessEntity:
+    properties:
+      id:
+        type: integer
+        format: int64
+      name: string
+      version: string
+  Relations: Link[]
+  Link:
+    properties:
+      kind: string
+      url: string

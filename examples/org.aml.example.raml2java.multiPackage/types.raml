@@ -1,0 +1,63 @@
+#%RAML 1.0 Library
+uses:
+  lib: ./libs/lib.raml
+  j2r: https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml
+annotationTypes:
+
+  FieldConfig:
+    type: object
+    (j2r.package): org.aml.annotations
+    properties:
+      order: int
+      caption: string
+(j2r.package): org.aml.models.vehicles
+types:
+  VehicleKind:
+    (j2r.package): org.aml.models.vehicles.enums
+    type: string
+    enum:
+    - MILITARY
+    - CARGO
+    - PEOPLE
+  double:
+    type: number
+    format: double
+  int:
+    type: integer
+    format: int
+  Vehicle:
+    type: lib.BusinessEntity
+    properties:
+      name:
+        type: string
+        (FieldConfig):
+          order: 1
+          caption: Name of vehicle
+      speed:
+        type: double
+        (FieldConfig):
+          order: 2
+          caption: Maximum Speed of vehicle
+      kind:
+        type: VehicleKind
+  Aircraft:
+    type: Vehicle
+    properties:
+      ceiling: number
+  Submarine:
+    type: Vehicle
+    properties:
+      maxDive: number
+  Boat:
+    type: Vehicle
+    properties:
+      sizeClass: integer
+  SeaVehicle: Boat | Submarine
+  PricedItem:
+    properties:
+      price: number
+  BoatForSale: [Boat, PricedItem]
+  VehiclesAtLocation:
+    properties:
+      location: string
+      vehicles: Vehicle[]

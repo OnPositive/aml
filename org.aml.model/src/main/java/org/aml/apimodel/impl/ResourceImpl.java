@@ -131,6 +131,22 @@ public class ResourceImpl extends AnnotableImpl implements Resource,Comparable<R
 	}
 
 	
-
+	public void addUriParameterToHierarchy(final NamedParamImpl namedParamImpl) {
+		String mname=namedParamImpl.getKey();
+		org.aml.apimodel.Resource r=this;
+		while (r != null) {
+			String url = r.relativeUri();
+			if (url.indexOf("{" + mname + "}") != -1) {
+				break;
+			}
+			if (url.indexOf("{+" + mname + "}") != -1) {
+				break;
+			}
+			r = r.parentResource();
+		}
+		if (!r.uriParameters().stream().anyMatch(x -> x.getKey().equals(mname))) {
+			((ResourceImpl) r).addUriParameter(namedParamImpl);
+		}
+	}
 	
 }

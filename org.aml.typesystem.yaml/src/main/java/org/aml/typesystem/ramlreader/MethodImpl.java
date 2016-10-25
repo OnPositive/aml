@@ -97,5 +97,7 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 		}
 		return results;
 	}
+
+	
 	
 }

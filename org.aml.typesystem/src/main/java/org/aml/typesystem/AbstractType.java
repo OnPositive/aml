@@ -27,6 +27,7 @@ import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Discriminator;
 import org.aml.typesystem.meta.facets.DiscriminatorValue;
 import org.aml.typesystem.meta.facets.DisplayName;
+import org.aml.typesystem.meta.facets.Example;
 import org.aml.typesystem.meta.facets.Facet;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.Polymorphic;
@@ -1325,5 +1326,9 @@ public abstract class AbstractType implements IType {
 			return oneMeta.range();
 		}
 		return null;
+	}
+
+	public void removeMeta(TypeInformation oneMeta) {
+		this.metaInfo.remove(oneMeta);
 	}
 }

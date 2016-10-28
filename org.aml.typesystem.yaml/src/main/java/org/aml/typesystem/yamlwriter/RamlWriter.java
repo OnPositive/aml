@@ -42,6 +42,7 @@ import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
 import org.aml.typesystem.meta.restrictions.PropertyIs;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.reader.StreamReader;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -138,6 +139,9 @@ public class RamlWriter {
 						value = NOVALUE;
 					}
 				}
+				if (value instanceof String) {
+					value = cleanupStringValue((String) value);
+				}
 				result.put(fs.facetName(), value);
 			} else {
 				if (ti instanceof XMLFacet) {
@@ -203,14 +207,14 @@ public class RamlWriter {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String store(ITypeRegistry registry, ITypeRegistry ar) {
-		LinkedHashMap<String, Object> toStore = new LinkedHashMap<>();
+		LinkedHashMap<Object, Object> toStore = new LinkedHashMap<>();
 		dumpTypes(registry, ar, toStore);
 		String header = RAML_1_0_LIBRARY;
 		return dumpMap(toStore, header);
 
 	}
 
-	protected void dumpTypes(ITypeRegistry registry, ITypeRegistry ar, LinkedHashMap<String, Object> toStore) {
+	protected void dumpTypes(ITypeRegistry registry, ITypeRegistry ar, LinkedHashMap<Object, Object> toStore) {
 		Collection<AbstractType> types2 = registry.types();
 		LinkedHashMap<String, Object> atps = fillRromList(ar.types());
 		if (!atps.isEmpty()) {
@@ -223,9 +227,11 @@ public class RamlWriter {
 		}
 	}
 
-	protected String dumpMap(LinkedHashMap<String, Object> toStore, String header) {
+	protected String dumpMap(LinkedHashMap<Object, Object> toStore, String header) {
 		DumperOptions dumperOptions = new DumperOptions();
+		toStore = cleanMap(toStore);
 		dumperOptions.setDefaultFlowStyle(FlowStyle.BLOCK);
+		dumperOptions.setAllowUnicode(true);
 		Yaml rl = new Yaml(dumperOptions);
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter ws = new BufferedWriter(stringWriter);
@@ -237,6 +243,39 @@ public class RamlWriter {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private LinkedHashMap<Object, Object> cleanMap(Map<Object, Object> toStore) {
+		LinkedHashMap<Object, Object> result = new LinkedHashMap<>();
+		for (Object k : toStore.keySet()) {
+			if (k instanceof String) {
+				k = cleanupStringValue((String) k);
+			}
+			Object object = toStore.get(k);
+			object = cleanObject(object);
+			result.put(k, object);			
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object cleanObject(Object object) {
+		if (object instanceof Map) {
+			object = cleanMap((Map<Object, Object>) object);
+		} else if (object instanceof String) {
+			object = cleanupStringValue((String) object);
+		} else if (object instanceof List) {
+			object = cleanupList((List<?>) object);
+		}
+		return object;
+	}
+
+	private ArrayList<?> cleanupList(List<?> object) {
+		ArrayList<Object> array = new ArrayList<>();
+		for (Object o : object) {
+			array.add(cleanObject(o));
+		}
+		return array;
 	}
 
 	private LinkedHashMap<String, Object> fillRromList(Collection<AbstractType> types2) {
@@ -304,6 +343,7 @@ public class RamlWriter {
 		addAnnotations(a, mp);
 		return mp;
 	}
+
 	private LinkedHashMap<String, Object> dumpTrait(Trait a) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		dumpCollection("securedBy", mp, a.securedBy(), this::dumpSecuredBy, s -> s.name());
@@ -324,7 +364,7 @@ public class RamlWriter {
 
 	private LinkedHashMap<String, Object> dumpResponse(Response r) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
-		addScalarField("description", mp,r, r::description);
+		addScalarField("description", mp, r, r::description);
 		dumpCollection("headers", mp, r.headers(), this::dumpNamedParam, this::typeKey);
 		dumpCollection("body", mp, r.body(), this::dumpMimeType, (k) -> k.getType());
 		addAnnotations(r, mp);
@@ -336,33 +376,35 @@ public class RamlWriter {
 	}
 
 	private Object dumpNamedParam(INamedParam r) {
+		if (r.getKey().equals("sort-order")) {
+			System.out.println("A");
+		}
 		return typeRespresentation(r.getTypeModel());
 	}
 
 	private Object dumpMimeType(MimeType r) {
 		AbstractType typeModel = ((MimeTypeImpl) r).getPlainModel();
-		if (typeModel!=null){
+		if (typeModel != null) {
 			return typeRespresentation(typeModel);
-		}
-		else{
+		} else {
 			return null;
 		}
 	}
-	
+
 	private Object dumpDocumentationItem(DocumentationItem r) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		mp.put("title", r.getTitle());
-		mp.put("content", r.getContent());
+		mp.put("content", cleanupStringValue(r.getContent()));
 		return mp;
 	}
+
 	private Object dumpDocumentationItems(List<DocumentationItem> r) {
-		ArrayList<Object>results=new ArrayList<>();
-		for (DocumentationItem i:r){
+		ArrayList<Object> results = new ArrayList<>();
+		for (DocumentationItem i : r) {
 			results.add(dumpDocumentationItem(i));
 		}
 		return results;
 	}
-	
 
 	private LinkedHashMap<String, Object> dumpResource(Resource r) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
@@ -381,7 +423,9 @@ public class RamlWriter {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		mp.put("type", r.type());
 		addScalarField("description", mp, r, r::description);
-		mp.put("settings", r.settings());
+		if (r.settings() != null && !r.settings().isEmpty()) {
+			mp.put("settings", r.settings());
+		}
 		addAnnotations(r, mp);
 		return mp;
 
@@ -391,16 +435,34 @@ public class RamlWriter {
 	protected static void addScalarField(String name, LinkedHashMap tr, Object source, Supplier<Object> acc) {
 		Object vl = acc.get();
 		if (vl != null) {
-			if (vl instanceof Collection){
-				Collection<?>c=(Collection<?>) vl;
-				if (c.isEmpty()){
+			if (vl instanceof Collection) {
+				Collection<?> c = (Collection<?>) vl;
+				if (c.isEmpty()) {
 					return;
 				}
+			}
+			if (vl instanceof String) {
+				String ss = (String) vl;
+				vl = cleanupStringValue(ss);
 			}
 			tr.put(name, vl);
 		}
 	}
 
+	public static String cleanupStringValue(String ss) {
+		StringBuilder bld = new StringBuilder();
+		for (int i = 0; i < ss.length(); i++) {
+			if (StreamReader.isPrintable(ss.charAt(i))) {
+				bld.append(ss.charAt(i));
+			} else {
+				continue;
+			}
+		}
+		return bld.toString();
+
+	}
+
+	@SuppressWarnings("unchecked")
 	public String store(ApiImpl model) {
 		LinkedHashMap<String, Object> toStore = new LinkedHashMap<>();
 		addScalarField("title", toStore, model, model::getTitle);
@@ -414,18 +476,16 @@ public class RamlWriter {
 		addAnnotations(model, toStore);
 		dumpCollection("securitySchemes", toStore, model.securityDefinitions(), this::dumpSecurityScheme,
 				s -> s.name());
-		dumpCollection("traits", toStore, model.getTraits(), this::dumpTrait,
-				s -> s.name());
-		dumpCollection("securedBy", toStore, model.getSecuredBy(), this::dumpSecuredBy,
-				s -> s.name());
-		
-		dumpTypes(model.types(), model.annotationTypes(), toStore);
+		dumpCollection("traits", toStore, model.getTraits(), this::dumpTrait, s -> s.name());
+		dumpCollection("securedBy", toStore, model.getSecuredBy(), this::dumpSecuredBy, s -> s.name());
+
+		dumpTypes(model.types(), model.annotationTypes(), (LinkedHashMap<Object, Object>)(Map)toStore);
 		String header = RAML_1_0_API;
 		dumpResources(model.resources(), toStore);
-		if (!model.getDocumentation().isEmpty()){
+		if (!model.getDocumentation().isEmpty()) {
 			toStore.put("documentation", dumpDocumentationItems(model.getDocumentation()));
 		}
-		return dumpMap(toStore, header);
+		return dumpMap((LinkedHashMap<Object, Object>)(Map)toStore, header);
 	}
 
 	private void addAnnotations(Annotable model, LinkedHashMap<String, Object> toStore) {

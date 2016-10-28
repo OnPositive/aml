@@ -1,8 +1,10 @@
 package org.aml.swagger.reader;
 
+import java.io.IOException;
 import java.nio.channels.IllegalSelectorException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,11 @@ import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 import org.aml.typesystem.yamlwriter.RamlWriter;
 import org.raml.v2.api.loader.CompositeResourceLoader;
 import org.raml.v2.api.loader.UrlResourceLoader;
+import org.raml.yagi.framework.util.DateType;
+import org.raml.yagi.framework.util.DateUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.swagger.models.AbstractModel;
 import io.swagger.models.ArrayModel;
@@ -53,6 +60,8 @@ import io.swagger.models.RefModel;
 import io.swagger.models.Response;
 import io.swagger.models.Swagger;
 import io.swagger.models.Xml;
+import io.swagger.models.auth.ApiKeyAuthDefinition;
+import io.swagger.models.auth.BasicAuthDefinition;
 import io.swagger.models.auth.OAuth2Definition;
 import io.swagger.models.auth.SecuritySchemeDefinition;
 import io.swagger.models.parameters.AbstractSerializableParameter;
@@ -64,6 +73,7 @@ import io.swagger.models.properties.AbstractProperty;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.ByteArrayProperty;
+import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.DateTimeProperty;
 import io.swagger.models.properties.FileProperty;
 import io.swagger.models.properties.ObjectProperty;
@@ -80,6 +90,8 @@ public class SwaggerReader {
 	private ApiImpl result;
 	private Swagger swagger;
 
+	
+	
 	public ApiImpl read(String content) {
 		result = new ApiImpl();
 		result.getUsesLocations().put("commons",
@@ -88,11 +100,11 @@ public class SwaggerReader {
 				"https://raw.githubusercontent.com/apiregistry/typesExtras/master/typeExtras.raml");
 		swagger = new SwaggerParser().readWithInfo(content).getSwagger();
 		swagger = new SwaggerResolver(swagger, new ArrayList<>()).resolve();
-		if (swagger==null){
+		if (swagger == null) {
 			return null;
 		}
 		String title = swagger.getInfo().getTitle();
-		title=title.replace("Swagger", "").trim();
+		title = title.replace("Swagger", "").trim();
 		result.setTitle(title);
 		result.setVersion(swagger.getInfo().getVersion());
 		result.setDescription(swagger.getInfo().getDescription());
@@ -109,9 +121,21 @@ public class SwaggerReader {
 					sd.settings().put("accessTokenUri",
 							od.getTokenUrl() != null ? od.getTokenUrl() : od.getAuthorizationUrl());
 					sd.settings().put("authorizationUri", od.getAuthorizationUrl());
-					sd.settings().put("authorizationGrants", new String[] { od.getFlow() });
-					sd.settings().put("scopes", new ArrayList<>(od.getScopes().keySet()));
+					String flow = od.getFlow();
+					if (flow.equals("accessCode")){
+						flow="authorization_code";
+					}
+					sd.settings().put("authorizationGrants", new String[] { flow });
+					if (od.getScopes()!=null){
+						sd.settings().put("scopes", new ArrayList<>(od.getScopes().keySet()));
+					}
+				} else if (securitySchemeDefinition instanceof ApiKeyAuthDefinition) {
+					ApiKeyAuthDefinition ak = (ApiKeyAuthDefinition) securitySchemeDefinition;
+					sd.setType("Pass Through");
+				} else if (securitySchemeDefinition instanceof BasicAuthDefinition) {
+					sd.setType("Basic Authentication");
 				} else {
+
 					throw new IllegalStateException();
 				}
 				result.securityDefinitions().add(sd);
@@ -135,9 +159,9 @@ public class SwaggerReader {
 		List<String> prod = swagger.getProduces();
 		List<String> cons = swagger.getConsumes();
 		if (prod != null) {
-//			if (!prod.equals(cons)) {
-//				throw new IllegalStateException();
-//			}
+			// if (!prod.equals(cons)) {
+			// throw new IllegalStateException();
+			// }
 			result.setMediaTypes(prod);
 		}
 		for (String p : swagger.getPaths().keySet()) {
@@ -145,7 +169,9 @@ public class SwaggerReader {
 			if (p.startsWith("/")) {
 				p = p.substring(1);
 			}
-
+			if (p.endsWith("/")) {
+				p = p.substring(0, p.length()-1);
+			}
 			ResourceImpl orCreateResource = result.getOrCreateResource(p);
 			addOperation(orCreateResource, "get", path.getGet(), path.getParameters());
 			addOperation(orCreateResource, "head", path.getHead(), path.getParameters());
@@ -188,12 +214,16 @@ public class SwaggerReader {
 		}
 		List<String> produces = swagger.getProduces();
 		List<String> mediaType = this.result.getMediaType();
-		if (op.getConsumes()!=null){
-			mediaType=op.getConsumes();
+		if (op.getConsumes() != null) {
+			mediaType = op.getConsumes();
 		}
-		if (op.getProduces()!=null){
-			produces=op.getProduces();
+		if (op.getProduces() != null) {
+			produces = op.getProduces();
 		}
+		produces=cleanupMedia(produces);
+		mediaType=cleanupMedia(mediaType);
+		AbstractType fdt = TypeOps.derive("", BuiltIns.OBJECT);
+		boolean hasFdt = false;
 		for (Parameter p : ps) {
 			String in = p.getIn();
 			AbstractType pType = convertParameterToType(p);
@@ -202,15 +232,17 @@ public class SwaggerReader {
 				orCreateMethod.addQueryParameter(namedParamImpl);
 			} else if (in.equals("path")) {
 				ResourceImpl r = (ResourceImpl) orCreateMethod.resource();
-				try{
-				r.addUriParameterToHierarchy(namedParamImpl);
-				}catch (Exception e) {
-					System.err.println("Unmapped parameter:"+namedParamImpl.getKey()+orCreateMethod.toString());
+				try {
+					r.addUriParameterToHierarchy(namedParamImpl);
+				} catch (Exception e) {
+					System.err.println("Unmapped parameter:" + namedParamImpl.getKey() + orCreateMethod.toString());
 				}
 			} else if (in.equals("header")) {
 				orCreateMethod.headers().add(namedParamImpl);
+			} else if (in.equals("formData")) {
+				fdt.declareProperty(p.getName(), pType, !p.getRequired());
+				hasFdt = true;
 			} else if (in.equals("body")) {
-				
 				for (String s : mediaType) {
 					orCreateMethod.addBody(s, pType);
 				}
@@ -218,30 +250,41 @@ public class SwaggerReader {
 				throw new IllegalStateException();
 			}
 		}
-		
+		if (hasFdt) {
+			for (String s : mediaType) {
+				if (s.contains("form")) {
+					orCreateMethod.addBody(s, fdt);
+				}
+			}
+		}
+
 		Map<String, Response> responses = op.getResponses();
 		for (String c : responses.keySet()) {
 			Response response = responses.get(c);
-			if (c.equals("default")){
-				boolean hasOk=false;
-				for (String s:responses.keySet()){
-					if (s.startsWith("2")){
-						hasOk=true;
+			if (c.equals("default")) {
+				boolean hasOk = false;
+				for (String s : responses.keySet()) {
+					if (s.startsWith("2")) {
+						hasOk = true;
 					}
 				}
-				if (hasOk){
-					c="500";
-				}
-				else{
-					if( response.getDescription()!=null&&response.getDescription().toLowerCase().contains("error")){
-						c="500";
-					}
-					else c="200";
+				if (hasOk) {
+					c = "500";
+				} else {
+					if (response.getDescription() != null
+							&& response.getDescription().toLowerCase().contains("error")) {
+						c = "500";
+					} else
+						c = "200";
 				}
 			}
-			
+
 			ResponseImpl impl = new ResponseImpl(c);
-			
+			if (produces == null) {
+				produces = new ArrayList<>();
+				produces.add("application/json");
+			}
+
 			for (String m : produces) {
 				Property schema = response.getSchema();
 				if (schema != null) {
@@ -263,29 +306,60 @@ public class SwaggerReader {
 		}
 	}
 
+	private List<String> cleanupMedia(List<String> produces) {
+		if (produces!=null){
+			ArrayList<String>result=new ArrayList<>();
+			for (String s:produces){
+				if (s.indexOf(';')!=-1){
+					s=s.substring(0, s.indexOf(';'));
+				}
+				if (s.startsWith("/")){
+					s=s.substring(1);
+				}
+				if (s.equals("plain")){
+					s="text/plain";
+				}
+				result.add(s);
+			}
+			return result;
+		}
+		return null;
+	}
+
 	private AbstractType convertParameterToType(Parameter p) {
 		if (p instanceof AbstractSerializableParameter<?>) {
 			AbstractSerializableParameter<?> basicModel = (AbstractSerializableParameter<?>) p;
 			String type = basicModel.getType();
-			String format = basicModel.getFormat();
-			if (format != null) {
-				if (format.equals("date-time")) {
-					format = null;
-					type = "date-time";
-				} else if (format.equals("uuid")) {
-					format = null;
-				} else if (format.equals("file")) {
-					format = null;
-				} else if (format.equals("password")) {
-					format = null;
-				}
-				 else if (format.equals("url")) {
-						format = null;
-					}
-				 else if (format.equals("date-time-rfc1123")){
-					 format = null;
-				 }
+			if (type==null&&basicModel.getMinimum()!=null){
+				type="number";
 			}
+			if (type==null&&basicModel.getMaximum()!=null){
+				type="number";
+			}
+			
+			if (type==null&&basicModel.getEnum()!=null){
+				type="string";
+			}
+			
+			if (type!=null&&type.equals("array")){
+				if (basicModel.getEnum()!=null){
+					type="string";	
+				}
+				//FIXME
+			}
+			
+			if (type!=null&&type.equals("boolean")){
+				basicModel.setEnum(null);//FIXME
+			}
+			String format = basicModel.getFormat();
+			FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type,format));
+			type=mapFormat.type;
+			if (((AbstractSerializableParameter) p).getEnum()!=null){
+				LinkedHashSet<Object> linkedHashSet = new LinkedHashSet<>(((AbstractSerializableParameter) p).getEnum());
+				linkedHashSet.remove(null);
+				((AbstractSerializableParameter) p).setEnum(new ArrayList<>(linkedHashSet));
+			}
+			format=mapFormat.format;
 			AbstractType st = base(type);
 			AbstractType derive = TypeOps.derive("", st);
 			transferTo(derive, Description.class, basicModel.getDescription());
@@ -322,11 +396,18 @@ public class SwaggerReader {
 
 	TypeRegistryImpl reg = new TypeRegistryImpl(null);
 
-	int id=0;
-	
+	int id = 0;
+
 	public AbstractType convertType(String name, Model m) {
-		name=name.replace('[', '_');
-		name=name.replace(']', '_');
+		name = name.replace('[', '_');
+		name = name.replace(']', '_');
+		name = name.replace(',', '_');
+		name = name.replace('(', '_');
+		name = name.replace(')', '_');
+		name = name.replace('.', '_');
+		if (BuiltIns.getBuiltInTypes().getType(name)!=null){
+			name=Character.toUpperCase(name.charAt(0))+name.substring(1);
+		}
 		if (reg.getType(name) != null) {
 			return reg.getType(name);
 		}
@@ -334,6 +415,7 @@ public class SwaggerReader {
 			if (m instanceof ArrayModel) {
 				ArrayModel basicModel = (ArrayModel) m;
 				String type = basicModel.getType();
+				
 				AbstractType st = base(type);
 				AbstractType derive = TypeOps.derive(name, st);
 				transferTo(derive, Description.class, basicModel.getDescription());
@@ -352,13 +434,12 @@ public class SwaggerReader {
 				ArrayList<AbstractType> superTypes = new ArrayList<>();
 				for (Model ma : allOf) {
 					AbstractType convertType = convertType("", ma);
-					while (convertType.isAnonimous()){
-						if (ma instanceof ModelImpl){
-							convertType=convertType.clone("Anonimous"+(id++));
+					while (convertType.isAnonimous()) {
+						if (ma instanceof ModelImpl) {
+							convertType = convertType.clone("Anonimous" + (id++));
 							result.addType(convertType);
-						}
-						else{
-							convertType=convertType.superType();
+						} else {
+							convertType = convertType.superType();
 						}
 					}
 					superTypes.add(convertType);
@@ -372,27 +453,15 @@ public class SwaggerReader {
 			} else {
 				ModelImpl basicModel = (ModelImpl) m;
 				String type = basicModel.getType();
+				if (type==null){
+					if (basicModel.getEnum()!=null){
+						type="string";
+					}
+				}
 				String format = basicModel.getFormat();
-				if (format != null && format.equals("file")) {
-					format = null;
-				}
-				if (format != null && format.equals("uri")) {
-					format = null;
-				}
-				if (format != null && format.equals("base64url")) {
-					format = null;
-				}
-				if (format != null && format.equals("unixtime")) {
-					format = null;
-				}
-				if (format != null && format.equals("date-time")) {
-					format = null;
-					type="datetime";
-				}
-				if (format != null && format.equals("date")) {
-					format = null;
-					
-				}
+				FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type, format));
+				type=mapFormat.type;
+				format=mapFormat.format;
 				AbstractType st = base(type);
 				AbstractType derive = TypeOps.derive(name, st);
 				transferTo(derive, Description.class, basicModel.getDescription());
@@ -400,8 +469,9 @@ public class SwaggerReader {
 				transferTo(derive, DisplayName.class, basicModel.getTitle());
 				transferTo(derive, Default.class, basicModel.getDefaultValue());
 				transferTo(derive, Discriminator.class, basicModel.getDiscriminator());
-				transferTo(derive, Enum.class, basicModel.getEnum());
-				
+				if (!derive.isArray()&&!derive.isObject()){
+					transferTo(derive, Enum.class, basicModel.getEnum());
+				}
 				transferTo(derive, Format.class, format);
 				reg.registerType(derive);
 				Map<String, Property> properties = m.getProperties();
@@ -431,12 +501,13 @@ public class SwaggerReader {
 			if (!get$ref.startsWith("#/definitions/")) {
 				throw new IllegalArgumentException("Only internal references are supported at this moment");
 			}
-			
+
 			Model actual = swagger.getDefinitions().get(simpleRef);
 			AbstractType convertType = convertType(simpleRef, actual);
 
 			return convertType;
 		}
+		
 		return null;
 	}
 
@@ -456,7 +527,14 @@ public class SwaggerReader {
 				throw new IllegalArgumentException("Only internal references are supported at this moment");
 			}
 			Model actual = swagger.getDefinitions().get(simpleRef);
-			AbstractType convertType = convertType(simpleRef, actual);
+			AbstractType convertType=null;
+			if (actual==null){
+				System.err.println("Warning can not find definition for :"+simpleRef);
+				convertType=BuiltIns.OBJECT;
+			}
+			else{
+				convertType = convertType(simpleRef, actual);
+			}
 			range = TypeOps.derive("", convertType);
 			transferTo(range, Description.class, rm.getDescription());
 			transferTo(range, Example.class, rm.getExample());
@@ -466,35 +544,10 @@ public class SwaggerReader {
 			type = p.getType();
 			String format = p.getFormat();
 			if (format != null) {
-				if (format.equals("date-time")) {
-					type = format;
-					format = null;
-				} else if (format.equals("uuid")) {
-					format = null;
-				} else if (format.equals("password")) {
-					format = null;
-				} else if (format.equals("non-iso-duration")) {
-					format = null;
-				} else if (format.equals("duration")) {
-					format = null;
-				}
-				else if (format.equals("url")) {
-					format = null;
-				}
-				else if (format.equals("date-time-rfc1123")) {
-					format = null;
-				}
-				else if (format.equals("unixtime")) {
-					format = null;
-				}
-				else if (format.equals("base64url")) {
-					format = null;
-				}
-				else if (format.equals("byte")) {
-					format = null;
-				}
+				FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type, format));
+				format=mapFormat.format;
+				type=mapFormat.type;
 			}
-			
 			AbstractType bs = base(type);
 			range = TypeOps.derive("", bs);
 			transferTo(range, Description.class, p.getDescription());
@@ -516,9 +569,11 @@ public class SwaggerReader {
 			} else if (ps instanceof FileProperty) {
 
 			}
-			else if (ps instanceof ByteArrayProperty) {
+			else if (ps instanceof DateProperty) {
 
-			}else if (ps instanceof StringProperty) {
+			}else if (ps instanceof ByteArrayProperty) {
+
+			} else if (ps instanceof StringProperty) {
 				StringProperty sp = (StringProperty) ps;
 				transferTo(range, MaxLength.class, sp.getMaxLength());
 				transferTo(range, MinLength.class, sp.getMinLength());
@@ -561,6 +616,15 @@ public class SwaggerReader {
 		if (p.getXml() != null) {
 			addXMLInfo(range, p.getXml());
 		}
+		if(range.isSubTypeOf(BuiltIns.DATETIME)){
+			Example oneMeta = range.oneMeta(Example.class);
+			if (oneMeta!=null){
+				String val=""+oneMeta.value();
+				if (!DateUtils.isValidDate(val, DateType.datetime, null)){
+					range.removeMeta(oneMeta);
+				}
+			}
+		}
 		return range;
 	}
 
@@ -576,6 +640,23 @@ public class SwaggerReader {
 		if (value instanceof Double) {
 			if (((double) ((Double) value).intValue()) == ((Double) value).doubleValue()) {
 				value = ((Double) value).intValue();
+			}
+		}
+		if (value instanceof ObjectNode){
+			ObjectNode n=(ObjectNode) value;
+			try {
+				value=new ObjectMapper().reader(Object.class).readValue(n);
+			} catch (IOException e) {
+				throw new IllegalStateException();
+			}
+		}
+		if (value instanceof Number){
+			long v=((Number) value).longValue();
+			if (v>10000000){
+				return ;
+			}
+			if (v<10000000){
+				return ;
 			}
 		}
 		TypeInformation facet = FacetRegistry.facet(FacetRegistry.getFacetName((Class<? extends TypeInformation>) cl));

@@ -29,4 +29,12 @@ public interface IHasResources {
 		}
 		return null;
 	}
+	
+	public default List<Resource> allResources(){
+		return ResourceCollector.collect(this);
+	}
+	
+	public default List<Action> allMethods(){
+		return ResourceCollector.collectActions(this);
+	}
 }

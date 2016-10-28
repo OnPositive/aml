@@ -350,6 +350,9 @@ public class TopLevelRamlModelBuilder {
 						Object object = toObject(value);
 						if (object != null) {
 							FacetRestriction<?> build = RestrictionsList.build(n.getName(), object);
+							if (build==null){
+								System.out.println("A");
+							}
 							result.addMeta(build);
 						}
 					}

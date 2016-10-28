@@ -157,6 +157,8 @@
 		<module>org.aml.typesystem.jsonschema</module>
 
 		<module>apigurus</module>
+		<module>org.aml.swagger.io</module>
+		<module>org.aml.registry</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

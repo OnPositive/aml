@@ -1,0 +1,1939 @@
+#%RAML 1.0
+title: BBC iPlayer Business Layer
+version: '1.0'
+baseUri: ibl.api.bbci.co.uk/ibl/v1
+description: The definitive iPlayer API.
+mediaType:
+- application/json
+uses:
+  commons: https://raw.githubusercontent.com/apiregistry/commons/master/commons.raml
+  extras: https://raw.githubusercontent.com/apiregistry/typesExtras/master/typeExtras.raml
+securitySchemes:
+  api_key:
+    type: Pass Through
+  basic:
+    type: Basic Authentication
+    description: Used only by store purchases.
+types:
+  added:
+    type: object
+    properties:
+      programme:
+        type: programme
+      type:
+        type: string
+        enum:
+        - added
+      urn:
+        type: string
+  broadcast:
+    type: object
+    properties:
+      blanked:
+        type: boolean
+      channel_title?:
+        type: string
+      duration?:
+        type: object
+        properties:
+          text?:
+            type: string
+          value?:
+            type: string
+      episode:
+        type: episode
+      episode_id:
+        type: string
+      id:
+        type: string
+      repeat:
+        type: boolean
+      scheduled_end:
+        type: string
+      scheduled_start:
+        type: string
+      service_id:
+        type: string
+      transmission_end?:
+        type: string
+      transmission_start?:
+        type: string
+      type:
+        type: string
+        enum:
+        - broadcast
+      version_id:
+        type: string
+  category:
+    type: object
+    properties:
+      child_episode_count?:
+        type: number
+      child_programme_count?:
+        type: number
+      contextual_title?:
+        type: string
+      id:
+        type: string
+      kind:
+        type: string
+        enum:
+        - genre
+        - accessibility
+        - national
+      parent_category?:
+        type: string
+      sub_categories?:
+        type: array
+        items:
+          type: category
+      title:
+        type: string
+      type:
+        type: string
+        enum:
+        - category
+  channel:
+    type: object
+    properties:
+      has_schedule:
+        type: boolean
+      id:
+        type: string
+      master_brand_id:
+        type: string
+      master_brand_title:
+        type: string
+      on_air?:
+        type: boolean
+      title:
+        type: string
+      type:
+        type: string
+        enum:
+        - channel
+  clip:
+    type: object
+    properties:
+      id:
+        type: string
+      images:
+        type: object
+        properties:
+          standard:
+            type: string
+          inherited_from:
+            type: string
+      labels?:
+        type: object
+        properties:
+          editorial?:
+            type: string
+      master_brand:
+        type: master_brand
+      onward_journey?:
+        type: object
+        properties:
+          id?:
+            type: string
+      promotion_type?:
+        type: string
+        enum:
+        - available_now
+        - coming_soon
+      synopses:
+        type: object
+        properties:
+          editorial:
+            type: string
+          small:
+            type: string
+          large:
+            type: string
+          medium:
+            type: string
+      title:
+        type: string
+      tleo_id:
+        type: string
+      tleo_type?:
+        type: string
+        enum:
+        - episode
+        - brand
+        - series
+      type:
+        type: string
+        enum:
+        - clip
+      versions:
+        type: array
+        items:
+          type: object
+          properties:
+            duration?:
+              type: object
+              properties:
+                text:
+                  type: string
+                value:
+                  type: string
+            credits_start?:
+              type: number
+            download?:
+              type: boolean
+            rrc?:
+              type: object
+              properties:
+                description?:
+                  type: object
+                  properties:
+                    small:
+                      type: string
+                    large:
+                      type: string
+                url?:
+                  type: string
+            guidance?:
+              type: object
+              properties:
+                id?:
+                  type: string
+                text?:
+                  type: object
+                  properties:
+                    small?:
+                      type: string
+                    large?:
+                      type: string
+                    medium?:
+                      type: string
+            kind?:
+              type: string
+            service_id?:
+              type: string
+            availability?:
+              type: object
+              properties:
+                start:
+                  type: string
+                end:
+                  type: string
+                remaining:
+                  type: object
+                  properties:
+                    text?:
+                      type: string
+            id?:
+              type: string
+            first_broadcast?:
+              type: string
+            hd?:
+              type: boolean
+  episode:
+    type: object
+    properties:
+      audio_described:
+        type: boolean
+      categories:
+        type: array
+        items:
+          type: string
+      editorial_subtitle?:
+        type: string
+      editorial_title?:
+        type: string
+      guidance:
+        type: boolean
+      has_credits?:
+        type: boolean
+      id:
+        type: string
+      images:
+        type: object
+        properties:
+          standard:
+            type: string
+          inherited_from:
+            type: string
+      labels?:
+        type: object
+        properties:
+          editorial?:
+            type: string
+          editorial_category?:
+            type: string
+          time?:
+            type: string
+          category?:
+            type: string
+      lexical_sort_letter:
+        type: string
+      live?:
+        type: boolean
+      master_brand:
+        type: master_brand
+      next_broadcast?:
+        type: object
+        properties:
+          channel_title?:
+            type: string
+          scheduled_start?:
+            type: string
+      parent_id?:
+        type: string
+      parent_position?:
+        type: number
+      promoted?:
+        type: boolean
+      related_links?:
+        type: array
+        items:
+          type: object
+          properties:
+            kind?:
+              type: string
+            id?:
+              type: string
+            title?:
+              type: string
+            url?:
+              type: string
+      release_date?:
+        type: string
+      release_date_time?:
+        type: string
+      requires_tv_licence?:
+        type: boolean
+      signed:
+        type: boolean
+      status:
+        type: string
+        enum:
+        - available
+        - unavailable
+      subtitle?:
+        type: string
+      suppliers:
+        type: array
+        items:
+          type: object
+          properties:
+            id?:
+              type: string
+            title?:
+              type: string
+      synopses:
+        type: object
+        properties:
+          editorial:
+            type: string
+          small:
+            type: string
+          large:
+            type: string
+          medium:
+            type: string
+      title:
+        type: string
+      tleo_id:
+        type: string
+      tleo_type:
+        type: string
+        enum:
+        - episode
+        - brand
+        - series
+      type:
+        type: string
+        enum:
+        - episode
+        - episode_large
+      versions:
+        type: array
+  group:
+    type: object
+    properties:
+      count?:
+        type: number
+      episode_sort_direction?:
+        type: string
+      group_type?:
+        type: string
+        enum:
+        - tleo
+        - curated
+      id:
+        type: string
+      images?:
+        type: object
+        properties:
+          standard?:
+            type: string
+          vertical?:
+            type: string
+      initial_children?:
+        type: array
+      master_brand?:
+        type: master_brand
+      related_links?:
+        type: array
+        items:
+          type: object
+          properties:
+            kind?:
+              type: string
+            title?:
+              type: string
+            url?:
+              type: string
+      stacked?:
+        type: boolean
+      synopses?:
+        type: object
+        properties:
+          small?:
+            type: string
+          large?:
+            type: string
+          medium?:
+            type: string
+      title?:
+        type: string
+      type:
+        type: string
+        enum:
+        - group
+        - group_large
+  ibl:
+    type: object
+    properties:
+      added?:
+        type: object
+        properties:
+          count_all?:
+            type: number
+          elements?:
+            type: array
+            items:
+              type: added
+          count?:
+            type: number
+      atoz_programmes?:
+        type: object
+        properties:
+          per_page?:
+            type: number
+          character?:
+            type: string
+          elements?:
+            type: array
+            items:
+              type: programme
+          count?:
+            type: number
+          page?:
+            type: number
+      broadcasts?:
+        type: object
+        properties:
+          per_page?:
+            type: number
+          elements?:
+            type: array
+            items:
+              type: broadcast
+          channel?:
+            type: channel
+          count?:
+            type: number
+          page?:
+            type: number
+      categories?:
+        type: array
+        items:
+          type: category
+      category?:
+        type: category
+      category_highlights?:
+        type: object
+        properties:
+          elements?:
+            type: array
+          category?:
+            type: category
+      category_programmes?:
+        type: object
+        properties:
+          per_page?:
+            type: number
+          elements?:
+            type: array
+            items:
+              type: programme
+          count?:
+            type: number
+          page?:
+            type: number
+          category?:
+            type: category
+      channel_highlights?:
+        type: object
+        properties:
+          elements?:
+            type: array
+          channel?:
+            type: channel
+      channels?:
+        type: array
+        items:
+          type: channel
+      clips?:
+        type: array
+        items:
+          type: clip
+      episode_recommendations?:
+        type: object
+        properties:
+          elements?:
+            type: array
+            items:
+              type: episode
+          count?:
+            type: number
+      episodes?:
+        type: array
+        items:
+          type: episode
+      error?:
+        type: object
+        properties:
+          details?:
+            type: string
+          http_response_code?:
+            type: number
+      group_episodes?:
+        type: object
+        properties:
+          per_page?:
+            type: number
+          elements?:
+            type: array
+            items:
+              type: episode
+          count?:
+            type: number
+          page?:
+            type: number
+          group?:
+            type: group
+      home_highlights?:
+        type: object
+        properties:
+          elements?:
+            type: array
+      next?:
+        type: object
+        properties:
+          programme?:
+            type: array
+            items:
+              type: episode
+      prerolls?:
+        type: array
+        items:
+          type: trailer
+      programme_episodes?:
+        type: object
+        properties:
+          per_page?:
+            type: number
+          elements?:
+            type: array
+            items:
+              type: episode
+          count?:
+            type: number
+          page?:
+            type: number
+      programmes?:
+        type: array
+        items:
+          type: programme
+      purchases?:
+        type: object
+        properties:
+          per_page?:
+            type: number
+          revocations?:
+            type: boolean
+          elements?:
+            type: array
+            items:
+              type: episode
+          count?:
+            type: number
+          value_added_material?:
+            type: boolean
+          page?:
+            type: number
+      regions?:
+        type: array
+        items:
+          type: region
+      schedule?:
+        type: object
+        properties:
+          elements?:
+            type: array
+            items:
+              type: broadcast
+          channel?:
+            type: channel
+      schema:
+        type: string
+      search?:
+        type: object
+        properties:
+          per_page?:
+            type: number
+          query?:
+            type: string
+          count?:
+            type: number
+          page?:
+            type: number
+          results?:
+            type: array
+      search_suggest?:
+        type: object
+        properties:
+          query?:
+            type: string
+          results?:
+            type: array
+            items:
+              type: programme
+      status?:
+        type: object
+        properties:
+          release?:
+            type: string
+          service?:
+            type: string
+      trailers?:
+        type: object
+        properties:
+          elements?:
+            type: array
+            items:
+              type: clip
+      user_recommendations?:
+        type: object
+        properties:
+          rec_source?:
+            type: string
+          elements?:
+            type: array
+            items:
+              type: user_recommendation
+          rec_set?:
+            type: string
+      version:
+        type: string
+      versions?:
+        type: array
+        items:
+          type: store_version
+      watching?:
+        type: object
+        properties:
+          elements?:
+            type: array
+            items:
+              type: watching
+          count?:
+            type: number
+  master_brand:
+    type: object
+    properties:
+      attribution:
+        type: string
+      id:
+        type: string
+      ident_id?:
+        type: string
+      titles:
+        type: object
+        properties:
+          small:
+            type: string
+          large:
+            type: string
+          medium:
+            type: string
+  programme:
+    type: object
+    properties:
+      categories:
+        type: array
+        items:
+          type: string
+      count:
+        type: number
+      id:
+        type: string
+      images:
+        type: object
+        properties:
+          standard:
+            type: string
+          inherited_from:
+            type: string
+      initial_children:
+        type: array
+        items:
+          type: episode
+      lexical_sort_letter:
+        type: string
+      master_brand:
+        type: master_brand
+      status:
+        type: string
+        enum:
+        - available
+        - unavailable
+      suppliers:
+        type: array
+        items:
+          type: object
+          properties:
+            id?:
+              type: string
+            title?:
+              type: string
+      synopses:
+        type: object
+        properties:
+          small:
+            type: string
+          large:
+            type: string
+          medium:
+            type: string
+      title:
+        type: string
+      tleo_type?:
+        type: string
+        enum:
+        - brand
+        - series
+        - episode
+      type:
+        type: string
+        enum:
+        - programme
+        - programme_large
+  promotion:
+    type: object
+    properties:
+      id:
+        type: string
+      images?:
+        type: object
+        properties:
+          standard?:
+            type: string
+          inherited_from?:
+            type: string
+      labels?:
+        type: object
+        properties:
+          promotion?:
+            type: string
+      subtitle?:
+        type: string
+      synopses?:
+        type: object
+        properties:
+          small?:
+            type: string
+          large?:
+            type: string
+          medium?:
+            type: string
+      title?:
+        type: string
+      type:
+        type: string
+        enum:
+        - promotion
+      url?:
+        type: string
+  region:
+    type: object
+    properties:
+      id:
+        type: string
+      kind:
+        type: string
+        enum:
+        - regional
+        - national
+      title:
+        type: string
+      type:
+        type: string
+        enum:
+        - region
+  search_group:
+    type: object
+    properties:
+      episode:
+        type: episode
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+        - search_group
+  store_version:
+    type: object
+    properties:
+      download:
+        type: boolean
+      duration:
+        type: object
+        properties:
+          text:
+            type: string
+          value:
+            type: string
+      guidance?:
+        type: object
+        properties:
+          id?:
+            type: string
+          text?:
+            type: object
+            properties:
+              small?:
+                type: string
+              large?:
+                type: string
+              medium?:
+                type: string
+      hd:
+        type: boolean
+      id:
+        type: string
+      kind:
+        type: string
+      store_id:
+        type: string
+      store_profile:
+        type: string
+      type:
+        type: string
+        enum:
+        - store_version
+  trailer:
+    type: object
+    properties:
+      id:
+        type: string
+      kind:
+        type: string
+        enum:
+        - available_now
+        - coming_soon
+        - other
+      title:
+        type: string
+      type:
+        type: string
+        enum:
+        - trailer
+      version_id:
+        type: string
+  user_recommendation:
+    type: object
+    properties:
+      algorithm:
+        type: string
+      episode:
+        type: episode
+      type:
+        type: string
+        enum:
+        - user_recommendation
+  watching:
+    type: object
+    properties:
+      episode:
+        type: episode
+      has_next:
+        type: boolean
+      offset?:
+        type: number
+      programme:
+        type: programme
+      progress?:
+        type: number
+      remaining?:
+        type: number
+      status?:
+        type: string
+        enum:
+        - current
+        - next
+      type:
+        type: string
+        enum:
+        - watching
+      urn:
+        type: string
+/atoz:
+  /{letter}:
+    uriParameters:
+      letter:
+        type: string
+        description: Letter to search by, a to z or the string '0-9'
+        displayName: letter
+        pattern: '[a-z](0-9)'
+    /programmes:
+      get:
+        description: Get the Programmes whose title begins with the given initial character.
+        displayName: Programmes by initial title character
+        queryParameters:
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          page:
+            type: integer
+            description: The page index.
+            displayName: page
+            format: int64
+          per_page:
+            type: integer
+            description: The number of results to return.
+            displayName: per_page
+            format: int64
+          initial_child_count:
+            type: integer
+            description: The depth to return child entities.
+            displayName: initial_child_count
+            default: 4
+          sort:
+            type: string
+            description: The sort order of the results.
+            displayName: sort
+            enum:
+            - title
+          sort_direction:
+            type: string
+            description: Whether to sort ascending or descending
+            displayName: sort_direction
+            enum:
+            - asc
+            - desc
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+/categories:
+  /{category}:
+    uriParameters:
+      category:
+        type: string
+        description: The category identifier to return results from.
+        displayName: category
+    /episodes:
+      get:
+        description: Get the list of all the episodes for a given category in TV & iPlayer.
+        displayName: List all the episodes for a category.
+        queryParameters:
+          lang:
+            type: string
+            description: The language for any applicable localised strings.
+            displayName: lang
+            enum:
+            - en
+            - cy
+            - ga
+            - gd
+            - pi
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          page:
+            type: integer
+            description: The page index.
+            displayName: page
+            format: int64
+          per_page:
+            type: integer
+            description: The number of results to return.
+            displayName: per_page
+            format: int64
+          sort?:
+            type: string
+            description: The sort order of the results.
+            displayName: sort
+            enum:
+            - recent
+            - popular
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    /highlights:
+      get:
+        description: Get the editorial highlights of a given category in TV & iPlayer.
+        displayName: List the highlights for a category.
+        queryParameters:
+          lang:
+            type: string
+            description: The language for any applicable localised strings.
+            displayName: lang
+            enum:
+            - en
+            - cy
+            - ga
+            - gd
+            - pi
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          mixin?:
+            type: string
+            description: Request additional data in the output
+            displayName: mixin
+            enum:
+            - live
+            - promotions
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    /programmes:
+      get:
+        description: Get the list of all the Programmes (TLEOs) for a given category in TV & iPlayer.
+        displayName: List all the programmes for a category.
+        queryParameters:
+          lang:
+            type: string
+            description: The language for any applicable localised strings.
+            displayName: lang
+            enum:
+            - en
+            - cy
+            - ga
+            - gd
+            - pi
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          page:
+            type: integer
+            description: The page index.
+            displayName: page
+            format: int64
+          per_page:
+            type: integer
+            description: The number of results to return.
+            displayName: per_page
+            format: int64
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    get:
+      description: Get sub-categories
+      displayName: Get sub-categories
+      queryParameters:
+        lang:
+          type: string
+          description: The language for any applicable localised strings.
+          displayName: lang
+          enum:
+          - en
+          - cy
+          - ga
+          - gd
+          - pi
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+  get:
+    description: Get the list of all the categories in TV & iPlayer.
+    displayName: Get categories
+    queryParameters:
+      lang:
+        type: string
+        description: The language for any applicable localised strings.
+        displayName: lang
+        enum:
+        - en
+        - cy
+        - ga
+        - gd
+        - pi
+    responses:
+      200:
+        description: Default response
+        body:
+          application/json:
+            type: ibl
+/channels:
+  /{channel}:
+    uriParameters:
+      channel:
+        type: string
+        description: The channel identifier to limit results to.
+        displayName: channel
+    /broadcasts:
+      get:
+        description: Get broadcasts by channel
+        displayName: Get broadcasts by channel
+        queryParameters:
+          lang:
+            type: string
+            description: The language for any applicable localised strings.
+            displayName: lang
+            enum:
+            - en
+            - cy
+            - ga
+            - gd
+            - pi
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          mixin?:
+            type: string
+            description: Request additional data in the output
+            displayName: mixin
+            enum:
+            - live
+            - promotions
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    /highlights:
+      get:
+        description: Get the editorial highlights of a given channel in TV & iPlayer.
+        displayName: List the highlights for a channel.
+        queryParameters:
+          lang:
+            type: string
+            description: The language for any applicable localised strings.
+            displayName: lang
+            enum:
+            - en
+            - cy
+            - ga
+            - gd
+            - pi
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          live?:
+            type: boolean
+            description: Whether to include live programmes
+            displayName: live
+          mixin?:
+            type: string
+            description: Request additional data in the output
+            displayName: mixin
+            enum:
+            - live
+            - promotions
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    /programmes:
+      get:
+        description: Get programmes by channel
+        displayName: Get programmes by channel
+        queryParameters:
+          lang:
+            type: string
+            description: The language for any applicable localised strings.
+            displayName: lang
+            enum:
+            - en
+            - cy
+            - ga
+            - gd
+            - pi
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          page:
+            type: integer
+            description: The page index.
+            displayName: page
+            format: int64
+          per_page:
+            type: integer
+            description: The number of results to return.
+            displayName: per_page
+            format: int64
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    /schedule:
+      /{date}:
+        uriParameters:
+          date:
+            type: string
+            description: The date to return the schedule for, yyyy-mm-dd format
+            displayName: date
+        get:
+          description: Get schedule by channel
+          displayName: Get schedule by channel
+          queryParameters:
+            lang:
+              type: string
+              description: The language for any applicable localised strings.
+              displayName: lang
+              enum:
+              - en
+              - cy
+              - ga
+              - gd
+              - pi
+            rights:
+              type: string
+              description: The rights group to limit results to.
+              displayName: rights
+              default: web
+              enum:
+              - mobile
+              - tv
+              - web
+            availability:
+              type: string
+              description: Whether to return all, or available programmes
+              displayName: availability
+              default: available
+              enum:
+              - all
+              - available
+          responses:
+            200:
+              description: Default response
+              body:
+                application/json:
+                  type: ibl
+  get:
+    description: Get the list of all the channels TV & iPlayer.
+    displayName: List all the channels.
+    queryParameters:
+      region?:
+        type: string
+        description: The region to get the channels for.
+        displayName: region
+      lang:
+        type: string
+        description: The language for any applicable localised strings.
+        displayName: lang
+        enum:
+        - en
+        - cy
+        - ga
+        - gd
+        - pi
+    responses:
+      200:
+        description: Default response
+        body:
+          application/json:
+            type: ibl
+/clips:
+  /{pid}:
+    uriParameters:
+      pid:
+        type: string
+        description: The programme identifier.
+        displayName: pid
+        pattern: ^([0-9,a-d,f-h,j-n,p-t,v-z]){8,}$
+    get:
+      description: Get Clips
+      displayName: Get Clips
+      queryParameters:
+        rights:
+          type: string
+          description: The rights group to limit results to.
+          displayName: rights
+          default: web
+          enum:
+          - mobile
+          - tv
+          - web
+        availability:
+          type: string
+          description: Whether to return all, or available programmes
+          displayName: availability
+          default: available
+          enum:
+          - all
+          - available
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+/episodes:
+  /{pid}:
+    uriParameters:
+      pid:
+        type: string
+        description: The programme identifier.
+        displayName: pid
+        pattern: ^([0-9,a-d,f-h,j-n,p-t,v-z]){8,}$
+    /prerolls:
+      get:
+        description: Get Trailers (pre-rolls)
+        displayName: Get Trailers (pre-rolls)
+        queryParameters:
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    /recommendations:
+      get:
+        description: Get programme recommendations
+        displayName: Get programme recommendations
+        queryParameters:
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          page:
+            type: integer
+            description: The page index.
+            displayName: page
+            format: int64
+          per_page:
+            type: integer
+            description: The number of results to return.
+            displayName: per_page
+            format: int64
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    get:
+      description: Get the episode for a given episode identifier.
+      displayName: Episode for a given pid.
+      queryParameters:
+        rights:
+          type: string
+          description: The rights group to limit results to.
+          displayName: rights
+          default: web
+          enum:
+          - mobile
+          - tv
+          - web
+        availability:
+          type: string
+          description: Whether to return all, or available programmes
+          displayName: availability
+          default: available
+          enum:
+          - all
+          - available
+        mixin?:
+          type: string
+          description: Request additional data in the output
+          displayName: mixin
+          enum:
+          - live
+          - promotions
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+/groups:
+  /popular:
+    /episodes:
+      get:
+        description: Get programmes popular
+        displayName: Get programmes popular
+        queryParameters:
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          page:
+            type: integer
+            description: The page index.
+            displayName: page
+            format: int64
+          per_page:
+            type: integer
+            description: The number of results to return.
+            displayName: per_page
+            format: int64
+          initial_child_count:
+            type: integer
+            description: The depth to return child entities.
+            displayName: initial_child_count
+            default: 4
+          sort:
+            type: string
+            description: The sort order of the results.
+            displayName: sort
+          sort_direction:
+            type: string
+            description: Whether to sort ascending or descending
+            displayName: sort_direction
+            enum:
+            - asc
+            - desc
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          mixin?:
+            type: string
+            description: Request additional data in the output
+            displayName: mixin
+            enum:
+            - live
+            - promotions
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+  /{pid}:
+    uriParameters:
+      pid:
+        type: string
+        description: The programme identifier.
+        displayName: pid
+        pattern: ^([0-9,a-d,f-h,j-n,p-t,v-z]){8,}$
+    /episodes:
+      get:
+        description: Get episodes by group, brand or series
+        displayName: Get episodes by group, brand or series
+        queryParameters:
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          page:
+            type: integer
+            description: The page index.
+            displayName: page
+            format: int64
+          per_page:
+            type: integer
+            description: The number of results to return.
+            displayName: per_page
+            format: int64
+          initial_child_count:
+            type: integer
+            description: The depth to return child entities.
+            displayName: initial_child_count
+            default: 4
+          sort:
+            type: string
+            description: The sort order of the results.
+            displayName: sort
+          sort_direction:
+            type: string
+            description: Whether to sort ascending or descending
+            displayName: sort_direction
+            enum:
+            - asc
+            - desc
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          mixin?:
+            type: string
+            description: Request additional data in the output
+            displayName: mixin
+            enum:
+            - live
+            - promotions
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+/home:
+  /highlights:
+    get:
+      description: Get programme highlights
+      displayName: Get programme highlights
+      queryParameters:
+        lang:
+          type: string
+          description: The language for any applicable localised strings.
+          displayName: lang
+          enum:
+          - en
+          - cy
+          - ga
+          - gd
+          - pi
+        rights:
+          type: string
+          description: The rights group to limit results to.
+          displayName: rights
+          default: web
+          enum:
+          - mobile
+          - tv
+          - web
+        availability:
+          type: string
+          description: Whether to return all, or available programmes
+          displayName: availability
+          default: available
+          enum:
+          - all
+          - available
+        mixin?:
+          type: string
+          description: Request additional data in the output
+          displayName: mixin
+          enum:
+          - live
+          - promotions
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+/programmes:
+  /{pid}:
+    uriParameters:
+      pid:
+        type: string
+        description: The programme identifier.
+        displayName: pid
+        pattern: ^([0-9,a-d,f-h,j-n,p-t,v-z]){8,}$
+    /episodes:
+      get:
+        description: Get the child episodes belonging to a given programme identifier.
+        displayName: Child episodes for a given programme pid.
+        queryParameters:
+          rights:
+            type: string
+            description: The rights group to limit results to.
+            displayName: rights
+            default: web
+            enum:
+            - mobile
+            - tv
+            - web
+          availability:
+            type: string
+            description: Whether to return all, or available programmes
+            displayName: availability
+            default: available
+            enum:
+            - all
+            - available
+          initial_child_count:
+            type: integer
+            description: The depth to return child entities.
+            displayName: initial_child_count
+            default: 4
+        responses:
+          200:
+            description: Default response
+            body:
+              application/json:
+                type: ibl
+    get:
+      description: Get the programme for a given programme identifier.
+      displayName: Programme for a given pid.
+      queryParameters:
+        rights:
+          type: string
+          description: The rights group to limit results to.
+          displayName: rights
+          default: web
+          enum:
+          - mobile
+          - tv
+          - web
+        availability:
+          type: string
+          description: Whether to return all, or available programmes
+          displayName: availability
+          default: available
+          enum:
+          - all
+          - available
+        initial_child_count:
+          type: integer
+          description: The depth to return child entities.
+          displayName: initial_child_count
+          default: 4
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+/regions:
+  get:
+    description: Get the list of all the regions TV & iPlayer.
+    displayName: List all regions
+    queryParameters:
+      lang:
+        type: string
+        description: The language for any applicable localised strings.
+        displayName: lang
+        enum:
+        - en
+        - cy
+        - ga
+        - gd
+        - pi
+    responses:
+      200:
+        description: Default response
+        body:
+          application/json:
+            type: ibl
+/schema:
+  /ibl.json:
+    get:
+      description: Get schema
+      displayName: Get schema
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+/search:
+  get:
+    description: Search
+    displayName: Search
+    queryParameters:
+      q:
+        type: string
+        description: The term to search for.
+        displayName: q
+      lang:
+        type: string
+        description: The language for any applicable localised strings.
+        displayName: lang
+        enum:
+        - en
+        - cy
+        - ga
+        - gd
+        - pi
+      rights:
+        type: string
+        description: The rights group to limit results to.
+        displayName: rights
+        default: web
+        enum:
+        - mobile
+        - tv
+        - web
+      availability:
+        type: string
+        description: Whether to return all, or available programmes
+        displayName: availability
+        default: available
+        enum:
+        - all
+        - available
+    responses:
+      200:
+        description: Default response
+        body:
+          application/json:
+            type: ibl
+/search-suggest:
+  get:
+    description: Search-suggest
+    displayName: Search-suggest
+    queryParameters:
+      q:
+        type: string
+        description: The term to search for.
+        displayName: q
+      lang:
+        type: string
+        description: The language for any applicable localised strings.
+        displayName: lang
+        enum:
+        - en
+        - cy
+        - ga
+        - gd
+        - pi
+      rights:
+        type: string
+        description: The rights group to limit results to.
+        displayName: rights
+        default: web
+        enum:
+        - mobile
+        - tv
+        - web
+      availability:
+        type: string
+        description: Whether to return all, or available programmes
+        displayName: availability
+        default: available
+        enum:
+        - all
+        - available
+    responses:
+      200:
+        description: Default response
+        body:
+          application/json:
+            type: ibl
+/status:
+  get:
+    description: Get the current iPlayer business layer status. This tells the caller the status of the iPlayer data, but not necessarily the overall status of the website. In the future it might include the status of the dependent data services within the BBC.
+    displayName: Get status
+    responses:
+      200:
+        description: Default response
+        body:
+          application/json:
+            type: ibl
+/user:
+  /purchases:
+    get:
+      description: Get user store purchases
+      displayName: Get user store purchases
+      queryParameters:
+        identity_cookie:
+          type: number
+          description: The BBC-id cookie value
+          displayName: identity_cookie
+          format: double
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+  /recommendations:
+    get:
+      description: Get user store recommendations
+      displayName: Get user store recommendations
+      queryParameters:
+        identity_cookie:
+          type: number
+          description: The BBC-id cookie value
+          displayName: identity_cookie
+          format: double
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl
+  /watching:
+    get:
+      description: Get user watching
+      displayName: Get user watching
+      queryParameters:
+        identity_cookie:
+          type: number
+          description: The BBC-id cookie value
+          displayName: identity_cookie
+          format: double
+      responses:
+        200:
+          description: Default response
+          body:
+            application/json:
+              type: ibl

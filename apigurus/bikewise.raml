@@ -1,0 +1,209 @@
+#%RAML 1.0
+title: BikeWise API v2
+version: v2
+baseUri: bikewise.org/api
+description: |
+  <p>This is an API for accessing information about bicycling related incidents. You can find the source code on <a href="https://github.com/bikeindex/bikewise">GitHub</a>.</p>
+uses:
+  commons: https://raw.githubusercontent.com/apiregistry/commons/master/commons.raml
+  extras: https://raw.githubusercontent.com/apiregistry/typesExtras/master/typeExtras.raml
+/v2:
+  /incidents:
+    /{id}:
+      uriParameters:
+        id:
+          type: integer
+          description: |
+            <p>Incident ID</p>
+          displayName: id
+          format: int32
+      get:
+        responses:
+          200:
+            description: No response was specified
+    get:
+      description: !!binary |-
+        CjxwPklmIHlvdcOiwoDCmWQgbGlrZSBtb3JlIGRldGFpbGVkIGluZm9ybWF0aW9uIGFib3V0IGJpa2UgaW5jaWRlbnRzLCB1c2UgdGhpcyBlbmRwb2ludC4gRm9yIG1hcHBpbmcsIDxjb2RlPmxvY2F0aW9uczwvY29kZT4gaXMgcHJvYmFibHkgYSBiZXR0ZXIgYmV0LjwvcD4KCjxwPjxzdHJvbmc+Tm90ZXMgb24gbG9jYXRpb24gc2VhcmNoaW5nPC9zdHJvbmc+OiA8YnIgLz4KLSA8Y29kZT5wcm94aW1pdHk8L2NvZGU+IGFjY2VwdHMgYW4gaXAgYWRkcmVzcywgYW4gYWRkcmVzcywgemlwY29kZSwgY2l0eSwgb3IgbGF0aXR1ZGUsbG9uZ2l0dWRlIC0gaS5lLiA8Y29kZT43MC4yMTAuMTMzLjg3PC9jb2RlPiwgPGNvZGU+MjEwIE5XIDExdGggQXZlLCBQb3J0bGFuZCwgT1I8L2NvZGU+LCA8Y29kZT42MDY0NzwvY29kZT4sIDxjb2RlPkNoaWNhZ28sIElMPC9jb2RlPiwgYW5kIDxjb2RlPjQ1LjUyMTcyOCwtMTIyLjY3MzI2PC9jb2RlPiBhcmUgYWxsIGFjY2VwdGFibGU8YnIgLz4KLSA8Y29kZT5wcm94aW1pdHlfc3F1YXJlPC9jb2RlPiBzZXRzIHRoZSBsZW5ndGggb2YgdGhlIHNpZGVzIG9mIHRoZSBzcXVhcmUgdG8gZmluZCBtYXRjaGVzIGluc2lkZSBvZi4gVGhlIHNxdWFyZSBpcyBjZW50ZXJlZCBvbiB0aGUgbG9jYXRpb24gc3BlY2lmaWVkIGJ5IDxjb2RlPnByb3hpbWl0eTwvY29kZT4uIEl0IGRlZmF1bHRzIHRvIDEwMC48L3A+Cg==
+      displayName: Paginated incidents matching parameters
+      queryParameters:
+        page?:
+          type: integer
+          description: |
+            <p>Page of results to fetch.</p>
+          displayName: page
+          default: 1
+          format: int32
+        per_page?:
+          type: integer
+          description: |
+            <p>Number of results to return per page.</p>
+          displayName: per_page
+          format: int32
+        occurred_before?:
+          type: integer
+          description: |
+            <p>End of period</p>
+          displayName: occurred_before
+          format: int32
+        occurred_after?:
+          type: integer
+          description: |
+            <p>Start of period</p>
+          displayName: occurred_after
+          format: int32
+        incident_type?:
+          type: string
+          description: |
+            <p>Only incidents of specific type</p>
+          displayName: incident_type
+          enum:
+          - crash
+          - hazard
+          - theft
+          - unconfirmed
+          - infrastructure_issue
+          - chop_shop
+        proximity?:
+          type: string
+          description: |
+            <p>Center of location for proximity search</p>
+          displayName: proximity
+        proximity_square?:
+          type: integer
+          description: |
+            <p>Size of the proximity search</p>
+          displayName: proximity_square
+          default: 100
+          format: int32
+        query?:
+          type: string
+          description: |
+            <p>Full text search of incidents</p>
+          displayName: query
+      responses:
+        200:
+          description: No response was specified
+  /locations:
+    /markers:
+      get:
+        description: |
+          <p>This behaves exactly like the root <code>locations</code> endpoint, but returns <a href="https://github.com/mapbox/simplestyle-spec">simplestyled markers</a> (<a href="https://www.mapbox.com/guides/markers/#simple-style">mapbox styled markers</a>)</p>
+
+          <p><strong>Go forth and make maps!</strong></p>
+        displayName: Unpaginated geojson response with simplestyled markers
+        queryParameters:
+          occurred_before?:
+            type: integer
+            description: |
+              <p>End of period</p>
+            displayName: occurred_before
+            format: int32
+          occurred_after?:
+            type: integer
+            description: |
+              <p>Start of period</p>
+            displayName: occurred_after
+            format: int32
+          incident_type?:
+            type: string
+            description: |
+              <p>Only incidents of specific type</p>
+            displayName: incident_type
+            enum:
+            - crash
+            - hazard
+            - theft
+            - unconfirmed
+            - infrastructure_issue
+            - chop_shop
+          proximity?:
+            type: string
+            description: |
+              <p>Center of location for proximity search</p>
+            displayName: proximity
+          proximity_square?:
+            type: integer
+            description: |
+              <p>Size of the proximity search</p>
+            displayName: proximity_square
+            default: 100
+            format: int32
+          query?:
+            type: string
+            description: |
+              <p>Full text search of incidents</p>
+            displayName: query
+          limit?:
+            type: integer
+            description: |
+              <p>Max number of results to return. Defaults to 100</p>
+            displayName: limit
+            format: int32
+          all?:
+            type: boolean
+            description: !!binary |-
+              PHA+R2l2ZSDDosKAwphlbSBhbGwgdG8gbWUuIFdpbGwgaWdub3JlIGxpbWl0PC9wPgo=
+            displayName: all
+        responses:
+          200:
+            description: No response was specified
+    get:
+      description: !!binary |-
+        PHA+PHN0cm9uZz5UaGlzIGVuZHBvaW50IGJlaGF2ZXMgZXhhY3RseSBsaWtlPC9zdHJvbmc+IDxjb2RlPmluY2lkZW50czwvY29kZT4sIGJ1dCByZXR1cm5zIGEgdmFsaWQgZ2VvanNvbiA8Y29kZT5GZWF0dXJlQ29sbGVjdGlvbjwvY29kZT4gdGhhdCBsb29rcyBsaWtlIHRoaXM6PC9wPgoKPHByZT48Y29kZT57CiAgdHlwZTogIkZlYXR1cmVDb2xsZWN0aW9uIiwKICBmZWF0dXJlczogWwogICAgewogICAgICB0eXBlOiAiRmVhdHVyZSIsCiAgICAgIHByb3BlcnRpZXM6IHsKICAgICAgaWQ6IDQ0NzQxOTksCiAgICAgIHR5cGU6ICJUaGVmdCIsCiAgICAgIG9jY3VycmVkX2F0OiAxNDI4NTM2OTM3CiAgICB9LAogICAgICBnZW9tZXRyeTogewogICAgICB0eXBlOiAiUG9pbnQiLAogICAgICBjb29yZGluYXRlczogWyAtMTIyLjYyNDQxNzcsIDQ1LjUxNjQzODYgXQogICAgfQogIH0KfQo8L2NvZGU+PC9wcmU+Cgo8cD5JdCBkb2VzbsOiwoDCmXQgcGFnaW5hdGUuIElmIHlvdSBwYXNzIHRoZSA8Y29kZT5hbGw8L2NvZGU+IHBhcmFtZXRlciBpdCByZXR1cm5zIGFsbCBtYXRjaGVzICh3aGljaCBjYW4gYmUgYmlnLCAmZ3Q7IDRtYiksIG90aGVyd2lzZSBpdCByZXR1cm5zIHRoZSAxMDAgbW9zdCByZWNlbnQuPC9wPgoKPHA+PHN0cm9uZz5HbyBmb3J0aCBhbmQgbWFrZSBtYXBzITwvc3Ryb25nPjwvcD4K
+      displayName: Unpaginated geojson response
+      queryParameters:
+        occurred_before?:
+          type: integer
+          description: |
+            <p>End of period</p>
+          displayName: occurred_before
+          format: int32
+        occurred_after?:
+          type: integer
+          description: |
+            <p>Start of period</p>
+          displayName: occurred_after
+          format: int32
+        incident_type?:
+          type: string
+          description: |
+            <p>Only incidents of specific type</p>
+          displayName: incident_type
+          enum:
+          - crash
+          - hazard
+          - theft
+          - unconfirmed
+          - infrastructure_issue
+          - chop_shop
+        proximity?:
+          type: string
+          description: |
+            <p>Center of location for proximity search</p>
+          displayName: proximity
+        proximity_square?:
+          type: integer
+          description: |
+            <p>Size of the proximity search</p>
+          displayName: proximity_square
+          default: 100
+          format: int32
+        query?:
+          type: string
+          description: |
+            <p>Full text search of incidents</p>
+          displayName: query
+        limit?:
+          type: integer
+          description: |
+            <p>Max number of results to return. Defaults to 100</p>
+          displayName: limit
+          format: int32
+        all?:
+          type: boolean
+          description: !!binary |-
+            PHA+R2l2ZSDDosKAwphlbSBhbGwgdG8gbWUuIFdpbGwgaWdub3JlIGxpbWl0PC9wPgo=
+          displayName: all
+      responses:
+        200:
+          description: No response was specified

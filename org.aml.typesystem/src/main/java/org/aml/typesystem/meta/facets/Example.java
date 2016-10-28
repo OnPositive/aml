@@ -50,7 +50,7 @@ public class Example extends TypeInformation implements ISimpleFacet {
 	/** {@inheritDoc} */
 	@Override
 	public String facetName() {
-		return name;
+		return "example";
 	}
 
 	/**

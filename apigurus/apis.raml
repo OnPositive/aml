@@ -1,0 +1,146 @@
+#%RAML 1.0
+title: APIs.guru
+version: '2.0'
+baseUri: api.apis.guru/v2/
+description: |
+  Wikipedia for Web APIs. Repository of API specs in OpenAPI(fka Swagger) 2.0 format.
+
+  **Warning**: If you want to be notified about changes in advance please subscribe to our [Gitter channel](https://gitter.im/APIs-guru/api-models).
+
+  Client sample: [[Demo]](https://apis.guru/simple-ui) [[Repo]](https://github.com/APIs-guru/simple-ui)
+mediaType:
+- application/json
+uses:
+  commons: https://raw.githubusercontent.com/apiregistry/commons/master/commons.raml
+  extras: https://raw.githubusercontent.com/apiregistry/typesExtras/master/typeExtras.raml
+types:
+  API:
+    type: object
+    properties:
+      added:
+        type: datetime
+        description: Timestamp when the API was first added to the directory
+      preferred:
+        type: string
+        description: Recommended version
+      versions:
+        type: object
+        properties:
+          //:
+            type: ApiVersion
+        description: List of supported versions of the API
+    description: Meta information about API
+  APIs:
+    type: object
+    properties:
+      //:
+        type: API
+    description: |
+      List of API details.
+      It is a JSON object with API IDs(`<provider>[:<service>]`) as keys.
+    example:
+      googleapis.com:drive:
+        added: '2015-02-22T20:00:45.000Z'
+        preferred: v3
+        versions:
+          v2:
+            added: '2015-02-22T20:00:45.000Z'
+            info:
+              title: Drive
+              version: v2
+              x-apiClientRegistration:
+                url: https://console.developers.google.com
+              x-logo:
+                url: https://api.apis.guru/v2/cache/logo/https_www.gstatic.com_images_icons_material_product_2x_drive_32dp.png
+              x-origin:
+                format: google
+                url: https://www.googleapis.com/discovery/v1/apis/drive/v2/rest
+                version: v1
+              x-preferred: false
+              x-providerName: googleapis.com
+              x-serviceName: drive
+            swaggerUrl: https://api.apis.guru/v2/specs/googleapis.com/drive/v2/swagger.json
+            swaggerYamlUrl: https://api.apis.guru/v2/specs/googleapis.com/drive/v2/swagger.yaml
+            updated: '2016-06-17T00:21:44.000Z'
+          v3:
+            added: '2015-12-12T00:25:13.000Z'
+            info:
+              title: Drive
+              version: v3
+              x-apiClientRegistration:
+                url: https://console.developers.google.com
+              x-logo:
+                url: https://api.apis.guru/v2/cache/logo/https_www.gstatic.com_images_icons_material_product_2x_drive_32dp.png
+              x-origin:
+                format: google
+                url: https://www.googleapis.com/discovery/v1/apis/drive/v3/rest
+                version: v1
+              x-preferred: true
+              x-providerName: googleapis.com
+              x-serviceName: drive
+            swaggerUrl: https://api.apis.guru/v2/specs/googleapis.com/drive/v3/swagger.json
+            swaggerYamlUrl: https://api.apis.guru/v2/specs/googleapis.com/drive/v3/swagger.yaml
+            updated: '2016-06-17T00:21:44.000Z'
+  ApiVersion:
+    type: object
+    properties:
+      added:
+        type: datetime
+        description: Timestamp when the version was added
+      info:
+        type: object
+        description: Copy of `info` section from Swagger spec
+      swaggerUrl:
+        type: string
+        description: URL to Swagger spec in JSON format
+      swaggerYamlUrl:
+        type: string
+        description: URL to Swagger spec in YAML format
+      updated:
+        type: datetime
+        description: Timestamp when the version was updated
+  Metrics:
+    type: object
+    properties:
+      numAPIs:
+        type: integer
+        description: Number of APIs
+      numEndpoints:
+        type: integer
+        description: Total number of endpoints inside all specifications
+      numSpecs:
+        type: integer
+        description: Number of API specifications including different versions of the same API
+    description: List of basic metrics
+    example:
+      numAPIs: 238
+      numEndpoints: 6448
+      numSpecs: 302
+/list.json:
+  get:
+    description: |
+      List all APIs in the directory.
+      Returns links to OpenAPI specification for each API in the directory.
+      If API exist in multiply versions `preferred` one is explicitly marked.
+
+      Some basic info from OpenAPI spec is cached inside each object.
+      This allows to generate some simple views without need to fetch OpenAPI spec for each API.
+    displayName: List all APIs
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: APIs
+/metrics.json:
+  get:
+    description: |
+      Some basic metrics for the entire directory.
+      Just stunning numbers to put on a front page and are intended purely for WoW effect :)
+    displayName: Get basic metrics
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: Metrics

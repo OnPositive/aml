@@ -1,0 +1,2083 @@
+#%RAML 1.0
+title: 350,000+ Recipe and Grocery List API (v2)
+version: partner
+baseUri: api2.bigoven.com
+description: "#Documentation\r\n\r\nThis is the documentation for the partner endpoint\
+  \ of the BigOven Recipe and Grocery List API.\r\n\r\nThe update brings with it Swagger-based\
+  \ documentation. [Swagger](http://swagger.io) is an emerging standard for describing\
+  \ REST-based APIs, and with this Swagger-compliant endpoint (above), you can make\
+  \ ready-to-go interface libraries for your code via [swagger-codegen](https://github.com/swagger-api/swagger-codegen).\
+  \ For instance, it's easy to generate libraries for Node.js, Java, Ruby, ASP.NET\
+  \ MVC, jQuery, php and more!\r\n\r\nYou can also try out the endpoint calls with\
+  \ your own api_key right here on this page. Be sure to enter your api_key above\
+  \ to use the \"Try it out!\" buttons on this page.\r\n\r\n##Start Here\r\n\r\nDevelopers\
+  \ new to the BigOven API should start with this version, not with the legacy API.\
+  \ We'll be making improvements to this API over time, and doing only bug fixes on\
+  \ the v1 API.\r\n\r\n\r\n\r\nTo pretend you're a BigOven user (for instance, to\
+  \ get your recently viewed recipes or your grocery list), you need to pass in Basic\
+  \ Authentication information in the header, just as with the v1 API. We do now require\
+  \ that you make all calls via https. You need to pass your api_key in with every\
+  \ call, though this can now be done on the header (send a request header \"X-BigOven-API-Key\"\
+  \ set to your api_key value, e.g., Request[\"X-BigOven-API-Key\"]=\"your-key-here\"\
+  .)\r\n\r\n##Migration Notes\r\n\r\nFor existing partners, we encourage you to [migrate](http://api2.bigoven.com),\
+  \ and while at this writing we have no hard-and-fast termination date for the v1\
+  \ API, we strongly prefer that you migrate by January 1, 2017. While the changes\
+  \ aren't overly complex, there are several breaking changes, including refactoring\
+  \ of recipe search and results and removal of support for XML. This is not a simply\
+  \ plug-and-play replacement to the v1 API. With respect to an exclusive focus on\
+  \ JSON, the world has spoken, and it prefers JSON for REST-based API's. We've taken\
+  \ numerous steps to refactor the API to make it more REST-compliant. Note that this\
+  \ v2 API will be the preferred API from this point onward, so we encourage developers\
+  \ to migrate to this new format. We have put together some [migration notes](/web/documentation/migration-to-v2)\
+  \ that we encourage you to read carefully.\r\n\r\n##Photos\r\n\r\nSee our [photos\
+  \ documentation](http://api2.bigoven.com/web/documentation/recipe-images). \r\n\r\
+  \nFor more information on usage of this API, including features, pricing, rate limits,\
+  \ terms and conditions, please visit the [BigOven API website](http://api2.bigoven.com)."
+uses:
+  commons: https://raw.githubusercontent.com/apiregistry/commons/master/commons.raml
+  extras: https://raw.githubusercontent.com/apiregistry/typesExtras/master/typeExtras.raml
+securitySchemes:
+  api_key:
+    type: Pass Through
+  basic:
+    type: Basic Authentication
+    description: Basic HTTP Authentication is used for those endpoint calls where you want to act as a BigOven user -- e.g., to get the list of favorites of a signed-in user, or add items to their grocery list.
+types:
+  API2_Controllers_GroceryListController_DepartmentModel:
+    type: object
+    properties:
+      items?:
+        type: string
+  API2_Controllers_GroceryListController_PostGroceryListRecipeRequest:
+    type: object
+    properties:
+      markAsPending?:
+        type: boolean
+      recipeId?:
+        type: integer
+        format: int32
+      scale?:
+        type: number
+        format: double
+  API2_Controllers_GroceryListController_PostGroceryListSyncRequest:
+    type: object
+    properties:
+      list?:
+        type: BigOven_Model_API_Grocery_GroceryList
+      since?:
+        type: string
+  API2_Controllers_GroceryListController_PostToGroceryListRecipeRequest:
+    type: object
+    properties:
+      department?:
+        type: string
+      name?:
+        type: string
+      notes?:
+        type: string
+      quantity?:
+        type: string
+      unit?:
+        type: string
+    description: name, quantity, unit, notes, department
+  API2_Controllers_GroceryListController_UpdateItemByGuidRequest:
+    type: object
+    properties:
+      department?:
+        type: string
+      guid?:
+        type: string
+      name?:
+        type: string
+      notes?:
+        type: string
+      quantity?:
+        type: string
+      unit?:
+        type: string
+  API2_Controllers_ImagesController_RecipePhotosResponse:
+    type: object
+    properties:
+      ResultCount?:
+        type: integer
+        format: int32
+      Results?:
+        type: array
+        items:
+          type: BigOven_Model_API2_Photo
+  API2_Controllers_NoteController_NoteRequest:
+    type: object
+    properties:
+      CreationDate?:
+        type: datetime
+      Date?:
+        type: datetime
+      DateDT?:
+        type: string
+      GUID?:
+        type: string
+      ID?:
+        type: integer
+        format: int32
+      Notes?:
+        type: string
+      People?:
+        type: string
+      RecipeID?:
+        type: integer
+        format: int32
+      UserID?:
+        type: integer
+        format: int32
+      Variations?:
+        type: string
+    description: 'a recipe note, with fields: Date (YYYY-MM-DD string), Notes (string),
+      People (string), Variations (string), RecipeID (int?)'
+  API2_Controllers_RecipeController_FeedbackDTO:
+    type: object
+    properties:
+      feedback?:
+        type: string
+    description: The payload for feedback, which includes the field "feedback"
+  API2_Controllers_ReviewController_ReviewRequest:
+    type: object
+    properties:
+      ActiveMinutes?:
+        type: integer
+        format: int32
+      Comment?:
+        type: string
+      GUID?:
+        type: string
+      MakeAgain?:
+        type: string
+      ParentID?:
+        type: integer
+        format: int32
+      StarRating?:
+        type: integer
+        format: int32
+      TotalMinutes?:
+        type: integer
+        format: int32
+  API2_GroceryListDepartmentResult:
+    type: object
+    properties:
+      dept?:
+        type: string
+      item?:
+        type: string
+  BigOven_Model_API2_CollectionInfo:
+    type: object
+    properties:
+      Description?:
+        type: string
+      ID?:
+        type: integer
+        format: int32
+      IsFiltered?:
+        type: boolean
+      IsSponsored?:
+        type: boolean
+      MobileUrl?:
+        type: string
+      PRO?:
+        type: boolean
+      PhotoUrl?:
+        type: string
+      Results?:
+        type: array
+        items:
+          type: BigOven_Model_API2_RecipeInfox
+      Title?:
+        type: string
+      Token?:
+        type: string
+      WebUrl?:
+        type: string
+  BigOven_Model_API2_GroceryList:
+    type: object
+    properties:
+      Items?:
+        type: array
+        items:
+          type: BigOven_Model_API_Grocery_Item
+      LastModified?:
+        type: datetime
+      Recipes?:
+        type: array
+        items:
+          type: BigOven_Model_API2_RecipeInfox
+      VersionGuid?:
+        type: string
+  BigOven_Model_API2_Photo:
+    type: object
+    properties:
+      Caption?:
+        type: string
+      CreationDate?:
+        type: string
+      ImageID?:
+        type: integer
+        format: int64
+      IsPrimary?:
+        type: boolean
+      MaxImageSquare?:
+        type: integer
+        format: int32
+      PhotoUrl?:
+        type: string
+      Poster?:
+        type: BigOven_Model_API2_UserInfoTinyx
+  BigOven_Model_API2_Recipe:
+    type: object
+    properties:
+      ActiveMinutes?:
+        type: integer
+        format: int32
+      AdTags?:
+        type: string
+      AdminBoost?:
+        type: integer
+        format: int32
+      AllCategoriesText?:
+        type: string
+      BookmarkImageURL?:
+        type: string
+      BookmarkSiteLogo?:
+        type: string
+      BookmarkURL?:
+        type: string
+      Category?:
+        type: string
+      Collection?:
+        type: string
+      CollectionID?:
+        type: integer
+        format: int32
+      CreationDate?:
+        type: datetime
+      Cuisine?:
+        type: string
+      Description?:
+        type: string
+      FavoriteCount?:
+        type: integer
+        format: int32
+      ImageSquares?:
+        type: array
+        items:
+          type: integer
+          format: int32
+      ImageURL?:
+        type: string
+      Ingredients?:
+        type: array
+        items:
+          type: BigOven_Model_API_Ingredient
+      IngredientsTextBlock?:
+        type: string
+      Instructions?:
+        type: string
+      IsBookmark?:
+        type: boolean
+      IsPrivate?:
+        type: boolean
+      IsRecipeScan?:
+        type: boolean
+      IsSponsored?:
+        type: boolean
+      LastModified?:
+        type: datetime
+      MaxImageSquare?:
+        type: integer
+        format: int32
+      MedalCount?:
+        type: integer
+        format: int32
+      MenuCount?:
+        type: integer
+        format: int32
+      Microcategory?:
+        type: string
+      NotesCount?:
+        type: integer
+        format: int32
+      NutritionInfo?:
+        type: BigOven_Model_API_NutritionInfo
+      PhotoUrl?:
+        type: string
+      Poster?:
+        type: BigOven_Model_API_UserInfo
+      PrimaryIngredient?:
+        type: string
+      RecipeID?:
+        type: integer
+        format: int32
+      ReviewCount?:
+        type: integer
+        format: int32
+      StarRating?:
+        type: number
+        format: double
+      Subcategory?:
+        type: string
+      Title?:
+        type: string
+      TotalMinutes?:
+        type: integer
+        format: int32
+      VariantOfRecipeID?:
+        type: integer
+        format: int32
+      VerifiedByClass?:
+        type: string
+      VerifiedDateTime?:
+        type: datetime
+      WebURL?:
+        type: string
+      YieldNumber?:
+        type: number
+        format: double
+      YieldUnit?:
+        type: string
+  BigOven_Model_API2_RecipeInfox:
+    type: object
+    properties:
+      Category?:
+        type: string
+      CreationDate?:
+        type: datetime
+      Cuisine?:
+        type: string
+      IsBookmark?:
+        type: boolean
+      IsPrivate?:
+        type: boolean
+      IsRecipeScan?:
+        type: boolean
+      Microcategory?:
+        type: string
+      PhotoUrl?:
+        type: string
+      Poster?:
+        type: BigOven_Model_API2_UserInfoTinyx
+      RecipeID?:
+        type: integer
+        format: int32
+      ReviewCount?:
+        type: integer
+        format: int32
+      Servings?:
+        type: number
+        format: double
+      StarRating?:
+        type: number
+        format: double
+      Subcategory?:
+        type: string
+      Title?:
+        type: string
+      TotalTries?:
+        type: integer
+        format: int32
+      WebURL?:
+        type: string
+  BigOven_Model_API2_RecipeNote:
+    type: object
+    properties:
+      CreationDate?:
+        type: datetime
+      Date?:
+        type: string
+      DateDT?:
+        type: datetime
+      GUID?:
+        type: string
+      ID?:
+        type: integer
+        format: int32
+      Notes?:
+        type: string
+      People?:
+        type: string
+      RecipeID?:
+        type: integer
+        format: int32
+      UserID?:
+        type: integer
+        format: int32
+      Variations?:
+        type: string
+  BigOven_Model_API2_RecipeSearchResult:
+    type: object
+    properties:
+      ResultCount?:
+        type: integer
+        format: int32
+      Results?:
+        type: array
+        items:
+          type: BigOven_Model_API2_RecipeInfox
+      SpellSuggest?:
+        type: string
+  BigOven_Model_API2_UserInfoTinyx:
+    type: object
+    properties:
+      FirstName?:
+        type: string
+      LastName?:
+        type: string
+      PhotoUrl?:
+        type: string
+      UserID?:
+        type: integer
+        format: int32
+      UserName?:
+        type: string
+  BigOven_Model_API_GlossaryEntry:
+    type: object
+    properties:
+      CreationDate?:
+        type: datetime
+      Definition?:
+        type: string
+      GlossaryEntryID?:
+        type: integer
+        format: int32
+      LastModified?:
+        type: datetime
+      Term?:
+        type: string
+  BigOven_Model_API_Grocery_GroceryList:
+    type: object
+    properties:
+      Items?:
+        type: array
+        items:
+          type: BigOven_Model_API_Grocery_Item
+      LastModified?:
+        type: datetime
+      Recipes?:
+        type: array
+        items:
+          type: BigOven_Model_API_RecipeInfo
+      VersionGuid?:
+        type: string
+  BigOven_Model_API_Grocery_Item:
+    type: object
+    properties:
+      BigOvenObject?:
+        type: string
+      CreationDate?:
+        type: datetime
+      Department?:
+        type: string
+      DisplayQuantity?:
+        type: string
+      GUID?:
+        type: string
+      IsChecked?:
+        type: boolean
+      ItemID?:
+        type: integer
+        format: int64
+      LastModified?:
+        type: datetime
+      LocalStatus?:
+        type: string
+      Name?:
+        type: string
+      Notes?:
+        type: string
+      RecipeID?:
+        type: integer
+        format: int32
+      ThirdPartyURL?:
+        type: string
+  BigOven_Model_API_Image:
+    type: object
+    properties:
+      Caption?:
+        type: string
+      CreationDate?:
+        type: string
+      ImageID?:
+        type: integer
+        format: int64
+      ImageSquares?:
+        type: array
+        items:
+          type: integer
+          format: int32
+      ImageURL?:
+        type: string
+      ImageURL120?:
+        type: string
+      ImageURL128?:
+        type: string
+      ImageURL200?:
+        type: string
+      ImageURL256?:
+        type: string
+      ImageURL48?:
+        type: string
+      ImageURL64?:
+        type: string
+      IsPrimary?:
+        type: boolean
+      MaxImageSquare?:
+        type: integer
+        format: int32
+      Poster?:
+        type: BigOven_Model_API_UserInfo
+  BigOven_Model_API_Ingredient:
+    type: object
+    properties:
+      DisplayIndex?:
+        type: integer
+        format: int32
+      DisplayQuantity?:
+        type: string
+      HTMLName?:
+        type: string
+      IngredientID?:
+        type: integer
+        format: int64
+      IngredientInfo?:
+        type: BigOven_Model_API_IngredientInfo
+      IsHeading?:
+        type: boolean
+      IsLinked?:
+        type: boolean
+      MetricDisplayQuantity?:
+        type: string
+      MetricQuantity?:
+        type: number
+        format: double
+      MetricUnit?:
+        type: string
+      Name?:
+        type: string
+      PreparationNotes?:
+        type: string
+      Quantity?:
+        type: number
+        format: double
+      Unit?:
+        type: string
+  BigOven_Model_API_IngredientInfo:
+    type: object
+    properties:
+      Department?:
+        type: string
+      MasterIngredientID?:
+        type: integer
+        format: int32
+      Name?:
+        type: string
+      UsuallyOnHand?:
+        type: boolean
+  BigOven_Model_API_NutritionInfo:
+    type: object
+    properties:
+      CaloriesFromFat?:
+        type: number
+        format: double
+      Cholesterol?:
+        type: number
+        format: double
+      CholesterolPct?:
+        type: number
+        format: double
+      DietaryFiber?:
+        type: number
+        format: double
+      DietaryFiberPct?:
+        type: number
+        format: double
+      MonoFat?:
+        type: number
+        format: double
+      PolyFat?:
+        type: number
+        format: double
+      Potassium?:
+        type: number
+        format: double
+      PotassiumPct?:
+        type: number
+        format: double
+      Protein?:
+        type: number
+        format: double
+      ProteinPct?:
+        type: number
+        format: double
+      SatFat?:
+        type: number
+        format: double
+      SatFatPct?:
+        type: number
+        format: double
+      SingularYieldUnit?:
+        type: string
+      Sodium?:
+        type: number
+        format: double
+      SodiumPct?:
+        type: number
+        format: double
+      Sugar?:
+        type: number
+        format: double
+      TotalCalories?:
+        type: number
+        format: double
+      TotalCarbs?:
+        type: number
+        format: double
+      TotalCarbsPct?:
+        type: number
+        format: double
+      TotalFat?:
+        type: number
+        format: double
+      TotalFatPct?:
+        type: number
+        format: double
+      TransFat?:
+        type: number
+        format: double
+  BigOven_Model_API_Recipe:
+    type: object
+    properties:
+      ActiveMinutes?:
+        type: integer
+        format: int32
+      AdTags?:
+        type: string
+      AdminBoost?:
+        type: integer
+        format: int32
+      AllCategoriesText?:
+        type: string
+      BookmarkImageURL?:
+        type: string
+      BookmarkSiteLogo?:
+        type: string
+      BookmarkURL?:
+        type: string
+      Category?:
+        type: string
+      Collection?:
+        type: string
+      CollectionID?:
+        type: integer
+        format: int32
+      CreationDate?:
+        type: datetime
+      Cuisine?:
+        type: string
+      Description?:
+        type: string
+      FavoriteCount?:
+        type: integer
+        format: int32
+      HeroPhotoUrl?:
+        type: string
+      ImageSquares?:
+        type: array
+        items:
+          type: integer
+          format: int32
+      ImageURL?:
+        type: string
+      Ingredients?:
+        type: array
+        items:
+          type: BigOven_Model_API_Ingredient
+      IngredientsTextBlock?:
+        type: string
+      Instructions?:
+        type: string
+      IsBookmark?:
+        type: boolean
+      IsPrivate?:
+        type: boolean
+      IsRecipeScan?:
+        type: boolean
+      IsSponsored?:
+        type: boolean
+      LastModified?:
+        type: datetime
+      MaxImageSquare?:
+        type: integer
+        format: int32
+      MedalCount?:
+        type: integer
+        format: int32
+      MenuCount?:
+        type: integer
+        format: int32
+      Microcategory?:
+        type: string
+      NotesCount?:
+        type: integer
+        format: int32
+      NutritionInfo?:
+        type: BigOven_Model_API_NutritionInfo
+      Poster?:
+        type: BigOven_Model_API_UserInfo
+      PrimaryIngredient?:
+        type: string
+      RecipeID?:
+        type: integer
+        format: int32
+      ReviewCount?:
+        type: integer
+        format: int32
+      StarRating?:
+        type: number
+        format: double
+      Subcategory?:
+        type: string
+      Title?:
+        type: string
+      TotalMinutes?:
+        type: integer
+        format: int32
+      VariantOfRecipeID?:
+        type: integer
+        format: int32
+      VerifiedByClass?:
+        type: string
+      VerifiedDateTime?:
+        type: datetime
+      WebURL?:
+        type: string
+      YieldNumber?:
+        type: number
+        format: double
+      YieldUnit?:
+        type: string
+  BigOven_Model_API_RecipeInfo:
+    type: object
+    properties:
+      BookmarkURL?:
+        type: string
+      Category?:
+        type: string
+      CreationDate?:
+        type: datetime
+      Cuisine?:
+        type: string
+      HeroPhotoUrl?:
+        type: string
+      HideFromPublicSearch?:
+        type: boolean
+      ImageURL?:
+        type: string
+      ImageURL120?:
+        type: string
+      IsBookmark?:
+        type: boolean
+      IsPrivate?:
+        type: boolean
+      MaxImageSquare?:
+        type: integer
+        format: int32
+      Microcategory?:
+        type: string
+      Poster?:
+        type: BigOven_Model_API_UserInfo
+      QualityScore?:
+        type: number
+        format: double
+      RecipeID?:
+        type: integer
+        format: int32
+      ReviewCount?:
+        type: integer
+        format: int32
+      StarRating?:
+        type: number
+        format: double
+      StarRatingIMG?:
+        type: string
+      Subcategory?:
+        type: string
+      Title?:
+        type: string
+      TotalTries?:
+        type: integer
+        format: int32
+      WebURL?:
+        type: string
+      YieldNumber?:
+        type: number
+        format: double
+  BigOven_Model_API_RecipeNote:
+    type: object
+    properties:
+      CreationDate?:
+        type: datetime
+      Date?:
+        type: string
+      DateDT?:
+        type: datetime
+      GUID?:
+        type: string
+      ID?:
+        type: integer
+        format: int32
+      Notes?:
+        type: string
+      People?:
+        type: string
+      RecipeID?:
+        type: integer
+        format: int32
+      UserID?:
+        type: integer
+        format: int32
+      Variations?:
+        type: string
+  BigOven_Model_API_RecipeNoteList:
+    type: object
+    properties:
+      ResultCount?:
+        type: integer
+        format: int32
+      Results?:
+        type: array
+        items:
+          type: BigOven_Model_API_RecipeNote
+  BigOven_Model_API_Review:
+    type: object
+    properties:
+      ActiveMinutes?:
+        type: integer
+        format: int32
+      Comment?:
+        type: string
+      CreationDate?:
+        type: datetime
+      GUID?:
+        type: string
+      ParentID?:
+        type: integer
+        format: int64
+      Poster?:
+        type: BigOven_Model_API_UserInfo
+      Replies?:
+        type: array
+        items:
+          type: BigOven_Model_API_Review
+      ReviewID?:
+        type: integer
+        format: int64
+      StarRating?:
+        type: number
+        format: double
+      TotalMinutes?:
+        type: integer
+        format: int32
+  BigOven_Model_API_UserInfo:
+    type: object
+    properties:
+      FirstName?:
+        type: string
+      ImageURL48?:
+        type: string
+      IsKitchenHelper?:
+        type: boolean
+      IsPremium?:
+        type: boolean
+      IsUsingRecurly?:
+        type: boolean
+      LastName?:
+        type: string
+      MemberSince?:
+        type: datetime
+      PhotoUrl?:
+        type: string
+      PremiumExpiryDate?:
+        type: datetime
+      UserID?:
+        type: integer
+        format: int32
+      UserName?:
+        type: string
+  BigOven_Model_RecipeCategory:
+    type: object
+    properties:
+      Category?:
+        type: string
+      ID?:
+        type: integer
+        format: int32
+      ParentID?:
+        type: integer
+        format: int32
+      PrimaryImage?:
+        type: string
+      ShortDescription?:
+        type: string
+  BigOven_Model_RecipeInfoDateTuple2:
+    type: object
+    properties:
+      date?:
+        type: datetime
+      recipeInfo?:
+        type: BigOven_Model_API2_RecipeInfox
+  BigOven_Model_RecipeInfoReviewTuple2:
+    type: object
+    properties:
+      RecipeInfo?:
+        type: BigOven_Model_API2_RecipeInfox
+      Review?:
+        type: BigOven_Model_API_Review
+  BigOven_Model_ShoppingListLine:
+    type: object
+    properties:
+      DateAdded?:
+        type: datetime
+      Dept?:
+        type: string
+      GUID?:
+        type: string
+      HTMLItemName?:
+        type: string
+      IsChecked?:
+        type: boolean
+      ItemName?:
+        type: string
+      LastModified?:
+        type: datetime
+      ListID?:
+        type: integer
+        format: int64
+      MealPlanID?:
+        type: integer
+        format: int32
+      MealPlanObjectType?:
+        type: integer
+        format: int32
+      Notes?:
+        type: string
+      PendingAddition?:
+        type: boolean
+      RecipeID?:
+        type: integer
+        format: int32
+      ShoppingListLineID?:
+        type: integer
+        format: int64
+      Store?:
+        type: string
+      TextAmt?:
+        type: string
+      ThirdPartyHost?:
+        type: string
+      ThirdPartyTitle?:
+        type: string
+      ThirdPartyURL?:
+        type: string
+  System_Object:
+    type: object
+/collection:
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: the collection identifier
+        displayName: id
+        format: int32
+    /meta:
+      get:
+        displayName: Gets a recipe collection metadata. A recipe collection is a curated set of recipes.
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: BigOven_Model_API2_CollectionInfo
+              text/json:
+                type: BigOven_Model_API2_CollectionInfo
+              application/xml:
+                type: BigOven_Model_API2_CollectionInfo
+              text/xml:
+                type: BigOven_Model_API2_CollectionInfo
+    get:
+      displayName: Gets a recipe collection. A recipe collection is a curated set of recipes.
+      queryParameters:
+        rpp?:
+          type: integer
+          description: results per page
+          displayName: rpp
+          format: int32
+        pg?:
+          type: integer
+          description: page number (starting with 1)
+          displayName: pg
+          format: int32
+        test?:
+          type: boolean
+          displayName: test
+        sessionForLogging?:
+          type: string
+          displayName: sessionForLogging
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: BigOven_Model_API2_RecipeSearchResult
+            text/json:
+              type: BigOven_Model_API2_RecipeSearchResult
+            application/xml:
+              type: BigOven_Model_API2_RecipeSearchResult
+            text/xml:
+              type: BigOven_Model_API2_RecipeSearchResult
+/collections:
+  get:
+    displayName: Get the list of current, seasonal recipe collections. From here, you can use the /collection/{id} endpoint to retrieve the recipes in those collections.
+    queryParameters:
+      test?:
+        type: string
+        displayName: test
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: array
+            items:
+              type: BigOven_Model_API2_CollectionInfo
+          text/json:
+            type: array
+            items:
+              type: BigOven_Model_API2_CollectionInfo
+          application/xml:
+            type: array
+            items:
+              type: BigOven_Model_API2_CollectionInfo
+          text/xml:
+            type: array
+            items:
+              type: BigOven_Model_API2_CollectionInfo
+/glossary:
+  /byterm:
+    /{term}:
+      uriParameters:
+        term:
+          type: string
+          description: Keyword used to look up article, e.g., asparagus
+          displayName: term
+      get:
+        displayName: Get food glossary article by term (e.g., asparagus). This editorial is (c) BigOven and MUST carry attribution and a link back to the glossary entry on BigOven.com.
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: BigOven_Model_API_GlossaryEntry
+              text/json:
+                type: BigOven_Model_API_GlossaryEntry
+              application/xml:
+                type: BigOven_Model_API_GlossaryEntry
+              text/xml:
+                type: BigOven_Model_API_GlossaryEntry
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: identifier of article to retrieve
+        displayName: id
+        format: int32
+    get:
+      displayName: Get food glossary article
+      responses:
+        200:
+          description: Glossary article successfully returned
+        404:
+          description: Glossary article not found
+/grocerylist:
+  /department:
+    post:
+      displayName: Departmentalize a list of strings -- used for ad-hoc grocery list item addition
+      body:
+        application/json: API2_Controllers_GroceryListController_DepartmentModel
+        text/json: API2_Controllers_GroceryListController_DepartmentModel
+        application/xml: API2_Controllers_GroceryListController_DepartmentModel
+        text/xml: API2_Controllers_GroceryListController_DepartmentModel
+        application/x-www-form-urlencoded: API2_Controllers_GroceryListController_DepartmentModel
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: array
+              items:
+                type: API2_GroceryListDepartmentResult
+            text/json:
+              type: array
+              items:
+                type: API2_GroceryListDepartmentResult
+            application/xml:
+              type: array
+              items:
+                type: API2_GroceryListDepartmentResult
+            text/xml:
+              type: array
+              items:
+                type: API2_GroceryListDepartmentResult
+  /item:
+    /{guid}:
+      uriParameters:
+        guid:
+          type: string
+          displayName: guid
+      delete:
+        displayName: /grocerylist/item/{guid}  DELETE will delete this item assuming you own it.
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: System_Object
+              text/json:
+                type: System_Object
+              application/xml:
+                type: System_Object
+              text/xml:
+                type: System_Object
+      put:
+        displayName: Update a grocery item by GUID
+        body:
+          application/json: API2_Controllers_GroceryListController_UpdateItemByGuidRequest
+          text/json: API2_Controllers_GroceryListController_UpdateItemByGuidRequest
+          application/xml: API2_Controllers_GroceryListController_UpdateItemByGuidRequest
+          text/xml: API2_Controllers_GroceryListController_UpdateItemByGuidRequest
+          application/x-www-form-urlencoded: API2_Controllers_GroceryListController_UpdateItemByGuidRequest
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: System_Object
+              text/json:
+                type: System_Object
+              application/xml:
+                type: System_Object
+              text/xml:
+                type: System_Object
+    post:
+      displayName: Add a single line item to the grocery list
+      body:
+        application/json: API2_Controllers_GroceryListController_PostToGroceryListRecipeRequest
+        text/json: API2_Controllers_GroceryListController_PostToGroceryListRecipeRequest
+        application/xml: API2_Controllers_GroceryListController_PostToGroceryListRecipeRequest
+        text/xml: API2_Controllers_GroceryListController_PostToGroceryListRecipeRequest
+        application/x-www-form-urlencoded: API2_Controllers_GroceryListController_PostToGroceryListRecipeRequest
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: BigOven_Model_ShoppingListLine
+            text/json:
+              type: BigOven_Model_ShoppingListLine
+            application/xml:
+              type: BigOven_Model_ShoppingListLine
+            text/xml:
+              type: BigOven_Model_ShoppingListLine
+  /recipe:
+    post:
+      displayName: "Add a Recipe to the grocery list.  In the request data, pass in\
+        \ recipeId, scale (scale=1.0 says to keep the recipe the same size as originally\
+        \ posted), markAsPending (true/false) to indicate that\r\n            the\
+        \ lines in the recipe should be marked in a \"pending\" (unconfirmed by user)\
+        \ state."
+      body:
+        application/json: API2_Controllers_GroceryListController_PostGroceryListRecipeRequest
+        text/json: API2_Controllers_GroceryListController_PostGroceryListRecipeRequest
+        application/xml: API2_Controllers_GroceryListController_PostGroceryListRecipeRequest
+        text/xml: API2_Controllers_GroceryListController_PostGroceryListRecipeRequest
+        application/x-www-form-urlencoded: API2_Controllers_GroceryListController_PostGroceryListRecipeRequest
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: System_Object
+            text/json:
+              type: System_Object
+            application/xml:
+              type: System_Object
+            text/xml:
+              type: System_Object
+  /sync:
+    post:
+      displayName: Synchronize the grocery list.  Call this with a POST to /grocerylist/sync
+      body:
+        application/json: API2_Controllers_GroceryListController_PostGroceryListSyncRequest
+        text/json: API2_Controllers_GroceryListController_PostGroceryListSyncRequest
+        application/xml: API2_Controllers_GroceryListController_PostGroceryListSyncRequest
+        text/xml: API2_Controllers_GroceryListController_PostGroceryListSyncRequest
+        application/x-www-form-urlencoded: API2_Controllers_GroceryListController_PostGroceryListSyncRequest
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: System_Object
+            text/json:
+              type: System_Object
+            application/xml:
+              type: System_Object
+            text/xml:
+              type: System_Object
+  get:
+    displayName: Get the user's grocery list.  User is determined by Basic Authentication.
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: BigOven_Model_API2_GroceryList
+          text/json:
+            type: BigOven_Model_API2_GroceryList
+          application/xml:
+            type: BigOven_Model_API2_GroceryList
+          text/xml:
+            type: BigOven_Model_API2_GroceryList
+  delete:
+    displayName: Delete all the items on a grocery list; faster operation than a sync with deleted items.
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: System_Object
+          text/json:
+            type: System_Object
+          application/xml:
+            type: System_Object
+          text/xml:
+            type: System_Object
+/recipe:
+  /autocomplete:
+    get:
+      displayName: Given a query, return recipe titles starting with query. Query must be at least 3 chars in length.
+      queryParameters:
+        query:
+          type: string
+          displayName: query
+        limit?:
+          type: integer
+          displayName: limit
+          format: int32
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: array
+              items:
+                type: string
+            text/json:
+              type: array
+              items:
+                type: string
+            application/xml:
+              type: array
+              items:
+                type: string
+            text/xml:
+              type: array
+              items:
+                type: string
+  /categories:
+    get:
+      displayName: Get a list of recipe categories (the ID field can be used for include_cat in search parameters)
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: array
+              items:
+                type: BigOven_Model_RecipeCategory
+            text/json:
+              type: array
+              items:
+                type: BigOven_Model_RecipeCategory
+            application/xml:
+              type: array
+              items:
+                type: BigOven_Model_RecipeCategory
+            text/xml:
+              type: array
+              items:
+                type: BigOven_Model_RecipeCategory
+  /scan:
+    post:
+      displayName: "POST an image as a new RecipeScan request\r\n                1)\
+        \  Fetch the filename -- DONE\r\n                2)  Copy it to the pics/scan\
+        \ folder - ENSURE NO NAMING COLLISIONS -- DONE\r\n                3)  Create\
+        \ 120 thumbnail size  in pics/scan/120 -- DONE\r\n                4)  Insert\
+        \ the CloudTasks record\r\n                5)  Create the HIT\r\n        \
+        \        6)  Update the CloudTasks record with the HIT ID\r\n            \
+        \    7)  Email the requesing user\r\n                8)  Call out to www.bigoven.com\
+        \ to fetch the image and re-create the thumbnail"
+      queryParameters:
+        test?:
+          type: boolean
+          displayName: test
+        devicetype?:
+          type: string
+          displayName: devicetype
+        lat?:
+          type: number
+          displayName: lat
+          format: double
+        lng?:
+          type: number
+          displayName: lng
+          format: double
+      responses:
+        401:
+          description: Not authorized
+        402:
+          description: Payment required (not enough credits)
+        415:
+          description: Bad media type (bad JPG)
+        500:
+          description: General error on initiating RecipeScan task; please try again or contact us at support[at]bigoven.com
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: the Recipe ID to retrieve
+        displayName: id
+        format: int32
+    get:
+      displayName: Return full Recipe detail
+      queryParameters:
+        prefetch?:
+          type: boolean
+          displayName: prefetch
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: BigOven_Model_API2_Recipe
+            text/json:
+              type: BigOven_Model_API2_Recipe
+            application/xml:
+              type: BigOven_Model_API2_Recipe
+            text/xml:
+              type: BigOven_Model_API2_Recipe
+    delete:
+      displayName: Delete a Recipe (you must be authenticated as an owner of the recipe)
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: System_Object
+            text/json:
+              type: System_Object
+            application/xml:
+              type: System_Object
+            text/xml:
+              type: System_Object
+  /{recipeId}:
+    uriParameters:
+      recipeId:
+        type: integer
+        displayName: recipeId
+        format: int32
+    /feedback:
+      post:
+        displayName: Feedback on a Recipe -- for internal BigOven editors
+        body:
+          application/json: API2_Controllers_RecipeController_FeedbackDTO
+          text/json: API2_Controllers_RecipeController_FeedbackDTO
+          application/xml: API2_Controllers_RecipeController_FeedbackDTO
+          text/xml: API2_Controllers_RecipeController_FeedbackDTO
+          application/x-www-form-urlencoded: API2_Controllers_RecipeController_FeedbackDTO
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: System_Object
+              text/json:
+                type: System_Object
+              application/xml:
+                type: System_Object
+              text/xml:
+                type: System_Object
+    /image:
+      post:
+        displayName: "POST: /recipe/{recipeId}/image?lat=42&amp;lng=21&amp;caption=this%20is%20my%20caption\r\
+          \n             \r\n             Note that caption, lng and lat are all optional,\
+          \ but must go on the request URI as params because this endpoint\r\n   \
+          \          needs a multipart/mime content header and will not parse JSON\
+          \ in the body along with it.\r\n            \r\n             Testing with\
+          \ Postman (validated 11/20/2015):\r\n             1) Remove the Content-Type\
+          \ header; add authentication information\r\n             2) On the request,\
+          \ click Body and choose \"form-data\", then add a line item with \"key\"\
+          \ column set to \"file\" and on the right,\r\n             change the type\
+          \ of the input from Text to File.  Browse and choose a JPG."
+        queryParameters:
+          caption?:
+            type: string
+            displayName: caption
+          lat?:
+            type: number
+            displayName: lat
+            format: double
+          lng?:
+            type: number
+            displayName: lng
+            format: double
+        responses:
+          200:
+            description: Success
+            body:
+              application/json:
+                type: System_Object
+              text/json:
+                type: System_Object
+              application/xml:
+                type: System_Object
+              text/xml:
+                type: System_Object
+          400:
+            description: if bad request (e.g., missing parameters)
+          401:
+            description: if the user is unknown
+          415:
+            description: if unsupported media type (e.g., bad JPG)
+    /images:
+      get:
+        displayName: Get all the images for a recipe. DEPRECATED. Please use /recipe/{recipeId}/photos.
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+              text/json:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+              application/xml:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+              text/xml:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+    /note:
+      /{noteId}:
+        uriParameters:
+          noteId:
+            type: integer
+            description: The note ID (note -- it's not the RecipeID)
+            displayName: noteId
+            format: int32
+        get:
+          displayName: Get a given note. Make sure you're passing authentication information in the header for the user who owns the note.
+          responses:
+            200:
+              description: OK
+              body:
+                application/json:
+                  type: BigOven_Model_API_RecipeNote
+                text/json:
+                  type: BigOven_Model_API_RecipeNote
+                application/xml:
+                  type: BigOven_Model_API_RecipeNote
+                text/xml:
+                  type: BigOven_Model_API_RecipeNote
+        delete:
+          displayName: "Delete a review\r\n                do a DELETE Http request\
+            \ of /note/{ID}"
+          responses:
+            200:
+              description: OK
+              body:
+                application/json:
+                  type: System_Object
+                text/json:
+                  type: System_Object
+                application/xml:
+                  type: System_Object
+                text/xml:
+                  type: System_Object
+        put:
+          displayName: HTTP PUT (update) a Recipe note (RecipeNote).
+          body:
+            application/json: API2_Controllers_NoteController_NoteRequest
+            text/json: API2_Controllers_NoteController_NoteRequest
+            application/xml: API2_Controllers_NoteController_NoteRequest
+            text/xml: API2_Controllers_NoteController_NoteRequest
+            application/x-www-form-urlencoded: API2_Controllers_NoteController_NoteRequest
+          responses:
+            200:
+              description: OK
+              body:
+                application/json:
+                  type: BigOven_Model_API_RecipeNote
+                text/json:
+                  type: BigOven_Model_API_RecipeNote
+                application/xml:
+                  type: BigOven_Model_API_RecipeNote
+                text/xml:
+                  type: BigOven_Model_API_RecipeNote
+      post:
+        displayName: HTTP POST a new note into the system.
+        body:
+          application/json: API2_Controllers_NoteController_NoteRequest
+          text/json: API2_Controllers_NoteController_NoteRequest
+          application/xml: API2_Controllers_NoteController_NoteRequest
+          text/xml: API2_Controllers_NoteController_NoteRequest
+          application/x-www-form-urlencoded: API2_Controllers_NoteController_NoteRequest
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: BigOven_Model_API2_RecipeNote
+              text/json:
+                type: BigOven_Model_API2_RecipeNote
+              application/xml:
+                type: BigOven_Model_API2_RecipeNote
+              text/xml:
+                type: BigOven_Model_API2_RecipeNote
+    /notes:
+      get:
+        displayName: recipe/100/notes
+        queryParameters:
+          pg?:
+            type: integer
+            description: page (int, starting from 1)
+            displayName: pg
+            format: int32
+          rpp?:
+            type: integer
+            description: recipeId
+            displayName: rpp
+            format: int32
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: BigOven_Model_API_RecipeNoteList
+              text/json:
+                type: BigOven_Model_API_RecipeNoteList
+              application/xml:
+                type: BigOven_Model_API_RecipeNoteList
+              text/xml:
+                type: BigOven_Model_API_RecipeNoteList
+    /photos:
+      get:
+        displayName: Get all the photos for a recipe
+        queryParameters:
+          pg?:
+            type: integer
+            displayName: pg
+            format: int32
+          rpp?:
+            type: integer
+            displayName: rpp
+            format: int32
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: API2_Controllers_ImagesController_RecipePhotosResponse
+              text/json:
+                type: API2_Controllers_ImagesController_RecipePhotosResponse
+              application/xml:
+                type: API2_Controllers_ImagesController_RecipePhotosResponse
+              text/xml:
+                type: API2_Controllers_ImagesController_RecipePhotosResponse
+    /related:
+      get:
+        displayName: Get recipes related to the given recipeId
+        queryParameters:
+          pg:
+            type: integer
+            displayName: pg
+            format: int32
+          rpp:
+            type: integer
+            displayName: rpp
+            format: int32
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: BigOven_Model_API2_RecipeSearchResult
+              text/json:
+                type: BigOven_Model_API2_RecipeSearchResult
+              application/xml:
+                type: BigOven_Model_API2_RecipeSearchResult
+              text/xml:
+                type: BigOven_Model_API2_RecipeSearchResult
+    /review:
+      /{reviewId}:
+        uriParameters:
+          reviewId:
+            type: integer
+            description: int
+            displayName: reviewId
+            format: int32
+        get:
+          displayName: Get a given review
+          responses:
+            200:
+              description: OK
+              body:
+                application/json:
+                  type: BigOven_Model_API_Review
+                text/json:
+                  type: BigOven_Model_API_Review
+                application/xml:
+                  type: BigOven_Model_API_Review
+                text/xml:
+                  type: BigOven_Model_API_Review
+        delete:
+          displayName: Delete a review
+          queryParameters:
+            ucId:
+              type: integer
+              displayName: ucId
+              format: int64
+          responses:
+            200:
+              description: OK
+              body:
+                application/json:
+                  type: System_Object
+                text/json:
+                  type: System_Object
+                application/xml:
+                  type: System_Object
+                text/xml:
+                  type: System_Object
+        put:
+          displayName: HTTP PUT (update) a Recipe review (UserComment).
+          body:
+            application/json: API2_Controllers_ReviewController_ReviewRequest
+            text/json: API2_Controllers_ReviewController_ReviewRequest
+            application/xml: API2_Controllers_ReviewController_ReviewRequest
+            text/xml: API2_Controllers_ReviewController_ReviewRequest
+            application/x-www-form-urlencoded: API2_Controllers_ReviewController_ReviewRequest
+          responses:
+            200:
+              description: OK
+              body:
+                application/json:
+                  type: BigOven_Model_API_Review
+                text/json:
+                  type: BigOven_Model_API_Review
+                application/xml:
+                  type: BigOven_Model_API_Review
+                text/xml:
+                  type: BigOven_Model_API_Review
+      post:
+        displayName: "Add a new review or rating.\r\n            You need to provide\
+          \ EITHER a StarRating or a Comment or both.\r\n            Just providing\
+          \ a StarRating is a \"rating\"; just providing a Comment is a \"comment\"\
+          . You can also provide a comment AND a rating (preferred)"
+        body:
+          application/json: API2_Controllers_ReviewController_ReviewRequest
+          text/json: API2_Controllers_ReviewController_ReviewRequest
+          application/xml: API2_Controllers_ReviewController_ReviewRequest
+          text/xml: API2_Controllers_ReviewController_ReviewRequest
+          application/x-www-form-urlencoded: API2_Controllers_ReviewController_ReviewRequest
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: System_Object
+              text/json:
+                type: System_Object
+              application/xml:
+                type: System_Object
+              text/xml:
+                type: System_Object
+    /reviews:
+      get:
+        displayName: Get reviews for a recipe
+        queryParameters:
+          pg?:
+            type: integer
+            description: the page (int), starting with 1
+            displayName: pg
+            format: int32
+          rpp?:
+            type: integer
+            description: results per page (int)
+            displayName: rpp
+            format: int32
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: array
+                items:
+                  type: BigOven_Model_API_Review
+              text/json:
+                type: array
+                items:
+                  type: BigOven_Model_API_Review
+              application/xml:
+                type: array
+                items:
+                  type: BigOven_Model_API_Review
+              text/xml:
+                type: array
+                items:
+                  type: BigOven_Model_API_Review
+    /scans:
+      get:
+        displayName: Gets a list of RecipeScan images for the recipe. There will be at most 3 per recipe.
+        responses:
+          200:
+            description: OK
+            body:
+              application/json:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+              text/json:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+              application/xml:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+              text/xml:
+                type: array
+                items:
+                  type: BigOven_Model_API_Image
+  post:
+    displayName: Add a new recipe
+    body:
+      application/json: BigOven_Model_API_Recipe
+      text/json: BigOven_Model_API_Recipe
+      application/xml: BigOven_Model_API_Recipe
+      text/xml: BigOven_Model_API_Recipe
+      application/x-www-form-urlencoded: BigOven_Model_API_Recipe
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: BigOven_Model_API_Recipe
+          text/json:
+            type: BigOven_Model_API_Recipe
+          application/xml:
+            type: BigOven_Model_API_Recipe
+          text/xml:
+            type: BigOven_Model_API_Recipe
+  put:
+    displayName: Update a recipe
+    body:
+      application/json: BigOven_Model_API_Recipe
+      text/json: BigOven_Model_API_Recipe
+      application/xml: BigOven_Model_API_Recipe
+      text/xml: BigOven_Model_API_Recipe
+      application/x-www-form-urlencoded: BigOven_Model_API_Recipe
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: BigOven_Model_API_Recipe
+          text/json:
+            type: BigOven_Model_API_Recipe
+          application/xml:
+            type: BigOven_Model_API_Recipe
+          text/xml:
+            type: BigOven_Model_API_Recipe
+/recipes:
+  /random:
+    get:
+      displayName: Get a random, home-page-quality Recipe.
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: BigOven_Model_API_Recipe
+            text/json:
+              type: BigOven_Model_API_Recipe
+            application/xml:
+              type: BigOven_Model_API_Recipe
+            text/xml:
+              type: BigOven_Model_API_Recipe
+  /raves:
+    get:
+      displayName: Get the recipe/comment tuples for those recipes with 4 or 5 star ratings
+      queryParameters:
+        pg?:
+          type: integer
+          description: page, starting with 1
+          displayName: pg
+          format: int32
+        rpp?:
+          type: integer
+          description: results per page
+          displayName: rpp
+          format: int32
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoReviewTuple2
+            text/json:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoReviewTuple2
+            application/xml:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoReviewTuple2
+            text/xml:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoReviewTuple2
+  /recentviews:
+    get:
+      displayName: Get a list of recipes that the authenticated user has most recently viewed
+      queryParameters:
+        pg?:
+          type: integer
+          description: Page number starting with 1
+          displayName: pg
+          format: int32
+        rpp?:
+          type: integer
+          description: results per page
+          displayName: rpp
+          format: int32
+      responses:
+        200:
+          description: OK
+          body:
+            application/json:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoDateTuple2
+            text/json:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoDateTuple2
+            application/xml:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoDateTuple2
+            text/xml:
+              type: array
+              items:
+                type: BigOven_Model_RecipeInfoDateTuple2
+  get:
+    displayName: "Search for recipes. There are many parameters that you can apply.\
+      \ Starting with the most common, use title_kw to search within a title.\r\n\
+      \            Use any_kw to search across the entire recipe.\r\n            If\
+      \ you'd like to limit by course, set the parameter \"include_primarycat\" to\
+      \ one of (appetizers,bread,breakfast,dessert,drinks,maindish,salad,sidedish,soup,marinades,other).\r\
+      \n            If you'd like to exclude a category, set exclude_cat to one or\
+      \ more (comma-separated) list of those categories to exclude.\r\n          \
+      \  If you'd like to include a category, set include_cat to one or more (comma-separated)\
+      \ of those categories to include.\r\n            To explicitly include an ingredient\
+      \ in your search, set the parameter \"include_ing\" to a CSV of up to three\
+      \ ingredients, e.g.:include_ing=mustard,chicken,beef%20tips\r\n            To\
+      \ explicitly exclude an ingredient in your search, set the parameter \"exclude_ing\"\
+      \ to a CSV of up to three ingredients.\r\n            All searches must contain\
+      \ the paging parameters pg and rpp, which are integers, and represent the page\
+      \ number (1-based) and results per page (rpp).\r\n            So, to get the\
+      \ third page of a result set paged with 25 recipes per page, you'd pass pg=3&amp;rpp=25\r\
+      \n            If you'd like to target searches to just a single target user's\
+      \ recipes, set userId=the target userId (number).\r\n            Or, you can\
+      \ set username=theirusername\r\n            vtn;vgn;chs;glf;ntf;dyf;sff;slf;tnf;wmf;rmf;cps\r\
+      \n            cuisine\r\n            photos\r\n            filter=added,try,favorites,myrecipes\\\
+      r\\n\\r\\n\r\n            folder=FolderNameCaseSensitive\r\n            coll=ID\
+      \ of Collection"
+    queryParameters:
+      any_kw?:
+        type: string
+        description: Search anywhere in the recipe for the keyword
+        displayName: any_kw
+      folder?:
+        type: string
+        description: Search in a specific folder name for the authenticated user
+        displayName: folder
+      coll?:
+        type: integer
+        description: Limit to a collection ID number
+        displayName: coll
+        format: int32
+      filter?:
+        type: string
+        description: optionally set to either "myrecipes", "try", "favorites","added" to filter to just the authenticated user's recipe set
+        displayName: filter
+      title_kw?:
+        type: string
+        description: Search just in the recipe title for the keyword
+        displayName: title_kw
+      userId?:
+        type: integer
+        description: Set the target userid to search their public recipes
+        displayName: userId
+        format: int32
+      username?:
+        type: string
+        description: Set the target username to search their public recipes
+        displayName: username
+      token?:
+        type: string
+        displayName: token
+      photos?:
+        type: boolean
+        description: if set to true, limit search results to photos only
+        displayName: photos
+      boostmine?:
+        type: boolean
+        description: if set to true, boost my own recipes in my folders so they show up high in the list (at the expense of other sort orders)
+        displayName: boostmine
+      include_cat?:
+        type: string
+        description: integer of the subcategory you'd like to limit searches to (see the /recipe/categories endpoint for available id numbers). For instance, 58 is "Main Dish &gt; Casseroles".
+        displayName: include_cat
+      exclude_cat?:
+        type: string
+        description: like include_cat, set this to an integer to exclude a specific category
+        displayName: exclude_cat
+      include_primarycat?:
+        type: string
+        description: csv indicating up to three top-level categories -- valid values are [appetizers,bread,breakfast,desserts,drinks,maindish,salads,sidedish,soups,marinades,other]
+        displayName: include_primarycat
+      include_ing?:
+        type: string
+        description: A CSV representing up to 3 ingredients to include, e.g., tomatoes,corn%20%starch,chicken
+        displayName: include_ing
+      exclude_ing?:
+        type: string
+        description: A CSV representing up to 3 ingredients to exclude  (Powersearch-capable plan required)
+        displayName: exclude_ing
+      cuisine?:
+        type: string
+        description: Limit to a specific cuisine. Cooks can enter anything free-form, but the few dozen preconfigured values are Afghan,African,American,American-South,Asian,Australian,Brazilian,Cajun,Canadian,Caribbean,Chinese,Croatian,Cuban,Dessert,Eastern European,English,French,German,Greek,Hawaiian,Hungarian,India,Indian,Irish,Italian,Japanese,Jewish,Korean,Latin,Mediterranean,Mexican,Middle Eastern,Moroccan,Polish,Russian,Scandanavian,Seafood,Southern,Southwestern,Spanish,Tex-Mex,Thai,Vegan,Vegetarian,Vietnamese
+        displayName: cuisine
+      db?:
+        type: string
+        displayName: db
+      userset?:
+        type: string
+        description: If set to a given username, it'll force the search to filter to just that username
+        displayName: userset
+      rpp?:
+        type: integer
+        description: integer; results per page
+        displayName: rpp
+        format: int32
+      pg?:
+        type: integer
+        description: 'integer: the page number'
+        displayName: pg
+        format: int32
+      vtn?:
+        type: integer
+        description: when set to 1, limit to vegetarian (Powersearch-capable plan required)
+        displayName: vtn
+        format: int32
+      vgn?:
+        type: integer
+        description: when set to 1, limit to vegan (Powersearch-capable plan required)
+        displayName: vgn
+        format: int32
+      chs?:
+        type: integer
+        description: when set to 1, limit to contains-cheese (Powersearch-capable plan required)
+        displayName: chs
+        format: int32
+      glf?:
+        type: integer
+        description: when set to 1, limit to gluten-free (Powersearch-capable plan required)
+        displayName: glf
+        format: int32
+      ntf?:
+        type: integer
+        description: when set to 1, limit to nut-free (Powersearch-capable plan required)
+        displayName: ntf
+        format: int32
+      dyf?:
+        type: integer
+        description: when set to 1, limit to dairy-free (Powersearch-capable plan required)
+        displayName: dyf
+        format: int32
+      sff?:
+        type: integer
+        description: when set to 1, limit to seafood-free (Powersearch-capable plan required)
+        displayName: sff
+        format: int32
+      slf?:
+        type: integer
+        description: when set to 1, limit to shellfish-free (Powersearch-capable plan required)
+        displayName: slf
+        format: int32
+      tnf?:
+        type: integer
+        description: when set to 1, limit to tree-nut free (Powersearch-capable plan required)
+        displayName: tnf
+        format: int32
+      wmf?:
+        type: integer
+        description: when set to 1, limit to white-meat free (Powersearch-capable plan required)
+        displayName: wmf
+        format: int32
+      rmf?:
+        type: integer
+        description: when set to 1, limit to red-meat free (Powersearch-capable plan required)
+        displayName: rmf
+        format: int32
+      cps?:
+        type: integer
+        description: when set to 1, recipe contains pasta, set to 0 means contains no pasta (Powersearch-capable plan required)
+        displayName: cps
+        format: int32
+    responses:
+      200:
+        description: OK
+        body:
+          application/json:
+            type: BigOven_Model_API2_RecipeSearchResult
+          text/json:
+            type: BigOven_Model_API2_RecipeSearchResult
+          application/xml:
+            type: BigOven_Model_API2_RecipeSearchResult
+          text/xml:
+            type: BigOven_Model_API2_RecipeSearchResult

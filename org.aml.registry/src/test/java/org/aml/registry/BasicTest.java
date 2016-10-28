@@ -13,12 +13,15 @@ public class BasicTest {
 
 	@Test
 	public void test() {
+		String user = System.getenv().get("GIT_USER");
+		String password = System.getenv().get("GIT_PASSWORD");
 		Registry apply = new ResolveRegistry().apply(
-				new LoadRegistry("https://raw.githubusercontent.com/apiregistry/registry/master/registry.json")
-						.get());
-		new PublishRegistry(
-				new CommitterInfo("petrochenko-pavel-a", "life150482", "pavel@onpositive.com", "Petrochenko Pavel"),
-				new RepositoryId("apiregistry", "registry")).accept(apply);
+				new LoadRegistry("https://raw.githubusercontent.com/apiregistry/registry/master/registry.json").get());
+		if (user != null && password != null) {
+			new PublishRegistry(
+					new CommitterInfo(user, password, "pavel@onpositive.com", "Petrochenko Pavel"),
+					new RepositoryId("apiregistry", "registry")).accept(apply);
+		}
 		System.out.println(new BuildStat().apply(apply));
 	}
 

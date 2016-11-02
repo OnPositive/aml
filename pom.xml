@@ -159,6 +159,7 @@
 		<module>apigurus</module>
 		<module>org.aml.swagger.io</module>
 		<module>org.aml.registry</module>
+		<module>org.aml.raml08210</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

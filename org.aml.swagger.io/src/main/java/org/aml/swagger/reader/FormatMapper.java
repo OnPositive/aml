@@ -16,14 +16,17 @@ class FormatMapper{
 				format = null;
 				type = "date-time";
 			} else if (format.equals("uuid")) {
+				type="commons.uuid";
 				format = null;
 			} else if (format.equals("file")) {
 				format = null;
 			} else if (format.equals("password")) {
+				type="commons.password";
 				format = null;
 			} else if (format.equals("string")) {
 				format = null;
 			} else if (format.equals("url")) {
+				type="commons.url";
 				format = null;
 			} else if (format.equals("date-time-rfc1123")) {
 				format = null;
@@ -44,22 +47,26 @@ class FormatMapper{
 				format = null;
 			}
 			else if (format.equals("uuid")) {
+				type="commons.uuid";
 				format = null;
 			} else if (format.equals("string")) {
 				format = null;
 			} else if (format.equals("password")) {
+				type="commons.password";
 				format = null;
 			} else if (format.equals("non-iso-duration")) {
 				format = null;
 			} else if (format.equals("duration")) {
 				format = null;
 			} else if (format.equals("url")) {
+				type="commons.url";
 				format = null;
 			} else if (format.equals("date-time-rfc1123")) {
 				format = null;
 			} else if (format.equals("unixtime")) {
 				format = null;
 			} else if (format.equals("base64url")) {
+				type="commons.base64url";
 				format = null;
 			} else if (format.equals("byte")) {
 				format = null;
@@ -74,6 +81,7 @@ class FormatMapper{
 				format = null;
 			}
 			else if (format != null && format.equals("base64url")) {
+				type="commons.base64url";
 				format = null;
 			}
 			else if (format != null && format.equals("unixtime")) {
@@ -120,6 +128,7 @@ class FormatMapper{
 				format=null;
 			}
 			else if (format.equals("email")){
+				type="commons.email";
 				format=null;
 			}
 			else if (format.equals("date-format")){
@@ -135,6 +144,7 @@ class FormatMapper{
 				format=null;
 			}
 			else if (format.equals("countrycode")){
+				type="commons.countrycode";
 				format=null;
 			}
 			else if (format.equals("timezone")){
@@ -147,9 +157,11 @@ class FormatMapper{
 				format=null;
 			}
 			else if (format.equals("ipv4")){
+				type="commons.ipv4";
 				format=null;
 			}
 			else if (format.equals("ipv6")){
+				type="commons.ipv6";
 				format=null;
 			}
 			else if (format.equals("binary")){
@@ -159,6 +171,7 @@ class FormatMapper{
 				format=null;
 			}
 			else if (format.equals("json")){
+				type="commons.json";
 				format=null;
 			}
 			else if (format!=null){

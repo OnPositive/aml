@@ -8,4 +8,6 @@ public interface ITypeLibrary {
 	ITypeRegistry annotationTypes();
 	
 	List<? extends IAnnotation> annotations();
+	
+	public String getSourceLocation();
 }

@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.nio.channels.IllegalSelectorException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.aml.apimodel.impl.ActionImpl;
 import org.aml.apimodel.impl.ApiImpl;
@@ -46,6 +48,7 @@ import org.raml.v2.api.loader.UrlResourceLoader;
 import org.raml.yagi.framework.util.DateType;
 import org.raml.yagi.framework.util.DateUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -126,8 +129,23 @@ public class SwaggerReader {
 						flow="authorization_code";
 					}
 					sd.settings().put("authorizationGrants", new String[] { flow });
+					ArrayList<String>scopeDescriptions=new ArrayList<>();
 					if (od.getScopes()!=null){
-						sd.settings().put("scopes", new ArrayList<>(od.getScopes().keySet()));
+						Set<String> keySet = od.getScopes().keySet();
+						sd.settings().put("scopes", new ArrayList<>(keySet));
+						boolean hasDescr=true;
+						for (String k:keySet){
+							String e = od.getScopes().get(k);
+							if (e!=null&&e.trim().length()>0){
+							scopeDescriptions.add(e);
+							}
+							else{
+								hasDescr=false;
+							}
+						}
+						if (hasDescr&&scopeDescriptions.size()>0){
+							sd.annotations().add(new Annotation("commons.OathScopeDescriptions", scopeDescriptions));
+						}
 					}
 				} else if (securitySchemeDefinition instanceof ApiKeyAuthDefinition) {
 					ApiKeyAuthDefinition ak = (ApiKeyAuthDefinition) securitySchemeDefinition;
@@ -303,6 +321,25 @@ public class SwaggerReader {
 				}
 			}
 			orCreateMethod.responses().add(impl);
+		}
+		Object object = op.getVendorExtensions().get("x-ms-pageable");
+		if (object!=null){
+			if (object instanceof ObjectNode){
+				ObjectNode nm=(ObjectNode) object;
+				LinkedHashMap<String, Object>vl=new LinkedHashMap<>();
+				JsonNode value = nm.get("nextLinkName");
+				String asText = value.asText();
+				if (asText!=null&&!asText.equals("null")){
+					vl.put("nextLinkName", asText);
+					object=vl;
+				}
+				else{
+					object=null;
+				}
+			}
+			if (object!=null){
+				orCreateMethod.annotations().add(new Annotation("extras.Pagination", object));
+			}
 		}
 	}
 
@@ -514,7 +551,7 @@ public class SwaggerReader {
 	public AbstractType propertyToType(Property p) {
 		String type;
 		AbstractType range = null;
-
+		
 		if (p instanceof RefProperty) {
 			RefProperty rm = (RefProperty) p;
 			RefFormat refFormat = rm.getRefFormat();
@@ -625,6 +662,9 @@ public class SwaggerReader {
 				}
 			}
 		}
+		if (p.getReadOnly()!=null&&p.getReadOnly()){
+			range.addMeta(new Annotation("extras.Readonly",true ));			
+		}
 		return range;
 	}
 
@@ -655,7 +695,7 @@ public class SwaggerReader {
 			if (v>10000000){
 				return ;
 			}
-			if (v<10000000){
+			if (v<-10000000){
 				return ;
 			}
 		}
@@ -670,6 +710,7 @@ public class SwaggerReader {
 	static {
 		maps.put("string", BuiltIns.STRING);
 		maps.put(null, BuiltIns.OBJECT);
+		maps.put("null", BuiltIns.OBJECT);
 		maps.put("date-time", BuiltIns.DATETIME);
 		maps.put("datetime", BuiltIns.DATETIME);
 		maps.put("number", BuiltIns.NUMBER);
@@ -681,8 +722,14 @@ public class SwaggerReader {
 	}
 
 	AbstractType base(String type) {
+		
 		if (maps.containsKey(type)) {
 			return maps.get(type);
+		}
+		if (type.startsWith("commons.")){
+			AbstractType derive = TypeOps.derive(type,BuiltIns.STRING);
+			maps.put(type, derive);
+			return derive;
 		}
 		throw new IllegalStateException();
 	}

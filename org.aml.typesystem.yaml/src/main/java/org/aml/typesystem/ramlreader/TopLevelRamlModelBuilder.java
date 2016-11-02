@@ -98,6 +98,7 @@ public class TopLevelRamlModelBuilder {
 				Node libraryContent = link.getRefNode();
 				if (libraryContent != null) {
 					LibraryImpl impl = buildUsesMaps(libraryContent);
+					impl.setSourceLocation(link.getRefName());
 					result.usesMap.put(namespace, impl);
 				}
 			}
@@ -578,7 +579,7 @@ public class TopLevelRamlModelBuilder {
 		TopLevelRamlImpl n = buildUsesMaps(node);
 		buildTypes(n);
 		if (header.getFragment() != RamlFragment.Library) {
-			ApiImpl impl = new ApiImpl(n);
+			ApiImpl impl = new ApiImpl(n);			
 			return impl;
 		}
 		return n;
@@ -611,11 +612,13 @@ public class TopLevelRamlModelBuilder {
 		List<ValidationResult> validationResults = buildApi.getValidationResults();
 		try{
 		TopLevelRamlImpl build2 = build(build, header);
+		build2.setSourceLocation(readerLocation);
 		build2.setValidationResults(validationResults);
 		return build2;
 		}catch (Exception e) {
 			TopLevelRamlImpl build2 = new TopLevelRamlImpl(build);
 			build2.setValidationResults(validationResults);
+			build2.setSourceLocation(readerLocation);
 			e.printStackTrace();
 			return build2;
 		}

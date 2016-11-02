@@ -19,7 +19,7 @@ public class TopLevelModelImpl extends AnnotableImpl implements TopLevelModel{
 	protected TypeRegistryImpl types=new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected TypeRegistryImpl atypes=new TypeRegistryImpl(BuiltIns.getBuiltInTypes());
 	protected LinkedHashMap<String, Library>uses=new LinkedHashMap<>();
-
+	protected String sourceLocation;
 	protected LinkedHashMap<String,String>usesLocations=new LinkedHashMap<>();
 	protected ArrayList<Trait>traits=new ArrayList<>();
 	public ArrayList<Trait> getTraits() {
@@ -58,6 +58,15 @@ public class TopLevelModelImpl extends AnnotableImpl implements TopLevelModel{
 	@Override
 	public List<SecurityScheme> securityDefinitions() {
 		return securityDefinitions;
+	}
+
+	@Override
+	public String getSourceLocation() {
+		return sourceLocation;
+	}
+	
+	public void setSourceLocation(String location){
+		this.sourceLocation=location;
 	}
 	
 }

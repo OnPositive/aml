@@ -47,9 +47,9 @@ public class JSONSchemaParser {
 	public static final IFacetHandler UNIQUE_ITEMS = new SimpleFacetHandler(UniqueItems.class);
 	public static final IFacetHandler $REF = new SkipFacetHandler("$ref");
 	public static final IFacetHandler ENUM = new EnumHandler();
-	public static final IFacetHandler ONEOF = new SkipFacetHandler("oneOf");
-	public static final IFacetHandler ANYOF = new SkipFacetHandler("anyOf");
-	public static final IFacetHandler ALLOF = new SkipFacetHandler("allOf");
+	//public static final IFacetHandler ONEOF = new SkipFacetHandler("oneOf");
+	//public static final IFacetHandler ANYOF = new SkipFacetHandler("anyOf");
+	//public static final IFacetHandler ALLOF = new SkipFacetHandler("allOf");
 	
 	public static final IFacetHandler readOnly = new SkipFacetHandler("readOnly");
 	
@@ -57,7 +57,7 @@ public class JSONSchemaParser {
 	static IFacetHandler[] allHandlers = new IFacetHandler[] { new TitleHandler(), new DescriptionHandler(),
 			new FormatHandler(), new PropertiesHandler(), new IdHandler(), new TypeHandler(), MINIMUM, MAXIMUM, PATTERN,
 			MINLENGTH, MAXLENGTH, MINITEMS, MAXITEMS, REQUIRED, $SCHEMA, DEFINITIONS, UNIQUE_ITEMS, MINPROPERTIES,
-			MAXPROPERTIES ,ITEMS,$REF,ADDITIONALPROPERTIES,ENUM,ONEOF,ANYOF,ALLOF,DEFAULT,ENUM_DESCRIPTIONS,new SkipFacetHandler("annotations"),readOnly};
+			MAXPROPERTIES ,ITEMS,$REF,ADDITIONALPROPERTIES,ENUM,DEFAULT,ENUM_DESCRIPTIONS,new AnnotationsHandler(),new ReadOnlyHandler()};
 
 	static {
 		for (IFacetHandler h : allHandlers) {

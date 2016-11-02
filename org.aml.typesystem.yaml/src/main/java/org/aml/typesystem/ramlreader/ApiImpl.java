@@ -17,7 +17,10 @@ public class ApiImpl extends TopLevelRamlImpl implements Api{
 
 	protected ApiImpl(TopLevelRamlImpl n) {
 		super(n);
+		
 	}
+
+	
 
 	@Override
 	public List<Resource> resources() {

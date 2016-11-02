@@ -3,6 +3,7 @@ package org.aml.typesystem.meta.facets;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.IAnnotation;
+import org.aml.typesystem.ITypeLibrary;
 import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.Status;
 import org.aml.typesystem.beans.ISimpleFacet;
@@ -115,6 +116,7 @@ public class Annotation extends TypeInformation implements ISimpleFacet,IAnnotat
 	}
 
 	public AbstractType annotationType() {
+		
 		return type;
 	}
 }

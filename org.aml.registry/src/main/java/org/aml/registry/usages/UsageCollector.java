@@ -48,6 +48,9 @@ public class UsageCollector {
 				visitResource(x);
 			});
 		}
+		mdl.securityDefinitions().forEach(x->{
+			visitAnnotations(x);
+		});
 	}
 
 	private void pushEntry(String kind, String id) {

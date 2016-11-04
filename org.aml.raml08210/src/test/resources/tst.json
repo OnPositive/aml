@@ -1,0 +1,648 @@
+{
+  "name" : "Old APIS Registry",
+  "title" : "Registry",
+  "version" : "v1",
+  "apis" : [ {
+    "name" : "\"Mandrill API\"",
+    "org" : "Mandrill",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Parse",
+    "org" : "Parse",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/parse.raml",
+    "kind" : null
+  }, {
+    "name" : "Quizlet",
+    "org" : "Quizlet",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/quizlet.raml",
+    "kind" : null
+  }, {
+    "name" : "Zuora",
+    "org" : "Zuora",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Zuora/logo.png",
+    "location" : "https://github.com/raml-apis/production/zuora.raml",
+    "kind" : null
+  }, {
+    "name" : "Postmark",
+    "org" : "Postmark",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "\"Fitbit API\"",
+    "org" : "Fitbit",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "PagerDuty Integration",
+    "org" : "PagerDuty",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/integration.raml",
+    "kind" : null
+  }, {
+    "name" : "PagerDuty",
+    "org" : "PagerDuty",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/pagerDuty.raml",
+    "kind" : null
+  }, {
+    "name" : "Jobvite API v1",
+    "org" : "Jobvite",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Rapid API",
+    "org" : "EwayRapid",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "AdhereTech External API",
+    "org" : "AdhereTech",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Zendesk",
+    "org" : "Zendesk",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Zendesk/logo.png",
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Yammer",
+    "org" : "Yammer",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Yammer/logo.png",
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Facebook",
+    "org" : "Facebook",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Facebook Video Upload",
+    "org" : "Facebook",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/postVideo.raml",
+    "kind" : null
+  }, {
+    "name" : "FlightStats",
+    "org" : "FlightStats",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Flight Status And Track",
+    "org" : "FlightStats",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/flightStatusAndTrack.raml",
+    "kind" : null
+  }, {
+    "name" : "Xero.com API",
+    "org" : "Xero",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/xeroAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "Google Calendar",
+    "org" : "GoogleCalendar",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/GoogleCalendar/logo.png",
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "StormPath",
+    "org" : "Stormpath",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "23andMe",
+    "org" : "23andMe",
+    "version" : "raml-org-staging",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/staging/api.raml",
+    "kind" : null
+  }, {
+    "name" : "23andMe Reseller",
+    "org" : "23andMe",
+    "version" : "raml-org-staging",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/staging/reseller.raml",
+    "kind" : null
+  }, {
+    "name" : "Box",
+    "org" : "Box",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/boxAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "Box.com upload API",
+    "org" : "Box",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/boxUploadAPI.raml",
+    "kind" : null
+  },  {
+    "name" : "LinkedIn",
+    "org" : "LinkedIn",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/LinkedIn/logo.png",
+    "location" : "https://github.com/raml-apis/production/linkedin.raml",
+    "kind" : null
+  }, {
+    "name" : "Uber",
+    "org" : "Uber",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Uber user activity",
+    "org" : "Uber",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/userActivity.raml",
+    "kind" : null
+  }, {
+    "name" : "Slack",
+    "org" : "Slack",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Slack/logo.png",
+    "location" : "https://github.com/raml-apis/raml1.0/slack.raml",
+    "kind" : null
+  }, {
+    "name" : "Chatter",
+    "org" : "SalesforceChatter",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Office 365",
+    "org" : "Microsoft",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Files REST API in Office 365",
+    "org" : "Microsoft",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/fileAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "Magento",
+    "org" : "Magento",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "WordPress API",
+    "org" : "Wordpress",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/wordpress.raml",
+    "kind" : null
+  }, {
+    "name" : "Instagram",
+    "org" : "Instagram",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Twilio API",
+    "org" : "Twilio",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Twilio/logo.png",
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Zillow",
+    "org" : "Zillow",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "StackExchange",
+    "org" : "StackExchange",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/StackExchange/logo.png",
+    "location" : "https://github.com/raml-apis/production/stackExchange.raml",
+    "kind" : null
+  }, {
+    "name" : "XKCD",
+    "org" : "XKCD",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/XKCD/logo.png",
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Grooveshark API",
+    "org" : "GrooveShark",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/grooveshark.raml",
+    "kind" : null
+  }, {
+    "name" : "GitHub",
+    "org" : "GitHub",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "GitHub Upload",
+    "org" : "GitHub",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/uploadsApi.raml",
+    "kind" : null
+  }, {
+    "name" : "Smartsheet",
+    "org" : "SmartSheet",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Twitter API",
+    "org" : "Twitter",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Twitter Streaming API",
+    "org" : "Twitter",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/userstreamApi.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Compute API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/computeAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Database Service API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/databasesAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Data Processing API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/dataprocessingAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Identity API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/identityAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Identity API extensions",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/identityExtensionsAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Image Service API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/imageAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Networking API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/netconnAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Object Storage API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/objectAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Orchestration API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/orchestrationAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Telemetry API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/telemetryAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "OpenStack Block Storage API",
+    "org" : "OpenStack",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/volumeAPI.raml",
+    "kind" : null
+  }, {
+    "name" : "Healthcare",
+    "org" : "HealthCare",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/HealthCare/logo.png",
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Squareup",
+    "org" : "Squareup",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/squareup.raml",
+    "kind" : null
+  }, {
+    "name" : "Pivotal Tracker",
+    "org" : "PivotalTracker",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "PivotalTracker Attachment Download",
+    "org" : "PivotalTracker",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/attachmentDownload.raml",
+    "kind" : null
+  }, {
+    "name" : "Eloqua",
+    "org" : "Eloqua",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Azure Table Storage",
+    "org" : "AzureTableStorage",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/tablestorage.raml",
+    "kind" : null
+  }, {
+    "name" : "Elasticsearch",
+    "org" : "Elasticsearch",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Stripe",
+    "org" : "Stripe",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Stripe/logo.png",
+    "location" : "https://github.com/raml-apis/production/stripe.raml",
+    "kind" : null
+  }, {
+    "name" : "GeoNames",
+    "org" : "Geonames",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Geonames/logo.png",
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Slideshare",
+    "org" : "SlideShare",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/SlideShare/logo.png",
+    "location" : "https://github.com/raml-apis/production/slideshare.raml",
+    "kind" : null
+  }, {
+    "name" : "AccuWeather API",
+    "org" : "AccuWeather",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/accuWeather.raml",
+    "kind" : null
+  }, {
+    "name" : "Bufferapp",
+    "org" : "Bufferapp",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "SalesForce",
+    "org" : "Salesforce",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/salesforce.raml",
+    "kind" : null
+  }, {
+    "name" : "Pay Pal API",
+    "org" : "PayPal",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Meetup",
+    "org" : "Meetup",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/meetup.raml",
+    "kind" : null
+  }, {
+    "name" : "Twitch",
+    "org" : "Twitch",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Twitch/logo.png",
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "NewRelic",
+    "org" : "NewRelic",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/NewRelic/logo.png",
+    "location" : "https://github.com/raml-apis/production/newRelic.raml",
+    "kind" : null
+  }, {
+    "name" : "Bitly",
+    "org" : "Bitly",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/Bitly/logo.png",
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Fuel Economy",
+    "org" : "FuelEconomy",
+    "version" : "raml-org-raml1.0",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/raml1.0/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Jira",
+    "org" : "Jira",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/api.raml",
+    "kind" : null
+  }, {
+    "name" : "Jira Authorization API",
+    "org" : "Jira",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/authApi.raml",
+    "kind" : null
+  }, {
+    "name" : "Weather Underground",
+    "org" : "WeatherUnderground",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/wunderground.raml",
+    "kind" : null
+  }, {
+    "name" : "Weather Underground AutoComplete",
+    "org" : "WeatherUnderground",
+    "version" : "raml-org-production",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/production/wundergroundAutocompleteApi.raml",
+    "kind" : null
+  }, {
+    "name" : "Flickr API",
+    "org" : "Flickr",
+    "version" : "raml-org-master",
+    "description" : null,
+    "icon" : null,
+    "location" : "https://github.com/raml-apis/master/flickr.raml",
+    "kind" : null
+  }, {
+    "name" : "BlockScore",
+    "org" : "BlockScore",
+    "version" : "raml-org-staging",
+    "description" : null,
+    "icon" : "https://raw.githubusercontent.com/apiregistry/registry/master/projects/BlockScore/logo.png",
+    "location" : "https://github.com/raml-apis/staging/api.raml",
+    "kind" : null
+  }  ],
+  "libraries" : [ ],
+  "includes" : [ ]
+}

@@ -3,6 +3,8 @@ package org.aml.registry.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aml.registry.operations.StoreRegistry;
+
 public class Registry {
 
 	protected String name="Registry";
@@ -55,5 +57,9 @@ public class Registry {
 		result.addAll(libraries);
 		result.addAll(apis);
 		return result;
+	}
+	
+	public String asString(){
+		return new StoreRegistry().apply(this);
 	}
 }

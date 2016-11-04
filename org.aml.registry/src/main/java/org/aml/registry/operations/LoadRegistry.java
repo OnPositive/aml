@@ -1,6 +1,8 @@
 package org.aml.registry.operations;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.function.Supplier;
 
@@ -31,5 +33,14 @@ public class LoadRegistry implements Supplier<Registry>{
 		}
 	}
 
+	
+	public static Registry load(InputStream r) {
+		try{
+		return JacksonUtils.getReader().forType(Registry.class)
+		.readValue(new InputStreamReader(r));
+		}catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
 	
 }

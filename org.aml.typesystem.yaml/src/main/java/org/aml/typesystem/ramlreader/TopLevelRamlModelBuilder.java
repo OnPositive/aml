@@ -1,8 +1,11 @@
 package org.aml.typesystem.ramlreader;
 
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +27,7 @@ import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.FacetRestriction;
 import org.aml.typesystem.meta.restrictions.IRangeRestriction;
 import org.aml.typesystem.meta.restrictions.RestrictionsList;
+import org.mozilla.javascript.ast.ErrorNode;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.loader.CompositeResourceLoader;
@@ -112,6 +116,11 @@ public class TopLevelRamlModelBuilder {
 		}));
 		value = getValue(node, SCHEMAS);
 		value.ifPresent(x -> x.getChildren().forEach(l -> {
+			if (l instanceof SYObjectNode){
+				//this is a error node;
+				SYObjectNode mm=(SYObjectNode) l;
+				l=mm.getChildren().get(0);
+			}
 			KeyValueNode t = (KeyValueNode) l;
 			// result.topLevelTypes.put(t.getName(), BuiltIns.NOTHING);
 			result.typeDecls.put(((StringNode) t.getKey()).getLiteralValue(), t.getValue());
@@ -314,6 +323,9 @@ public class TopLevelRamlModelBuilder {
 			}
 			List<Node> facets = ts.getChildren();
 			for (Node node : facets) {
+				if (node instanceof ErrorNode){
+					continue;
+				}
 				if (node instanceof FacetNode) {
 					FacetNode n = (FacetNode) node;
 					if (n.getName().equals(ITEMS)) {
@@ -352,14 +364,17 @@ public class TopLevelRamlModelBuilder {
 						if (object != null) {
 							FacetRestriction<?> build = RestrictionsList.build(n.getName(), object);
 							if (build==null){
-								System.out.println("A");
+								continue;
 							}
 							result.addMeta(build);
 						}
 					}
 				} else {
+					if (!(node instanceof KeyValueNode)){
+						continue;
+					}
 					KeyValueNode kv = (KeyValueNode) node;
-					SimpleTypeNode b = (SimpleTypeNode) kv.getKey();
+					SimpleTypeNode<?> b = (SimpleTypeNode<?>) kv.getKey();
 					String literalValue = b.getLiteralValue();
 					if (literalValue != null && literalValue.equals(REQUIRED)) {
 						Object object = toObject(kv.getValue());
@@ -416,34 +431,38 @@ public class TopLevelRamlModelBuilder {
 						}
 					}
 					if (facet instanceof XMLFacet) {
-						Object object = toObject(kv.getValue());
-						XMLFacet xml = (XMLFacet) facet;
-						if (object instanceof HashMap<?, ?>) {
-							HashMap<String, Object> rs = (HashMap<String, Object>) object;
-							xml.setName((String) rs.get("name"));
-							if (rs.containsKey("attribute")) {
-								xml.setAttribute((Boolean) rs.get("attribute"));
-							}
-							if (rs.containsKey("wrapped")) {
-								xml.setWrapped(((Boolean) rs.get("wrapped")));
-							}
-							if (rs.containsKey("namespace")) {
-								xml.setNamespace((((String) rs.get("namespace"))));
-							}
-							if (rs.containsKey("prefix")) {
-								xml.setNamespace((((String) rs.get("prefix"))));
-							}
-							if (rs.containsKey("order")) {
-								xml.setOrder(((List) rs.get("order")));
-							}
-						}
-						result.addMeta(xml);
+						proceedXML(result, kv, facet);
 					}
 				}
 			}
 			return result;
 		}
 		return null;
+	}
+
+	public void proceedXML(AbstractType result, KeyValueNode kv, TypeInformation facet) {
+		Object object = toObject(kv.getValue());
+		XMLFacet xml = (XMLFacet) facet;
+		if (object instanceof HashMap<?, ?>) {
+			HashMap<String, Object> rs = (HashMap<String, Object>) object;
+			xml.setName((String) rs.get("name"));
+			if (rs.containsKey("attribute")) {
+				xml.setAttribute((Boolean) rs.get("attribute"));
+			}
+			if (rs.containsKey("wrapped")) {
+				xml.setWrapped(((Boolean) rs.get("wrapped")));
+			}
+			if (rs.containsKey("namespace")) {
+				xml.setNamespace((((String) rs.get("namespace"))));
+			}
+			if (rs.containsKey("prefix")) {
+				xml.setNamespace((((String) rs.get("prefix"))));
+			}
+			if (rs.containsKey("order")) {
+				xml.setOrder(((List) rs.get("order")));
+			}
+		}
+		result.addMeta(xml);
 	}
 
 	private void parseProperties(TopLevelRamlImpl topLevelRamlImpl, boolean register, AbstractType result,
@@ -596,7 +615,23 @@ public class TopLevelRamlModelBuilder {
 
 	public TopLevelRamlImpl build(String ramlBuffer, ResourceLoader loader, String readerLocation) {
 		CompositeResourceLoader rs = new CompositeResourceLoader(loader, new UrlResourceLoader());
-		Node build = new RamlBuilder().build(ramlBuffer, rs, readerLocation);
+		Node build=null;
+		try{
+		build = new RamlBuilder().build(ramlBuffer, rs, readerLocation);
+		}catch (Exception e) {
+			TopLevelRamlImpl build2 = new TopLevelRamlImpl(build);
+			build2.setValidationResults(Collections.singletonList(new ValidationResult() {
+				
+				@Override
+				public String getMessage() {
+					StringWriter out = new StringWriter();
+					e.printStackTrace(new PrintWriter(out));
+					return "RAML 1.0 parser was broken with exception:"+e.getMessage()+"\r\n"+out.toString();
+				}
+			}));
+			build2.setSourceLocation(readerLocation);
+			return build2;
+		}
 		RamlModelResult buildApi = new RamlModelBuilder(loader).buildApi(ramlBuffer, readerLocation);
 		RamlHeader header = null;
 		try {

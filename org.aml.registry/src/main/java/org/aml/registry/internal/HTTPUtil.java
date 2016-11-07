@@ -2,6 +2,8 @@ package org.aml.registry.internal;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -16,6 +18,11 @@ public class HTTPUtil {
 
 	static HttpRequestFactory createRequestFactory = new NetHttpTransport().createRequestFactory();
 	
+	static Executor exect=Executors.newFixedThreadPool(100);
+	static{
+		
+	}
+	
 	public static String readString(String url) throws IOException {
 		HttpRequest buildGetRequest;	
 		buildGetRequest = createRequestFactory.buildGetRequest(new GenericUrl(url));
@@ -26,7 +33,8 @@ public class HTTPUtil {
 	public static Future<String> readStringAsync(String url) throws IOException {
 		HttpRequest buildGetRequest;	
 		buildGetRequest = createRequestFactory.buildGetRequest(new GenericUrl(url));
-		final Future<HttpResponse>rs=buildGetRequest.executeAsync();
+		buildGetRequest.setNumberOfRetries(5);
+		final Future<HttpResponse>rs=buildGetRequest.executeAsync(exect);
 		Future<String>ts=new Future<String>() {
 
 			public boolean cancel(boolean mayInterruptIfRunning) {

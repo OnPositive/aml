@@ -225,6 +225,9 @@ public class TopLevelRamlModelBuilder {
 			if (resolveType == null && typeName.equals("date")) {
 				return BuiltIns.DATE;
 			}
+			if (resolveType==null){
+				return BuiltIns.UNKNOWN_TYPE;
+			}
 			return resolveType;
 		}
 		if (tn instanceof TypeDeclarationNode) {

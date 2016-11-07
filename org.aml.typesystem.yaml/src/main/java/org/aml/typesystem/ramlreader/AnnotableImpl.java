@@ -1,6 +1,7 @@
 package org.aml.typesystem.ramlreader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.aml.apimodel.Annotable;
@@ -27,7 +28,11 @@ public abstract class AnnotableImpl implements Annotable{
 	@Override
 	public List<Annotation> annotations() {
 		ArrayList<Annotation>results=new ArrayList<>();
+		
 		Node node=this.original;
+		if (node==null){
+			return Collections.emptyList();
+		}
 		if (node instanceof KeyValueNode){
 			KeyValueNode kv=(KeyValueNode) node;
 			node=kv.getValue();
@@ -69,6 +74,9 @@ public abstract class AnnotableImpl implements Annotable{
 
 	protected Node getChildNodeWithKey(String key) {
 		Node nodeo=this.original;
+		if (nodeo==null){
+			return null;
+		}
 		if (nodeo instanceof KeyValueNode){
 			KeyValueNode kv=(KeyValueNode) nodeo;
 			nodeo=kv.getValue();

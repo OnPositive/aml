@@ -48,10 +48,12 @@ public class IndexBuilder {
 		};
 		TopLevelRamlModelBuilder builder=new TopLevelRamlModelBuilder();
 		TopLevelRamlImpl build = builder.build(readFileToString,resourceLoader, url);
+		if (build!=null){
 		UsageCollector usageCollector = new UsageCollector();
 		usageCollector.visit(build);
 		LinkedHashMap<String, ArrayList<String>> results = usageCollector.getResults();
 		index.append(url,results);
+		}
 		
 	}
 	public static String buildIndex(Registry t) {

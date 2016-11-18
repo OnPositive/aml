@@ -21,4 +21,9 @@ public class BasicTest extends TestCase{
 		String store = new SwaggerWriter().store((Api) build);
 		System.out.println(store);
 	}
+	public void test2(){
+		TopLevelModel build = TopLevelRamlModelBuilder.build(StreamUtils.toString(BasicTest.class.getResourceAsStream("/apigateway-aws-overlay.raml")));
+		String store = new SwaggerWriter().store((Api) build);
+		System.out.println(store);
+	}
 }

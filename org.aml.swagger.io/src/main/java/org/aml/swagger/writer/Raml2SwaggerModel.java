@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-44
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
@@ -43,7 +42,7 @@ import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.StringProperty;
 
-public class SwaggerWriter2 extends GenericWriter {
+public class Raml2SwaggerModel extends GenericWriter {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Swagger convert(Api api) {

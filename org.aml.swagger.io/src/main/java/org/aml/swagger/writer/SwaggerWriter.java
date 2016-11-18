@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Annotable;
 import org.aml.apimodel.Api;
@@ -438,8 +439,6 @@ public class SwaggerWriter extends GenericWriter {
 	private LinkedHashMap<String, Object> dumpResource(Resource r) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		dumpParameters(r.allUriParameters(), mp);
-		// addScalarField("description", mp, r, r::description);
-		// addScalarField("displayName", mp, r, r::displayName);
 		for (Action a : r.methods()) {
 			mp.put(a.method(), dumpMethod(a));
 		}
@@ -447,16 +446,44 @@ public class SwaggerWriter extends GenericWriter {
 		return mp;
 	}
 
-	private LinkedHashMap<String, Object> dumpSecurityScheme(SecurityScheme r) {
+	private LinkedHashMap<String, Object> dumpSecurityScheme(SecurityScheme x) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
-		mp.put("type", r.type());
-		addScalarField("description", mp, r, r::description);
-		if (r.settings() != null && !r.settings().isEmpty()) {
-			mp.put("settings", r.settings());
+		if (x.type().equals("OAuth 2.0")) {			
+			mp.put("authorizationUrl",((String) x.settings().get("authorizationUri")));
+			mp.put("tokenUrl",((String) x.settings().get("accessTokenUri")));
+			String object = (String) x.settings().get("authorizationGrants");
+			// "implicit", "password", "application" or "accessCode".
+			// authorization_code, password, client_credentials, or implicit;
+			if (object != null) {
+				if (object.equals("authorization_code")) {
+					mp.put("flow","accessCode");
+				} else if (object.equals("implicit")) {
+					mp.put("flow","implicit");					
+				} else {
+					System.err.println("Can not map authorizationGrants:"+object);
+				}
+			}
+			List<?>scopes=(List<?>) x.settings().get("scopes");
+			if (scopes!=null&&!scopes.isEmpty()){
+				LinkedHashMap<String, String>scopesMap=new LinkedHashMap<>();
+				for (Object c:scopes){
+					scopesMap.put(c.toString(), "");
+				}
+				mp.put("scopes",scopesMap);
+			}
 		}
-		addAnnotations(r, mp);
+		else if (x.type().equals("Basic Authentication")){
+			mp.put("type","basic");
+		}
+		else if (x.type().equals("Pass Through")){
+			mp.put("type", "apiKey");
+		}	
+		else{
+			System.err.println("Can not accurately convert security scheme");
+		}
+		addScalarField("description", mp, x, x::description);
+		addAnnotations(x, mp);			
 		return mp;
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -477,21 +504,11 @@ public class SwaggerWriter extends GenericWriter {
 			} catch (MalformedURLException e) {
 				System.err.println("Mailformed base url:"+baseUrl);
 			}
-		}
-		// addScalarField("baseUri", toStore, model, model::getBaseUrl);
-		// if (!model.getUsesLocations().isEmpty()) {
-		// toStore.put("uses", model.getUsesLocations());
-		// }
+		}		
 		addAnnotations(model, toStore);
-		// dumpCollection("securitySchemes", toStore,
-		// model.securityDefinitions(), this::dumpSecurityScheme,
-		// s -> s.name());
-
+		dumpCollection("securityDefinitions", toStore,model.securityDefinitions(), this::dumpSecurityScheme, x->x.name());
 		dumpSecuredBy(toStore, model.getSecuredBy());
-
 		dumpTypes(model.types(), model.annotationTypes(), (LinkedHashMap<Object, Object>) (Map<?, ?>) toStore);
-
-		// String header = RAML_1_0_API;
 		LinkedHashMap<String, Object> paths = new LinkedHashMap<>();
 		dumpResources(model.allResources(), paths);
 		toStore.put("paths", paths);

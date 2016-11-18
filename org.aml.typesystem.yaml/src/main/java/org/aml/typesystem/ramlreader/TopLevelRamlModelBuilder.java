@@ -30,6 +30,7 @@ import org.aml.typesystem.meta.restrictions.RestrictionsList;
 import org.mozilla.javascript.ast.ErrorNode;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
+import org.raml.v2.api.loader.ClassPathResourceLoader;
 import org.raml.v2.api.loader.CompositeResourceLoader;
 import org.raml.v2.api.loader.ResourceLoader;
 import org.raml.v2.api.loader.UrlResourceLoader;
@@ -663,7 +664,7 @@ public class TopLevelRamlModelBuilder {
 	}
 
 	public static TopLevelModel build(String raml) {
-		final CompositeResourceLoader loader = new CompositeResourceLoader(new UrlResourceLoader());
+		final CompositeResourceLoader loader = new CompositeResourceLoader(new UrlResourceLoader(),new ClassPathResourceLoader());
 		final TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(raml, loader, "");
 		final RamlModelResult buildApi = new RamlModelBuilder(loader).buildApi(raml, "");
 		if (buildApi.hasErrors()) {

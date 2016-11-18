@@ -6,6 +6,7 @@ import java.util.List;
 import org.aml.apimodel.Api;
 import org.aml.apimodel.DocumentationItem;
 import org.aml.apimodel.Resource;
+import org.aml.apimodel.SecuredByConfig;
 import org.raml.v2.internal.impl.commons.nodes.ResourceNode;
 import org.raml.yagi.framework.nodes.Node;
 
@@ -19,8 +20,6 @@ public class ApiImpl extends TopLevelRamlImpl implements Api{
 		super(n);
 		
 	}
-
-	
 
 	@Override
 	public List<Resource> resources() {
@@ -54,5 +53,34 @@ public class ApiImpl extends TopLevelRamlImpl implements Api{
 			}
 		}
 		return docs;
+	}
+
+	@Override
+	public String description() {
+		return this.getChildWithKeyAs("description", String.class, null);
+	}
+
+	@Override
+	public List<String> getMediaType() {
+		return getStringList("mediatype");
+	}
+
+	@Override
+	public List<String> getProtocols() {
+		String key = "protocols";
+		return getStringList(key);
+	}
+
+	
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public List<SecuredByConfig> getSecuredBy() {
+		return new AbstractWrappedNodeImpl(this, null, this.original).securedBy();
+	}
+
+	@Override
+	public String getBaseUrl() {
+		return this.getChildWithKeyAs("baseUri", String.class, null);
 	}
 }

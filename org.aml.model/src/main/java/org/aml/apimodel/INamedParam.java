@@ -39,5 +39,7 @@ public interface INamedParam {
 
 	public TypeKind getTypeKind();
 
-	public AbstractType getTypeModel() ;
+	public AbstractType getTypeModel();
+	
+	public ParameterLocation location();
 }

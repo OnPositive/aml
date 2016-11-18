@@ -71,6 +71,20 @@ public abstract class AnnotableImpl implements Annotable{
 		}
 		return getNodeWithKey(key, cl, this.original);
 	}
+	public List<String> getStringList(String key) {
+		Node childNodeWithKey = this.getChildNodeWithKey(key);
+		ArrayList<String>results=new ArrayList<>();
+		if (childNodeWithKey!=null){
+			for (Node n:childNodeWithKey.getChildren()){
+				if (n instanceof SimpleTypeNode){
+					SimpleTypeNode<?>tn=(SimpleTypeNode<?>) n;
+					results.add(tn.getLiteralValue());
+				}
+				
+			}
+		}
+		return results;
+	}
 
 	protected Node getChildNodeWithKey(String key) {
 		Node nodeo=this.original;

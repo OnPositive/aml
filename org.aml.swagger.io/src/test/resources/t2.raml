@@ -1,0 +1,44 @@
+#%RAML 1.0
+baseUri: http://example.org/dd
+title: Hello
+protocols: [HTTP]
+traits:
+  Hello:
+    queryParameters:
+      c:
+        required: false
+types:
+  Person:
+    properties:
+      name: string
+      lastName: string
+      age?: number
+  Company:
+    properties:
+      name: string
+      members?: Person[]
+  Manager:
+    type: Person
+    properties:
+      title: string
+  L: [Manager, Person]
+  CompanyOrPerson: Person | Company
+/q:
+  displayName: QQ
+  get:
+    is: [ Hello ]
+    description: get some stuff
+    queryParameters:
+      a: string
+      b: string
+    responses:
+      200:
+        body:
+          application/json:
+            properties:
+              name: string
+              lastName: string
+  post:
+    body:
+      application/json: Person
+/z/{e}:

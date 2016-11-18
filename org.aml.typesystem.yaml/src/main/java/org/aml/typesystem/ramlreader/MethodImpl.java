@@ -88,15 +88,7 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 		return hasBody(this);
 	}
 
-	@Override
-	public ArrayList<SecuredByConfig> securedBy() {
-		ArrayList<SecuredByConfig>results=new ArrayList<>();
-		Node childNodeWithKey = this.getChildNodeWithKey("securedBy");
-		for (Node n:childNodeWithKey.getChildren()){
-			results.add(new SecuredByImpl(mdl, this, n));
-		}
-		return results;
-	}
+
 
 	
 	

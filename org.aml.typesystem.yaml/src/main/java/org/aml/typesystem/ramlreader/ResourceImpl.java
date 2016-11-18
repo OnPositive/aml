@@ -7,6 +7,7 @@ import java.util.List;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.ParameterLocation;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.BuiltIns;
@@ -76,6 +77,7 @@ public class ResourceImpl extends AbstractWrappedNodeImpl<Resource,ResourceNode>
 			if (!found){
 				NamedParam namedParam = new NamedParam(TypeOps.derive(s,BuiltIns.STRING), false, false);
 				((List<NamedParam>)paramList).add(namedParam);
+				namedParam.setLocation(ParameterLocation.PATH);
 			}
 		}
 		return paramList;		

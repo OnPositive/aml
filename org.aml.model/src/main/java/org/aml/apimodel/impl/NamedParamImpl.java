@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.ParameterLocation;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.TypeOps;
@@ -215,5 +216,15 @@ public class NamedParamImpl extends AnnotableImpl implements INamedParam{
 
 	public void setEnumeration(ArrayList<String> list) {
 		setFacet(list, Enum.class);
+	}
+	
+	protected ParameterLocation location;
+
+	@Override
+	public ParameterLocation location() {
+		return location;
+	}
+	public void setLocation(ParameterLocation path) {
+		this.location=path;
 	}
 }

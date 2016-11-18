@@ -6,6 +6,8 @@ import java.util.List;
 import org.aml.apimodel.Annotable;
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
+import org.aml.apimodel.ParameterLocation;
+import org.aml.apimodel.SecuredByConfig;
 import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.meta.TypeInformation;
@@ -25,6 +27,17 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 		super(node);
 		this.parent = parent;
 		this.mdl = mdl;
+	}
+
+	public ArrayList<SecuredByConfig> securedBy() {
+		ArrayList<SecuredByConfig> results = new ArrayList<>();
+		Node childNodeWithKey = this.getChildNodeWithKey("securedBy");
+		if (childNodeWithKey != null) {
+			for (Node n : childNodeWithKey.getChildren()) {
+				results.add(new SecuredByImpl(mdl, this, n));
+			}
+		}
+		return results;
 	}
 
 	@Override
@@ -114,6 +127,27 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 				}
 			}
 			NamedParam result = new NamedParam(buildType, required, repeat);
+			Node parent2 = childNodeWithKey.getParent();
+			if (parent2 instanceof KeyValueNode){
+				KeyValueNode kk=(KeyValueNode) parent2;
+				Node key2 = kk.getKey();
+				if (key2 instanceof SimpleTypeNode<?>){
+					SimpleTypeNode<?>st=(SimpleTypeNode<?>) key2;
+					String literalValue = st.getLiteralValue();
+					if (literalValue.equals("headers")){
+						result.setLocation(ParameterLocation.HEADER);
+					}
+					else if (literalValue.equals("uriParameters")){
+						result.setLocation(ParameterLocation.PATH);
+					}
+					else if (literalValue.equals("queryParameters")){
+						result.setLocation(ParameterLocation.QUERY);
+					}
+					else if (literalValue.equals("formParameters")){
+						result.setLocation(ParameterLocation.FORM);
+					}
+				}
+			}
 			prms.add(result);
 		}
 		return prms;

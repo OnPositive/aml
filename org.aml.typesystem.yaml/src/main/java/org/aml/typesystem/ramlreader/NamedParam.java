@@ -11,5 +11,4 @@ public class NamedParam extends NamedParamImpl{
 	public NamedParam(String name,AbstractType type, boolean required, boolean repeat) {
 		super(type, required, repeat);
 	}
-	
 }

@@ -148,7 +148,6 @@ public class SwaggerReader {
 						}
 					}
 				} else if (securitySchemeDefinition instanceof ApiKeyAuthDefinition) {
-					ApiKeyAuthDefinition ak = (ApiKeyAuthDefinition) securitySchemeDefinition;
 					sd.setType("Pass Through");
 				} else if (securitySchemeDefinition instanceof BasicAuthDefinition) {
 					sd.setType("Basic Authentication");
@@ -363,6 +362,7 @@ public class SwaggerReader {
 		return null;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private AbstractType convertParameterToType(Parameter p) {
 		if (p instanceof AbstractSerializableParameter<?>) {
 			AbstractSerializableParameter<?> basicModel = (AbstractSerializableParameter<?>) p;

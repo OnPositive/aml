@@ -79,4 +79,11 @@ public interface Action extends Annotable,IHasBody{
 	default Response response(String name){
 		return this.responses().stream().filter(x -> x.code().equals(name)).findFirst().orElse(null);
 	}
+	
+	default List<INamedParam> parameters(){
+		ArrayList<INamedParam>results=new ArrayList<>();
+		results.addAll(queryParameters());
+		results.addAll(headers());
+		return results;
+	}
 }

@@ -1,0 +1,18 @@
+#%RAML 1.0
+title: hello
+uses:
+  AWS: aws-lib.raml
+/products:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: AWS.amazon-apigateway-method
+/hello:
+  get:
+    queryParameters:
+      name: string
+    body:
+      application/json:        
+        type: AWS.amazon-apigateway-status

@@ -1,0 +1,23 @@
+swagger: '2.0'
+info:
+  title: Hello
+  version: '1.0'
+schemes: []
+definitions:
+  Person: {}
+paths:
+  /q:
+    post:
+      summary: post
+      parameters:
+      - name: x
+        in: formData
+        type: number
+      - name: y
+        in: formData
+        type: number
+      consumes:
+      - application/x-www-form-urlencoded
+      responses:
+        default:
+          description: default response

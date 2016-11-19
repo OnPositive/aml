@@ -1194,6 +1194,25 @@ public abstract class AbstractType implements IType {
 		}
 		return false;
 	}
+	
+	public boolean hasOnlyDisplayName() {
+		if (this.isAnonimous() && this.superTypes().size() == 1 && !this.isUnion()) {
+			if (this.declaredMeta().size() == 0) {
+				return true;
+			}
+			for (TypeInformation t : this.declaredMeta()) {
+				if (t instanceof DisplayName) {
+					continue;
+				}
+				if (t instanceof Default) {
+					continue;
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
 	public boolean hasSingleSuperType() {
 		return this.superTypes().size() == 1;

@@ -2,6 +2,7 @@ package org.aml.typesystem.ramlreader;
 
 import java.util.Map;
 
+import org.aml.apimodel.MethodBase;
 import org.aml.apimodel.SecurityScheme;
 import org.aml.apimodel.TopLevelModel;
 import org.raml.v2.internal.impl.commons.nodes.SecuritySchemeNode;
@@ -30,6 +31,12 @@ public class SecuritySchemeImpl extends AbstractWrappedNodeImpl<TopLevelRamlImpl
 		Node n=getChildNodeWithKey("settings");
 		Object result=TopLevelRamlModelBuilder.toObject(n);
 		return (Map<String, Object>) result;
+	}
+
+	@Override
+	public MethodBase describedBy() {
+		Node childNodeWithKey = getChildNodeWithKey("describedBy");
+		return new MethodImpl(mdl, null, childNodeWithKey);
 	}
 
 }

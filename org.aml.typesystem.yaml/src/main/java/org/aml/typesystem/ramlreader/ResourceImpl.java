@@ -50,7 +50,7 @@ public class ResourceImpl extends AbstractWrappedNodeImpl<Resource,ResourceNode>
 	@Override
 	public List<? extends INamedParam> uriParameters() {
 		Node childNodeWithKey = this.getChildNodeWithKey("uriParameters");
-		List<? extends INamedParam> paramList = toParamList(childNodeWithKey);
+		List<? extends INamedParam> paramList = toParamList(childNodeWithKey,true);
 		String relativeUri = this.relativeUri();
 		HashSet<String>pNames=new HashSet<>();
 		while (true){

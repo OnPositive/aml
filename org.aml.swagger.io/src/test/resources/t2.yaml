@@ -1,0 +1,96 @@
+swagger: '2.0'
+info:
+  title: Hello
+  version: '1.0'
+schemes:
+- http
+host: example.org
+basePath: /dd
+definitions:
+  CompanyOrPerson: {}
+  Company:
+    type: object
+    properties:
+      name:
+        type: string
+      members:
+        type: array
+        items:
+          $ref: '#/definitions/Person'
+    required:
+    - name
+  L:
+    allOf:
+    - $ref: '#/definitions/Manager'
+    - $ref: '#/definitions/Person'
+  Manager:
+    allOf:
+    - $ref: '#/definitions/Person'
+    properties:
+      title:
+        type: string
+    required:
+    - title
+  Person:
+    type: object
+    properties:
+      name:
+        type: string
+      lastName:
+        type: string
+      age:
+        type: number
+    required:
+    - name
+    - lastName
+paths:
+  /q:
+    get:
+      summary: get
+      description: get some stuff
+      parameters:
+      - name: a
+        required: true
+        in: query
+        type: string
+      - name: b
+        required: true
+        in: query
+        type: string
+      - name: c
+        in: query
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: '200'
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              lastName:
+                type: string
+            required:
+            - name
+            - lastName
+    post:
+      summary: post
+      parameters:
+      - name: body
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Person'
+      consumes:
+      - application/json
+      responses:
+        default:
+          description: default response
+  /z/{e}:
+    parameters:
+    - name: e
+      required: true
+      in: path
+      type: string

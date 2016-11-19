@@ -1,0 +1,53 @@
+swagger: '2.0'
+info:
+  title: Swagger Petstore
+  description: This is a sample server Petstore server.
+  version: '1.0'
+schemes:
+- http
+host: petstore.swagger.io
+basePath: /v2
+x-annotationTypes:
+  testHarness:
+    type: string
+definitions:
+  Category:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        x-testHarness: property type description
+    x-testHarness: type description
+  Pet:
+    type: object
+    properties:
+      category:
+        $ref: '#/definitions/Category'
+      id:
+        type: string
+      name:
+        type: string
+        example: doggie
+    required:
+    - name
+paths:
+  /pet: {}
+  /{petId}:
+    parameters:
+    - name: petId
+      required: true
+      in: path
+      type: string
+    get:
+      summary: getPetById
+      description: Returns a single pet
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Pet'
+      x-testHarness: method description

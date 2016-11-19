@@ -13,6 +13,7 @@ import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
+import org.raml.yagi.framework.nodes.ErrorNode;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
 import org.raml.yagi.framework.nodes.SimpleTypeNode;
@@ -34,6 +35,13 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 		Node childNodeWithKey = this.getChildNodeWithKey("securedBy");
 		if (childNodeWithKey != null) {
 			for (Node n : childNodeWithKey.getChildren()) {
+				if (n instanceof ErrorNode){
+					ErrorNode zz=(ErrorNode) n;
+					Node source = zz.getSource();
+					if (source instanceof org.raml.v2.internal.impl.commons.nodes.ParametrizedSecuritySchemeRefNode){
+						n=source;
+					}
+				}
 				results.add(new SecuredByImpl(mdl, this, n));
 			}
 		}
@@ -51,10 +59,12 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 
 	@SuppressWarnings("unchecked")
 	protected List<MimeType> toMimeTypes(Node childNodeWithKey, MethodImpl method) {
-		List<NamedParam> paramList = (List<NamedParam>) toParamList(childNodeWithKey);
+		List<NamedParam> paramList = (List<NamedParam>) toParamList(childNodeWithKey,false);
 		ArrayList<MimeType> mt = new ArrayList<>();
 		for (NamedParam p : paramList) {
-			mt.add(new MimeTypeImpl(p.getTypeModel(), method));
+			MimeTypeImpl e = new MimeTypeImpl(p.getTypeModel(), method);
+			e.setName(p.getKey());
+			mt.add(e);
 		}
 		return mt;
 	}
@@ -66,7 +76,7 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 
 	public final List<? extends INamedParam> headers() {
 		Node childNodeWithKey = this.getChildNodeWithKey("headers");
-		return toParamList(childNodeWithKey);
+		return toParamList(childNodeWithKey,true);
 	}
 
 	protected final boolean hasBody(MethodImpl m) {
@@ -85,7 +95,7 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 		return null;
 	}
 
-	protected List<? extends INamedParam> toParamList(Node childNodeWithKey) {
+	protected List<? extends INamedParam> toParamList(Node childNodeWithKey,boolean convertRepeat) {
 		ArrayList<NamedParam> prms = new ArrayList<>();
 		if (childNodeWithKey == null) {
 			return prms;
@@ -107,7 +117,7 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 				required = false;
 			}
 			boolean repeat = false;
-			if (buildType.isArray()) {
+			if (buildType.isArray()&&convertRepeat) {
 				repeat = true;
 				ComponentShouldBeOfType oneMeta = buildType.oneMeta(ComponentShouldBeOfType.class);
 				if (oneMeta != null) {
@@ -126,7 +136,8 @@ public class AbstractWrappedNodeImpl<P extends Annotable, T extends Node> extend
 					TopLevelRamlModelBuilder.bindAnnotation(getTopLevel(), an);
 				}
 			}
-			NamedParam result = new NamedParam(buildType, required, repeat);
+			NamedParam result = new NamedParam(buildType.clone(""), required, repeat);
+			result.setName(buildType.name());
 			Node parent2 = childNodeWithKey.getParent();
 			if (parent2 instanceof KeyValueNode){
 				KeyValueNode kk=(KeyValueNode) parent2;

@@ -2,13 +2,13 @@
 usage: Data types and annotation types for AWS API Gateway
 types:
   amazon-apigateway-method:
-    enum: [ GET, PATCH, PUT, POST, DELETE, PATCH ]
+    enum: [ GET, PUT, POST, DELETE, PATCH ]
     example: POST
   amazon-apigateway-status:
     pattern: "^[12345]\\d\\d$"
   amazon-apigateway-templates:
     properties:
-      /\w+\/w+/:
+      //: string
   amazon-apigateway-auth-type:
     enum: [ aws_iam ]
   amazon-apigateway-integration-lambda:

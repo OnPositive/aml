@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public interface Action extends Annotable,IHasBody{
+public interface Action extends Annotable,IHasBody,MethodBase{
 
 	/**
      * Method that can be called

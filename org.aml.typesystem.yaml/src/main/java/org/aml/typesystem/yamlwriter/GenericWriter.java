@@ -42,8 +42,14 @@ public abstract class GenericWriter {
 			tr.put(name, vl);
 		}
 	}
-	protected Object dumpNamedParam(INamedParam r) {		
+	protected boolean inParam=false;
+	protected Object dumpNamedParam(INamedParam r) {
+		inParam=true;
+		try{
 		return typeRespresentation(r.getTypeModel(), false);
+		}finally {
+			inParam=false;
+		}
 	}
 	
 	protected abstract Object typeRespresentation(AbstractType typeModel, boolean allowNamed);

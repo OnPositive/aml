@@ -8,7 +8,6 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
-import org.aml.apimodel.SecuredByConfig;
 import org.aml.apimodel.TopLevelModel;
 import org.raml.v2.internal.impl.commons.nodes.MethodNode;
 import org.raml.v2.internal.impl.commons.nodes.TraitRefNode;
@@ -16,9 +15,9 @@ import org.raml.yagi.framework.nodes.ArrayNode;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
 
-public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> implements Action {
+public class MethodImpl extends AbstractWrappedNodeImpl<Resource, Node> implements Action {
 
-	public MethodImpl(TopLevelModel mdl, Resource parent, MethodNode node) {
+	public MethodImpl(TopLevelModel mdl, Resource parent, Node node) {
 		super(mdl, parent, node);
 	}
 
@@ -34,8 +33,8 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 
 	@Override
 	public List<String> protocols() {
-		// TODO Auto-generated method stub
-		return null;
+		String key = "protocols";
+		return getStringList(key);
 	}
 	@Override
 	public ArrayList<String> getIs() {
@@ -58,10 +57,8 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 	@Override
 	public List<? extends INamedParam> queryParameters() {
 		Node childNodeWithKey = this.getChildNodeWithKey("queryParameters");
-		return toParamList(childNodeWithKey);
+		return toParamList(childNodeWithKey,true);
 	}
-
-	
 
 	@Override
 	public List<Response> responses() {
@@ -88,8 +85,9 @@ public class MethodImpl extends AbstractWrappedNodeImpl<Resource, MethodNode> im
 		return hasBody(this);
 	}
 
-
-
-	
+	@Override
+	public String name() {
+		return method();
+	}
 	
 }

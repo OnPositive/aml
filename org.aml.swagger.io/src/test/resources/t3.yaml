@@ -1,0 +1,47 @@
+swagger: '2.0'
+info:
+  title: hello
+  version: '1.0'
+schemes: []
+paths:
+  /products:
+    get:
+      summary: get
+      produces:
+      - application/json
+      responses:
+        200:
+          description: '200'
+          schema:
+            $ref: '#/definitions/AWS.amazon-apigateway-method'
+  /hello:
+    get:
+      summary: get
+      parameters:
+      - name: name
+        required: true
+        in: query
+        type: string
+      - name: body
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/AWS.amazon-apigateway-status'
+      consumes:
+      - application/json
+      responses:
+        default:
+          description: default response
+definitions:
+  AWS.amazon-apigateway-method:
+    type: string
+    enum:
+    - GET
+    - PUT
+    - POST
+    - DELETE
+    - PATCH
+    example: POST
+  AWS.amazon-apigateway-status:
+    type: string
+    pattern: ^[12345]\d\d$

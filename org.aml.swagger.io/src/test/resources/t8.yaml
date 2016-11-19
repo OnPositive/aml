@@ -1,0 +1,50 @@
+swagger: '2.0'
+info:
+  title: Swagger Petstore
+  version: '1.0'
+schemes: []
+definitions:
+  Pet1:
+    type: array
+    items:
+      type: array
+      items:
+        $ref: '#/definitions/Category'
+  Pet2:
+    allOf:
+    - type: array
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/Category'
+  Category:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+paths:
+  /pet:
+    get:
+      summary: getPet
+      produces:
+      - application/json
+      responses:
+        200:
+          description: '200'
+          schema:
+            $ref: '#/definitions/Pet1'
+    post:
+      summary: addPet
+      parameters:
+      - name: body
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Pet2'
+      consumes:
+      - application/json
+      responses:
+        200:
+          description: ok

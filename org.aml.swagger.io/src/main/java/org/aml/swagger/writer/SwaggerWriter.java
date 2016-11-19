@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -17,12 +16,15 @@ import org.aml.apimodel.Action;
 import org.aml.apimodel.Annotable;
 import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.Library;
+import org.aml.apimodel.MethodBase;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.ParameterLocation;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
 import org.aml.apimodel.SecuredByConfig;
 import org.aml.apimodel.SecurityScheme;
+import org.aml.apimodel.TopLevelModel;
 import org.aml.apimodel.impl.MimeTypeImpl;
 import org.aml.apimodel.impl.NamedParamImpl;
 import org.aml.typesystem.AbstractType;
@@ -65,9 +67,16 @@ public class SwaggerWriter extends GenericWriter {
 		skipFacets.add("displayName");
 	}
 
+	private Api api;
+
 	protected LinkedHashMap<String, Object> dumpType(AbstractType t) {
 		LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+		
 		Set<AbstractType> superTypes = t.superTypes();
+		if (t.isExternal()){
+			System.err.println("Swagger can not represent external types correctly - ignoring type");
+			return result;
+		}
 		if (t.isUnion()) {
 			System.err.println("Swagger can not represent union types correctly - ignoring type");
 			return result;
@@ -75,15 +84,15 @@ public class SwaggerWriter extends GenericWriter {
 			if (superTypes.size() > 0) {
 				if (superTypes.size() == 1) {
 					if (t.isEffectivelyEmptyType() && !t.superType().isBuiltIn()) {
-						String name = t.superType().name();
-						if (t.superType().isArray()) {
-							AbstractType componentType = t.superType().componentType();
-							result.put("type", "array");
-							result.put("items", typeRespresentation(componentType, true));
-							return result;
+						while (t.isAnonimous()&&t.hasOnlyDisplayName()&&!t.isBuiltIn()&&!t.isExternal()){
+							if (t.superTypes().size()==1){
+								t=t.superType();
+							}
 						}
-						result.put("$ref", "#/definitions/" + name);
-						return result;
+						if (t.isArray()&&t.isAnonimous()){
+							return dumpType(t);
+						}
+						return toRef(t);
 					} else {
 						if (!t.superType().isBuiltIn()) {
 							ArrayList<Object> ts = new ArrayList<>();
@@ -158,10 +167,21 @@ public class SwaggerWriter extends GenericWriter {
 						value = NOVALUE;
 					}
 				}
+				if (fs.facetName().equals("example")){
+					if (inParam){
+						continue;
+					}
+				}
 				if (value instanceof String) {
 					value = cleanupStringValue((String) value);
 				}
+				if (fs instanceof Annotation){
+					Annotation an=(Annotation) fs;
+					result.put("x-"+an.annotationType().name(), value);	
+				}
+				else{
 				result.put(fs.facetName(), value);
+				}
 			} else {
 				if (ti instanceof XMLFacet) {
 					result.put("xml", toMap(ti));
@@ -171,21 +191,56 @@ public class SwaggerWriter extends GenericWriter {
 		return result;
 	}
 
-	protected Object typeRespresentation(AbstractType p, boolean allowNamed) {
-		Object vl;
+	protected LinkedHashMap<String, Object>  typeRespresentation(AbstractType p, boolean allowNamed) {
+		LinkedHashMap<String, Object>  vl;
 		if (p.isAnonimous() || !allowNamed) {
-			HashMap<String, Object> dumpType = dumpType(p);
+			LinkedHashMap<String, Object> dumpType = dumpType(p);
 			vl = dumpType;
 		} else {
-			String name = p.name();
-			vl = toRef(name);
+			vl = toRef(p);
 		}
 		return vl;
 	}
 
-	private LinkedHashMap<String, Object> toRef(String name) {
+	protected ArrayList<AbstractType> extras = new ArrayList<>();
+
+	protected String findPath(TopLevelModel m, AbstractType t) {
+		if (m.types().getType(t.name()) != null) {
+			return "";
+		}
+		for (String s : m.uses().keySet()) {
+			Library library = m.uses().get(s);
+			if (library != null) {
+				String findPath = findPath(library, t);
+				if (findPath != null) {
+					if (findPath.isEmpty()) {
+						return s;
+					}
+					return s + "." + findPath;
+				}
+			}
+		}
+		return null;
+	}
+
+	private LinkedHashMap<String, Object> toRef(AbstractType t) {
+		if (t.isBuiltIn()){
+			if (t==BuiltIns.ANY){
+				return new LinkedHashMap<>();
+			}
+		}
+		if (t.getSource() != api) {
+			extras.add(t);
+			String findPath = findPath(api, t);
+			if (findPath == null) {
+				System.err.println("Can not find path to type:" + t.name());
+			}
+			LinkedHashMap<String, Object> ref = new LinkedHashMap<>();
+			ref.put("$ref", "#/definitions/" + findPath +"."+ t.name());
+			return ref;
+		}
 		LinkedHashMap<String, Object> ref = new LinkedHashMap<>();
-		ref.put("$ref", "#/definitions/" + name);
+		ref.put("$ref", "#/definitions/" + t.name());
 		return ref;
 	}
 
@@ -212,7 +267,6 @@ public class SwaggerWriter extends GenericWriter {
 		StringWriter stringWriter = new StringWriter();
 		BufferedWriter ws = new BufferedWriter(stringWriter);
 		try {
-			ws.newLine();
 			rl.dump(toStore, ws);
 			return stringWriter.toString().replaceAll(NOVALUE, "");
 		} catch (Exception e) {
@@ -373,19 +427,21 @@ public class SwaggerWriter extends GenericWriter {
 
 	@SuppressWarnings("unchecked")
 	private void dumpSecuredBy(LinkedHashMap<String, Object> target, List<SecuredByConfig> r) {
-		LinkedHashMap<String, Object> rs = new LinkedHashMap<>();
+		ArrayList<Object>secured=new ArrayList<>();
 		if (r != null) {
 			for (SecuredByConfig c : r) {
+				LinkedHashMap<String, Object> rs = new LinkedHashMap<>();
 				ArrayList<String> settings = new ArrayList<>();
 				if (c.settings().containsKey("scopes")) {
 					settings.addAll((Collection<? extends String>) c.settings().get("scopes"));
 				}
 				rs.put(c.name(), settings);
+				secured.add(rs);
 			}
 
 		}
-		if (!rs.isEmpty()) {
-			target.put("security", rs);
+		if (!secured.isEmpty()) {
+			target.put("security", secured);
 		}
 	}
 
@@ -404,7 +460,9 @@ public class SwaggerWriter extends GenericWriter {
 		List<MimeType> body = r.body();
 		if (body != null && !body.isEmpty()) {
 			for (MimeType m : body) {
-				LinkedHashMap<String, Object> dumpType = this.dumpType(m.getTypeModel());
+				
+				AbstractType typeModel = m.getTypeModel();
+				LinkedHashMap<String, Object> dumpType = (LinkedHashMap<String, Object>) this.typeRespresentation(typeModel,true);
 				mp.put("schema", dumpType);
 				break;
 			}
@@ -448,70 +506,118 @@ public class SwaggerWriter extends GenericWriter {
 
 	private LinkedHashMap<String, Object> dumpSecurityScheme(SecurityScheme x) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
-		if (x.type().equals("OAuth 2.0")) {			
-			mp.put("authorizationUrl",((String) x.settings().get("authorizationUri")));
-			mp.put("tokenUrl",((String) x.settings().get("accessTokenUri")));
+		if (x.type().equals("OAuth 2.0")) {
+			mp.put("authorizationUrl", ((String) x.settings().get("authorizationUri")));
+			mp.put("tokenUrl", ((String) x.settings().get("accessTokenUri")));
+			mp.put("type", "oauth2");
 			String object = (String) x.settings().get("authorizationGrants");
 			// "implicit", "password", "application" or "accessCode".
 			// authorization_code, password, client_credentials, or implicit;
 			if (object != null) {
 				if (object.equals("authorization_code")) {
-					mp.put("flow","accessCode");
+					mp.put("flow", "accessCode");
 				} else if (object.equals("implicit")) {
-					mp.put("flow","implicit");					
-				} else {
-					System.err.println("Can not map authorizationGrants:"+object);
+					mp.put("flow", "implicit");
+					mp.remove("tokenUrl");
+				}
+				else if (object.equals("password")) {
+					mp.put("flow", "password");
+					mp.remove("authorizationUrl");
+				}
+				else {
+					System.err.println("Can not map authorizationGrants:" + object);
 				}
 			}
-			List<?>scopes=(List<?>) x.settings().get("scopes");
-			if (scopes!=null&&!scopes.isEmpty()){
-				LinkedHashMap<String, String>scopesMap=new LinkedHashMap<>();
-				for (Object c:scopes){
+			else{
+				mp.remove("tokenUrl");
+				mp.put("flow", "implicit");
+			}			
+			List<?> scopes = (List<?>) x.settings().get("scopes");
+			if (scopes != null && !scopes.isEmpty()) {
+				LinkedHashMap<String, String> scopesMap = new LinkedHashMap<>();
+				for (Object c : scopes) {
 					scopesMap.put(c.toString(), "");
 				}
-				mp.put("scopes",scopesMap);
+				mp.put("scopes", scopesMap);
 			}
-		}
-		else if (x.type().equals("Basic Authentication")){
-			mp.put("type","basic");
-		}
-		else if (x.type().equals("Pass Through")){
+		} else if (x.type().equals("Basic Authentication")) {
+			mp.put("type", "basic");
+		} else if (x.type().equals("Pass Through")) {
 			mp.put("type", "apiKey");
-		}	
-		else{
+			MethodBase base = x.describedBy();
+			if (base == null) {
+				System.err.println("Path through securiry scheme misses described by");
+			} else {
+				ArrayList<INamedParam> ps = new ArrayList<>();
+				ps.addAll(base.queryParameters());
+				ps.addAll(base.headers());
+				if (ps.size() > 1) {
+					System.err.println(
+							"Path through securiry scheme has more then one parameter and can not be converted to ApiKey scheme correctly");
+				}
+				if (ps.size() < 1) {
+					System.err.println(
+							"Path through securiry scheme has less then one parameter and can not be converted to ApiKey scheme correctly");
+				}
+				INamedParam iNamedParam = ps.get(0);
+				mp.put("name", iNamedParam.getKey());
+				mp.put("in", iNamedParam.location().name().toLowerCase());
+			}
+		} else {
 			System.err.println("Can not accurately convert security scheme");
 		}
 		addScalarField("description", mp, x, x::description);
-		addAnnotations(x, mp);			
+		addAnnotations(x, mp);
 		return mp;
 	}
 
 	@SuppressWarnings("unchecked")
 	public String store(Api model) {
+		this.api = model;
 		LinkedHashMap<String, Object> toStore = new LinkedHashMap<>();
 		toStore.put("swagger", "2.0");
 		addInfoObject(model, toStore);
 		addScalarField("schemes", toStore, model,
 				() -> model.getProtocols().stream().map(x -> x.toLowerCase()).toArray());
 		addScalarField("consumes", toStore, model, model::getMediaType);
-		addScalarField("produces", toStore, model, model::getMediaType);		
+		addScalarField("produces", toStore, model, model::getMediaType);
 		String baseUrl = model.getBaseUrl();
-		if (baseUrl!=null){
+		if (baseUrl != null) {
 			try {
 				URL url = new URL(baseUrl);
 				toStore.put("host", url.getHost());
-				toStore.put("basePath", url.getPath());
+				String path = url.getPath();
+				if (path.length() > 0) {
+					toStore.put("basePath", path);
+				}
 			} catch (MalformedURLException e) {
-				System.err.println("Mailformed base url:"+baseUrl);
+				System.err.println("Mailformed base url:" + baseUrl);
 			}
-		}		
+		}
 		addAnnotations(model, toStore);
-		dumpCollection("securityDefinitions", toStore,model.securityDefinitions(), this::dumpSecurityScheme, x->x.name());
+		dumpCollection("securityDefinitions", toStore, model.securityDefinitions(), this::dumpSecurityScheme,
+				x -> x.name());
 		dumpSecuredBy(toStore, model.getSecuredBy());
 		dumpTypes(model.types(), model.annotationTypes(), (LinkedHashMap<Object, Object>) (Map<?, ?>) toStore);
 		LinkedHashMap<String, Object> paths = new LinkedHashMap<>();
 		dumpResources(model.allResources(), paths);
 		toStore.put("paths", paths);
+		while (!extras.isEmpty()) {
+			ArrayList<AbstractType> ts = new ArrayList<>(extras);
+			extras.clear();
+
+			LinkedHashMap<String, Object> object = (LinkedHashMap<String, Object>) toStore.get(TYPES);
+			if (object == null) {
+				object = new LinkedHashMap<>();
+				toStore.put(TYPES, object);
+			}
+			for (AbstractType c : ts) {
+				LinkedHashMap<String, Object> dumpType = dumpType(c);
+				String findPath = findPath(api, c);
+				object.put(findPath+"."+c.name(), dumpType);
+				
+			}
+		}
 		return dumpMap((LinkedHashMap<Object, Object>) (Map<?, ?>) toStore);
 	}
 
@@ -537,7 +643,7 @@ public class SwaggerWriter extends GenericWriter {
 	 */
 	private void addAnnotations(Annotable model, LinkedHashMap<String, Object> toStore) {
 		for (Annotation a : model.annotations()) {
-			toStore.put("x-" + a.facetName(), a.value());
+			toStore.put("x-" + a.annotationType().name(), a.value());
 		}
 	}
 }

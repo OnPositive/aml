@@ -62,6 +62,9 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType {
 		if (model.isBuiltIn()) {
 			return model;
 		}
+		if (!model.isAnonimous()){
+			return model;
+		}
 		if (!model.isUnion() && model.superTypes().size() == 1) {
 			boolean canSkip = true;
 			for (TypeInformation i : model.declaredMeta()) {
@@ -75,7 +78,7 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType {
 			}
 		}
 		// okey,actual structure is complex;
-		return this.model.clone(this.getMethod().resource().getUri() + this.getMethod().method() + "Type");
+		return this.model.clone("");
 	}
 
 	@Override

@@ -1,0 +1,23 @@
+swagger: '2.0'
+info:
+  title: Hello
+  version: '1.0'
+schemes: []
+securityDefinitions:
+  oath2:
+    tokenUrl: http
+    type: oauth2
+    flow: password
+    scopes:
+      a: ''
+      b: ''
+paths:
+  /g:
+    get:
+      summary: get
+      responses:
+        default:
+          description: default response
+      security:
+      - oath2:
+        - a

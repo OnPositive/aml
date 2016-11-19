@@ -1,0 +1,61 @@
+swagger: '2.0'
+info:
+  title: API Gateway Test API
+  description: Move your app forward with the Uber API
+  version: '1.0'
+schemes: []
+host: api.uber.com
+securityDefinitions:
+  key:
+    type: apiKey
+    name: x-api-key
+    in: header
+paths:
+  /products:
+    get:
+      summary: get
+      parameters:
+      - name: latitude
+        required: true
+        in: query
+        type: number
+        format: double
+        description: Latitude component of location
+      - name: longitude
+        required: true
+        in: query
+        type: number
+        format: double
+        description: Longitude component of location
+      responses:
+        default:
+          description: default response
+      x-amazon-apigateway-auth: aws_iam
+      x-amazon-apigateway-integration:
+        type: aws
+        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:ACCOUNT_ID:function:myFunction/invocations
+        httpMethod: POST
+        credentials: arn:aws:iam::ACCOUNT_ID:role/lambda_exec_role
+        requestTemplates:
+          application/json: json request template 2
+          application/xml: xml request template 2
+        requestParameters:
+          integration.request.path.integrationPathParam: method.request.querystring.latitude
+          integration.request.querystring.integrationQueryParam: method.request.querystring.longitude
+        cacheNamespace: cache namespace
+        cacheKeyParameters: []
+        responses:
+          2\d{2}:
+            statusCode: '200'
+            responseParameters:
+              method.response.header.test-method-response-header: integration.response.header.integrationResponseHeaderParam1
+            responseTemplates:
+              application/json: json 200 response template
+              application/xml: xml 200 response template
+          default:
+            statusCode: '400'
+            responseParameters:
+              method.response.header.test-method-response-header: '''static value'''
+            responseTemplates:
+              application/json: json 400 response template
+              application/xml: xml 400 response template

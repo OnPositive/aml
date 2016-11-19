@@ -3,6 +3,7 @@ package org.aml.apimodel.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.aml.apimodel.MethodBase;
 import org.aml.apimodel.SecurityScheme;
 
 public class SecuritySchemeImpl extends AnnotableImpl implements SecurityScheme{
@@ -10,6 +11,16 @@ public class SecuritySchemeImpl extends AnnotableImpl implements SecurityScheme{
 	protected String name;
 	protected String type;
 	protected String description;
+	protected MethodBase describedBy;
+	
+	public MethodBase getDescribedBy() {
+		return describedBy;
+	}
+
+	public void setDescribedBy(MethodBase describedBy) {
+		this.describedBy = describedBy;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -54,6 +65,11 @@ public class SecuritySchemeImpl extends AnnotableImpl implements SecurityScheme{
 	@Override
 	public String description() {
 		return description;
+	}
+
+	@Override
+	public MethodBase describedBy() {
+		return describedBy;
 	}
 
 }

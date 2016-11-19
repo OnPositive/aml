@@ -1,0 +1,83 @@
+swagger: '2.0'
+info:
+  title: API with Examples
+  version: '1.0'
+schemes: []
+definitions:
+  Org:
+    type: object
+    properties:
+      name:
+        type: string
+      address:
+        type: string
+      value:
+        type: string
+    required:
+    - name
+    example:
+      name: Software Corp
+      address: 35 Central Street
+      value: Gold
+  Org2:
+    type: object
+    properties:
+      name:
+        type: string
+      address:
+        type: string
+      value:
+        type: string
+    required:
+    - name
+    example:
+      name: Software Corp
+      address: 35 Central Street
+      value: Gold
+  User:
+    type: object
+    properties:
+      name:
+        type: string
+      lastname:
+        type: string
+    required:
+    - name
+    - lastname
+    example:
+      name: Bob
+      lastname: Marley
+paths:
+  /organization:
+    post:
+      summary: post
+      parameters:
+      - name: UserID
+        required: true
+        in: header
+        type: string
+        description: the identifier for the user who posts a new organization
+      - name: body
+        required: true
+        in: body
+        schema:
+          allOf:
+          - $ref: '#/definitions/Org'
+          example:
+            name: Doe Enterprise
+            value: Silver
+      consumes:
+      - application/json
+      responses:
+        default:
+          description: default response
+    get:
+      summary: get
+      description: Returns an organization entity.
+      produces:
+      - application/json
+      responses:
+        201:
+          description: '201'
+          schema:
+            $ref: '#/definitions/Org2'

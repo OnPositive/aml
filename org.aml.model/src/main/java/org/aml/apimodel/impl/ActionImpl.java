@@ -143,4 +143,9 @@ public class ActionImpl extends AnnotableImpl implements Action{
 		e.settings().put("scopes", scopes);
 		securedBy.add(e);	
 	}
+
+	@Override
+	public String name() {
+		return method();
+	}
 }

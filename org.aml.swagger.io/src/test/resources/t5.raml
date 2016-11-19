@@ -1,0 +1,18 @@
+#%RAML 1.0
+title: Hello
+traits:
+  - Hello:
+      queryParameters:
+        c:
+          required: false
+schemas:
+  - Person: "{}"
+/q:
+  post:
+    body:
+      application/x-www-form-urlencoded:
+        properties:
+          x:
+            type: number
+          y:
+            type: number

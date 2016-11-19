@@ -21,6 +21,7 @@ import org.aml.typesystem.beans.ISimpleFacet;
 import org.aml.typesystem.meta.FacetRegistry;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
+import org.aml.typesystem.meta.facets.Example;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
@@ -42,6 +43,7 @@ import org.raml.v2.internal.impl.commons.RamlHeader.InvalidHeaderException;
 import org.raml.v2.internal.impl.commons.nodes.AnnotationNode;
 import org.raml.v2.internal.impl.commons.nodes.AnnotationTypeNode;
 import org.raml.v2.internal.impl.commons.nodes.CustomFacetDefinitionNode;
+import org.raml.v2.internal.impl.commons.nodes.ExampleDeclarationNode;
 import org.raml.v2.internal.impl.commons.nodes.ExternalSchemaTypeExpressionNode;
 import org.raml.v2.internal.impl.commons.nodes.FacetNode;
 import org.raml.v2.internal.impl.commons.nodes.TypeDeclarationNode;
@@ -330,7 +332,13 @@ public class TopLevelRamlModelBuilder {
 				if (node instanceof ErrorNode){
 					continue;
 				}
-				if (node instanceof FacetNode) {
+				if (node instanceof ExampleDeclarationNode){
+					ExampleDeclarationNode  ed=(ExampleDeclarationNode) node;
+					Node nm=ed.getExampleValue();
+					Object object=toObject(nm);
+					result.addMeta(new Example("",object));
+				}
+				else if (node instanceof FacetNode) {
 					FacetNode n = (FacetNode) node;
 					if (n.getName().equals(ITEMS)) {
 						Node value = n.getValue();
@@ -586,6 +594,16 @@ public class TopLevelRamlModelBuilder {
 			an.getChildren().forEach(x -> result.add(toObject(x)));
 			return result;
 		}
+		if (n instanceof ObjectNode){
+			ObjectNode nm=(ObjectNode) n;
+			if (nm.getChildren().size()==1){
+				Node s=nm.getChildren().get(0);
+				if (s instanceof KeyValueNode){
+					KeyValueNode vv=(KeyValueNode) s;
+					return toObject(vv.getValue());
+				}
+			}
+		}
 		return n;
 	}
 
@@ -666,10 +684,6 @@ public class TopLevelRamlModelBuilder {
 	public static TopLevelModel build(String raml) {
 		final CompositeResourceLoader loader = new CompositeResourceLoader(new UrlResourceLoader(),new ClassPathResourceLoader());
 		final TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(raml, loader, "");
-		final RamlModelResult buildApi = new RamlModelBuilder(loader).buildApi(raml, "");
-		if (buildApi.hasErrors()) {
-			return null;
-		}
 		return build;
 	}
 }

@@ -90,6 +90,7 @@ public interface Resource extends Annotable, Comparable<Resource>, IHasResources
 				}
 				if (!found) {
 					NamedParamImpl namedParam = new NamedParamImpl(TypeOps.derive(s, BuiltIns.STRING), false, false);
+					namedParam.setLocation(ParameterLocation.PATH);
 					result.add(namedParam);
 				}
 			}

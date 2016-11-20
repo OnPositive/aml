@@ -1,0 +1,31 @@
+swagger: '2.0'
+info:
+  title: Hello
+  version: '1.0'
+schemes:
+- http
+host: example.org
+basePath: /dd
+definitions:
+  PersonArray:
+    allOf:
+    - type: array
+      items:
+        $ref: '#/definitions/Person'
+  PersonArray2:
+    allOf:
+    - $ref: '#/definitions/PersonArray'
+    minItems: 2.0
+  Person:
+    type: object
+    properties:
+      name:
+        type: string
+      lastName:
+        type: string
+      age:
+        type: number
+    required:
+    - name
+    - lastName
+paths: {}

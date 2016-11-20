@@ -635,6 +635,28 @@ public class SwaggerWriter extends GenericWriter {
 			}
 		}
 		else if (x.type().equals("OAuth 1.0")) {
+			mp.put("type", "apiKey");
+			MethodBase base = x.describedBy();
+			if (base == null) {
+				System.err.println("Path through securiry scheme misses described by");
+			} else {
+				ArrayList<INamedParam> ps = new ArrayList<>();
+				ps.addAll(base.queryParameters());
+				ps.addAll(base.headers());
+				if (ps.size() > 1) {
+					System.err.println(
+							"Custom securiry scheme has more then one parameter and can not be converted to ApiKey scheme correctly");
+				}
+				if (ps.size() < 1) {
+					System.err.println(
+							"Custom securiry scheme has less then one parameter and can not be converted to ApiKey scheme correctly");
+				}
+				else{
+				INamedParam iNamedParam = ps.get(0);
+				mp.put("name", iNamedParam.getKey());
+				mp.put("in", iNamedParam.location().name().toLowerCase());
+				}
+			}
 			System.err.println("Swagger does not support Oath 1.0");
 		}
 		else {

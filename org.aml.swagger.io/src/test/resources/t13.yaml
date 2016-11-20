@@ -1,0 +1,24 @@
+swagger: '2.0'
+info:
+  title: Hello
+  version: '1.0'
+schemes:
+- http
+host: example.org
+basePath: /dd
+definitions:
+  Numb:
+    type: number
+  Numb2:
+    allOf:
+    - $ref: '#/definitions/Numb'
+paths:
+  /q:
+    get:
+      summary: get
+      responses:
+        200:
+          description: '200'
+          headers:
+            hs:
+              type: number

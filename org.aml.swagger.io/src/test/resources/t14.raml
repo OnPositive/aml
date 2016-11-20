@@ -1,0 +1,14 @@
+#%RAML 1.0
+baseUri: http://example.org/dd
+title: Hello
+protocols: [HTTP]
+securitySchemes:
+  b:
+    type: OAuth 2.0
+    settings:
+      accessTokenUri: http://someOrg
+      authorizationGrants: password
+      scopes: [e,f]
+securedBy: [ {b: {scopes: [e]}}]
+/z:
+  get:

@@ -32,7 +32,6 @@ public class LoadRegistry implements Supplier<Registry>{
 			throw new IllegalStateException(e);
 		}
 	}
-
 	
 	public static Registry load(InputStream r) {
 		try{

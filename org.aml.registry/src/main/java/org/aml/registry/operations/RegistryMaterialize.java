@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
-
 import org.aml.registry.internal.HTTPUtil;
 import org.aml.registry.internal.LocalRegistry;
 import org.aml.registry.model.ApiDescription;
@@ -168,7 +167,7 @@ public class RegistryMaterialize implements Function<Registry, Registry> {
 			clone.setLocation(localRegistry.getLocalFileFor(clone.getLocation()).getAbsolutePath());
 			rs.getLibraries().add(clone);
 		}
-
+		
 		return t;
 	}
 

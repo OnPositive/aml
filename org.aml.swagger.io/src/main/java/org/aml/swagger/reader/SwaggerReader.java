@@ -65,6 +65,7 @@ import io.swagger.models.Swagger;
 import io.swagger.models.Xml;
 import io.swagger.models.auth.ApiKeyAuthDefinition;
 import io.swagger.models.auth.BasicAuthDefinition;
+import io.swagger.models.auth.In;
 import io.swagger.models.auth.OAuth2Definition;
 import io.swagger.models.auth.SecuritySchemeDefinition;
 import io.swagger.models.parameters.AbstractSerializableParameter;
@@ -92,8 +93,6 @@ public class SwaggerReader {
 
 	private ApiImpl result;
 	private Swagger swagger;
-
-	
 	
 	public ApiImpl read(String content) {
 		result = new ApiImpl();
@@ -149,6 +148,17 @@ public class SwaggerReader {
 					}
 				} else if (securitySchemeDefinition instanceof ApiKeyAuthDefinition) {
 					sd.setType("Pass Through");
+					ActionImpl action=new ActionImpl("");
+					ApiKeyAuthDefinition kd=(ApiKeyAuthDefinition) securitySchemeDefinition;
+					sd.setDescribedBy(action);
+					In in = kd.getIn();
+					NamedParamImpl pr=new NamedParamImpl(kd.getName(),BuiltIns.STRING,true,false);
+					if (in==In.QUERY){					
+						action.queryParameters().add(pr);
+					}
+					else{
+						action.headers().add(pr);
+					}
 				} else if (securitySchemeDefinition instanceof BasicAuthDefinition) {
 					sd.setType("Basic Authentication");
 				} else {

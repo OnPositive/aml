@@ -1,0 +1,46 @@
+swagger: '2.0'
+info:
+  title: Hello
+  version: '1.0'
+schemes:
+- http
+definitions:
+  Boolean:
+    type: boolean
+  MyString:
+    type: string
+    pattern: .
+paths:
+  /q:
+    get:
+      summary: get
+      description: get some stuff
+      parameters:
+      - name: a
+        required: true
+        in: query
+        type: boolean
+      - name: b
+        required: true
+        in: query
+        type: string
+        pattern: .
+        description: a
+      - name: c
+        in: query
+        type: string
+      produces:
+      - application/json
+      responses:
+        200:
+          description: '200'
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              lastName:
+                type: string
+            required:
+            - name
+            - lastName

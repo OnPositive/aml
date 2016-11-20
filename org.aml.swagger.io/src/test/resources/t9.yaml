@@ -34,7 +34,7 @@ definitions:
     - name
 paths:
   /pet: {}
-  /{petId}:
+  /pet/{petId}:
     parameters:
     - name: petId
       required: true

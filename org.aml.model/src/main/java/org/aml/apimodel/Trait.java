@@ -1,10 +1,10 @@
 package org.aml.apimodel;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface Trait extends MethodBase{
 
 	String name();
 
-	Collection<SecuredByConfig> securedBy();
+	List<SecuredByConfig> securedBy();
 }

@@ -81,7 +81,28 @@ public class SwaggerWriter extends GenericWriter {
 			System.err.println("Swagger can not represent union types correctly - ignoring type");
 			return result;
 		} else {
-			if (superTypes.size() > 0) {
+			if (inParam){
+			   result.put(TYPE, "string");
+			   if(t.isString()){
+				   result.put(TYPE, "string");
+			   }
+			   if(t.isNumber()){
+				   if (t.isInteger()){
+					   result.put(TYPE, "integer");   
+				   }
+				   else{
+					   result.put(TYPE, "number");
+				   }
+			   }
+			   if(t.isBoolean()){
+				   result.put(TYPE, "boolean");
+			   }
+			   if (t.isArray()){
+				   result.put(TYPE, "array");
+			   }
+				//this means that we can not use allOf, and $ref to global definition
+			}
+			else if (superTypes.size() > 0) {
 				if (superTypes.size() == 1) {
 					if (t.isEffectivelyEmptyType() && !t.superType().isBuiltIn()) {
 						while (t.isAnonimous()&&t.hasOnlyDisplayName()&&!t.isBuiltIn()&&!t.isExternal()){
@@ -99,8 +120,15 @@ public class SwaggerWriter extends GenericWriter {
 							ts.add(typeRespresentation(t.superType(), true));
 							result.put("allOf", ts);
 						} else {
-							String name = superTypes.iterator().next().name();
-							result.put(TYPE, name);
+							AbstractType next = superTypes.iterator().next();
+							String name = next.name();
+							if (next==BuiltIns.ANY){
+								
+							}
+							else{
+								
+								result.put(TYPE, transformName(name));
+							}
 						}
 					}
 				} else {
@@ -142,7 +170,7 @@ public class SwaggerWriter extends GenericWriter {
 			}
 		}
 
-		Set<TypeInformation> meta = t.declaredMeta();
+		Set<TypeInformation> meta = inParam?t.meta():t.declaredMeta();
 
 		for (TypeInformation ti : meta) {
 			if (ti instanceof PropertyIs) {
@@ -177,7 +205,13 @@ public class SwaggerWriter extends GenericWriter {
 				}
 				if (fs instanceof Annotation){
 					Annotation an=(Annotation) fs;
-					result.put("x-"+an.annotationType().name(), value);	
+					AbstractType annotationType = an.annotationType();
+					if (annotationType!=null){
+					result.put("x-"+annotationType.name(), value);
+					}
+					else{
+						result.put("x-"+an.getName(), value);
+					}
 				}
 				else{
 				result.put(fs.facetName(), value);
@@ -189,6 +223,23 @@ public class SwaggerWriter extends GenericWriter {
 			}
 		}
 		return result;
+	}
+	protected static HashSet<String>allowedTypes=new HashSet<>();
+
+	
+	static{
+		allowedTypes.add("array");
+		allowedTypes.add("object");
+		allowedTypes.add("string");
+		allowedTypes.add("number");
+		allowedTypes.add("boolean");
+		allowedTypes.add("integer");
+	}
+	private String transformName(String name) {
+		if (!allowedTypes.contains(name)){
+			return "string";
+		}
+		return name;
 	}
 
 	protected LinkedHashMap<String, Object>  typeRespresentation(AbstractType p, boolean allowNamed) {
@@ -289,7 +340,7 @@ public class SwaggerWriter extends GenericWriter {
 
 	protected void dumpResources(List<Resource> res, LinkedHashMap<String, Object> map) {
 		for (Resource r : res) {
-			map.put(r.relativeUri(), dumpResource(r));
+			map.put(r.getUri(), dumpResource(r));
 		}
 	}
 
@@ -319,6 +370,7 @@ public class SwaggerWriter extends GenericWriter {
 		LinkedHashSet<String> consumes = new LinkedHashSet<>();
 		LinkedHashSet<String> produces = new LinkedHashSet<>();
 		boolean added = false;
+		HashSet<AbstractType>tps=new HashSet<>();
 		for (MimeType m : body) {
 			consumes.add(m.getType());
 			List<INamedParam> formParameters = m.getFormParameters();
@@ -336,8 +388,12 @@ public class SwaggerWriter extends GenericWriter {
 				added = true;
 				value.add(e);
 			}
+			if (typeModel.isEffectivelyEmptyType()){
+				typeModel=typeModel.superType();
+			}
+			tps.add(typeModel);
 		}
-		if (body.size() > 1) {
+		if (tps.size() > 1) {
 			// TODO FIX ME
 			System.err.println("Warning, multiple bodies are not supported in swagger:" + a.resource().getUri() + "."
 					+ a.method());
@@ -458,17 +514,23 @@ public class SwaggerWriter extends GenericWriter {
 		addScalarField("description", mp, r, () -> d);
 		dumpCollection("headers", mp, r.headers(), this::dumpNamedParam, this::typeKey);
 		List<MimeType> body = r.body();
+		HashSet<AbstractType>tps=new HashSet<>();
 		if (body != null && !body.isEmpty()) {
 			for (MimeType m : body) {
 				
 				AbstractType typeModel = m.getTypeModel();
 				LinkedHashMap<String, Object> dumpType = (LinkedHashMap<String, Object>) this.typeRespresentation(typeModel,true);
 				mp.put("schema", dumpType);
+				if (typeModel.isEffectivelyEmptyType()){
+					typeModel=typeModel.superType();
+				}
+				tps.add(typeModel);
 				break;
 			}
-			if (body.size() > 1) {
-				System.err.println("Warning - response has more then one body:" + r.code());
-			}
+			
+		}
+		if (tps.size() > 1) {
+			System.err.println("Warning - response has more then one body:" + r.code());
 		}
 		addAnnotations(r, mp);
 
@@ -510,7 +572,13 @@ public class SwaggerWriter extends GenericWriter {
 			mp.put("authorizationUrl", ((String) x.settings().get("authorizationUri")));
 			mp.put("tokenUrl", ((String) x.settings().get("accessTokenUri")));
 			mp.put("type", "oauth2");
-			String object = (String) x.settings().get("authorizationGrants");
+			Object object2 = x.settings().get("authorizationGrants");
+			if (object2 instanceof List){
+				List<String>sm=(List<String>) object2;
+				System.err.println("flow is a single item in swagger, conversion is not perfect");
+				object2=sm.get(0);
+			}
+			String object = (String) object2;
 			// "implicit", "password", "application" or "accessCode".
 			// authorization_code, password, client_credentials, or implicit;
 			if (object != null) {
@@ -559,12 +627,39 @@ public class SwaggerWriter extends GenericWriter {
 					System.err.println(
 							"Path through securiry scheme has less then one parameter and can not be converted to ApiKey scheme correctly");
 				}
+				else{
 				INamedParam iNamedParam = ps.get(0);
 				mp.put("name", iNamedParam.getKey());
 				mp.put("in", iNamedParam.location().name().toLowerCase());
+				}
 			}
-		} else {
-			System.err.println("Can not accurately convert security scheme");
+		}
+		else if (x.type().equals("OAuth 1.0")) {
+			System.err.println("Swagger does not support Oath 1.0");
+		}
+		else {
+			mp.put("type", "apiKey");
+			MethodBase base = x.describedBy();
+			if (base == null) {
+				System.err.println("Path through securiry scheme misses described by");
+			} else {
+				ArrayList<INamedParam> ps = new ArrayList<>();
+				ps.addAll(base.queryParameters());
+				ps.addAll(base.headers());
+				if (ps.size() > 1) {
+					System.err.println(
+							"Custom securiry scheme has more then one parameter and can not be converted to ApiKey scheme correctly");
+				}
+				if (ps.size() < 1) {
+					System.err.println(
+							"Custom securiry scheme has less then one parameter and can not be converted to ApiKey scheme correctly");
+				}
+				else{
+				INamedParam iNamedParam = ps.get(0);
+				mp.put("name", iNamedParam.getKey());
+				mp.put("in", iNamedParam.location().name().toLowerCase());
+				}
+			}					
 		}
 		addScalarField("description", mp, x, x::description);
 		addAnnotations(x, mp);

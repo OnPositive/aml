@@ -51,4 +51,6 @@ public interface MethodBase extends Annotable{
 	ArrayList<String> getIs();
 
 	String name();
+	
+	List<SecuredByConfig> securedBy();
 }

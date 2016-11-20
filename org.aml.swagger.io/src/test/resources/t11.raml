@@ -1,0 +1,31 @@
+#%RAML 1.0
+title: Hello
+protocols: [HTTP]
+traits:
+  Hello:
+    queryParameters:
+      c:
+        required: false
+types:
+   Boolean:
+     type: boolean 
+   MyString:
+     type: string
+     pattern: .    
+/q:
+  displayName: QQ
+  get:
+    is: [ Hello ]
+    description: get some stuff
+    queryParameters:
+      a: Boolean
+      b: 
+        type: MyString
+        description: a
+    responses:
+      200:
+        body:
+          application/json:
+            properties:
+              name: string
+              lastName: string

@@ -11,6 +11,7 @@ import org.aml.apimodel.Action;
 import org.aml.apimodel.Annotable;
 import org.aml.apimodel.DocumentationItem;
 import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.MethodBase;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
@@ -202,7 +203,7 @@ public class RamlWriter extends GenericWriter {
 		}
 	}
 
-	private LinkedHashMap<String, Object> dumpMethod(Action a) {
+	private LinkedHashMap<String, Object> dumpMethod(MethodBase a) {
 		LinkedHashMap<String, Object> mp = new LinkedHashMap<>();
 		dumpCollection("securedBy", mp, a.securedBy(), this::dumpSecuredBy, s -> s.name());
 		addScalarField("description", mp, a, a::description);
@@ -248,8 +249,6 @@ public class RamlWriter extends GenericWriter {
 		return k.getKey() + (k.isRequired() ? "" : "?");
 	}
 
-	
-
 	private Object dumpMimeType(MimeType r) {
 		AbstractType typeModel = ((MimeTypeImpl) r).getPlainModel();
 		if (typeModel != null) {
@@ -294,6 +293,10 @@ public class RamlWriter extends GenericWriter {
 		if (r.settings() != null && !r.settings().isEmpty()) {
 			mp.put("settings", r.settings());
 		}
+		if (r.describedBy() != null) {
+			LinkedHashMap<String, Object> dumpMethod = dumpMethod(r.describedBy());
+			mp.put("describedBy", dumpMethod);
+		}
 		addAnnotations(r, mp);
 		return mp;
 
@@ -316,13 +319,13 @@ public class RamlWriter extends GenericWriter {
 				s -> s.name());
 		dumpCollection("traits", toStore, model.getTraits(), this::dumpTrait, s -> s.name());
 		dumpCollection("securedBy", toStore, model.getSecuredBy(), this::dumpSecuredBy, s -> s.name());
-		dumpTypes(model.types(), model.annotationTypes(), (LinkedHashMap<Object, Object>)(Map<?,?>)toStore);
+		dumpTypes(model.types(), model.annotationTypes(), (LinkedHashMap<Object, Object>) (Map<?, ?>) toStore);
 		String header = RAML_1_0_API;
 		dumpResources(model.resources(), toStore);
 		if (!model.getDocumentation().isEmpty()) {
 			toStore.put("documentation", dumpDocumentationItems(model.getDocumentation()));
 		}
-		return dumpMap((LinkedHashMap<Object, Object>)(Map<?,?>)toStore, header);
+		return dumpMap((LinkedHashMap<Object, Object>) (Map<?, ?>) toStore, header);
 	}
 
 	private void addAnnotations(Annotable model, LinkedHashMap<String, Object> toStore) {

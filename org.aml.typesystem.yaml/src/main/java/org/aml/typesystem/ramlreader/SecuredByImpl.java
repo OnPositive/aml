@@ -9,24 +9,37 @@ import org.aml.apimodel.SecuredByConfig;
 import org.aml.apimodel.SecurityScheme;
 import org.aml.apimodel.TopLevelModel;
 import org.raml.v2.internal.impl.commons.nodes.ParametrizedSecuritySchemeRefNode;
+import org.raml.v2.internal.impl.commons.nodes.SecuritySchemeRefNode;
 import org.raml.yagi.framework.nodes.Node;
 
-public class SecuredByImpl extends AbstractWrappedNodeImpl<Annotable, Node> implements SecuredByConfig{
+public class SecuredByImpl extends AbstractWrappedNodeImpl<Annotable, Node> implements SecuredByConfig {
 
 	public SecuredByImpl(TopLevelModel mdl, Annotable parent, Node node) {
 		super(mdl, parent, node);
-		
+
 	}
 
 	@Override
-	public String name() {	
-		ParametrizedSecuritySchemeRefNode n=(ParametrizedSecuritySchemeRefNode) this.original;
+	public String name() {
+		if (this.original instanceof SecuritySchemeRefNode) {
+			SecuritySchemeRefNode n = (SecuritySchemeRefNode) this.original;
+			String refName = n.getRefName();
+			try {
+				int parseInt = Integer.parseInt(refName);
+				List<SecurityScheme> securityDefinitions = mdl.securityDefinitions();
+				return securityDefinitions.get(parseInt).name();
+			} catch (NumberFormatException e) {
+				// TODO: handle exception
+			}
+			return refName;
+		}
+		ParametrizedSecuritySchemeRefNode n = (ParametrizedSecuritySchemeRefNode) this.original;
 		String refName = n.getRefName();
-		try{
+		try {
 			int parseInt = Integer.parseInt(refName);
 			List<SecurityScheme> securityDefinitions = mdl.securityDefinitions();
 			return securityDefinitions.get(parseInt).name();
-		}catch (NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			// TODO: handle exception
 		}
 		return refName;
@@ -34,10 +47,19 @@ public class SecuredByImpl extends AbstractWrappedNodeImpl<Annotable, Node> impl
 
 	@Override
 	public LinkedHashMap<String, Object> settings() {
-		ParametrizedSecuritySchemeRefNode n=(ParametrizedSecuritySchemeRefNode) this.original;
+		if (this.original instanceof SecuritySchemeRefNode) {
+			SecuritySchemeRefNode n = (SecuritySchemeRefNode) this.original;
+			Map<String, Node> parameters = n.getParameters();
+			LinkedHashMap<String, Object> res = new LinkedHashMap<>();
+			for (String s : parameters.keySet()) {
+				res.put(s, TopLevelRamlModelBuilder.toObject(parameters.get(s)));
+			}
+			return res;
+		}
+		ParametrizedSecuritySchemeRefNode n = (ParametrizedSecuritySchemeRefNode) this.original;
 		Map<String, Node> parameters = n.getParameters();
-		LinkedHashMap<String, Object>res=new LinkedHashMap<>();
-		for (String s:parameters.keySet()){
+		LinkedHashMap<String, Object> res = new LinkedHashMap<>();
+		for (String s : parameters.keySet()) {
 			res.put(s, TopLevelRamlModelBuilder.toObject(parameters.get(s)));
 		}
 		return res;

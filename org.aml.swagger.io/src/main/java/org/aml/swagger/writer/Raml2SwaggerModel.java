@@ -88,6 +88,7 @@ public class Raml2SwaggerModel extends GenericWriter {
 		return result;
 	}
 
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	public SecurityRequirement convertSecuredBy(SecuredByConfig x) {
 		SecurityRequirement securityRequirement = new SecurityRequirement();
 		securityRequirement=securityRequirement.requirement(x.name());
@@ -187,6 +188,7 @@ public class Raml2SwaggerModel extends GenericWriter {
 	}
 
 	
+	@SuppressWarnings("unused")
 	private Property convertType(AbstractType typeModel) {
 		Property ps=createBaseProperty(typeModel);
 		return null;

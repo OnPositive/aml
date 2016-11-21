@@ -168,7 +168,7 @@ public class RegistryMaterialize implements Function<Registry, Registry> {
 			rs.getLibraries().add(clone);
 		}
 		
-		return t;
+		return rs;
 	}
 
 	public void parseDeps() {

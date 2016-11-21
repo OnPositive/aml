@@ -3,10 +3,17 @@ package org.aml.registry.model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.aml.apimodel.TopLevelModel;
+import org.aml.registry.internal.LocalRegistry;
+import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 import org.apache.commons.io.FileUtils;
+import org.raml.v2.api.loader.CompositeResourceLoader;
+import org.raml.v2.api.loader.FileResourceLoader;
+import org.raml.v2.api.loader.ResourceLoader;
 import org.raml.v2.internal.utils.StreamUtils;
 
 public class ItemDescription implements Cloneable {
@@ -92,6 +99,32 @@ public class ItemDescription implements Cloneable {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	transient LocalRegistry localRegistry;
+
+	public LocalRegistry getLocalRegistry() {
+		return localRegistry;
+	}
+
+	public void setLocalRegistry(LocalRegistry localRegistry) {
+		this.localRegistry = localRegistry;
+	}
+
+	public TopLevelModel resolve() {
+		if (this.localRegistry != null) {
+			ResourceLoader resourceLoader = new ResourceLoader() {
+
+				public InputStream fetchResource(String resourceName) {
+					return localRegistry.get(resourceName);
+				}
+			};
+			return new TopLevelRamlModelBuilder().build(contents(),
+					new CompositeResourceLoader(new FileResourceLoader(new File(location).getParent()), resourceLoader),
+					location);
+		}
+		return new TopLevelRamlModelBuilder().build(contents(),
+				new CompositeResourceLoader(new FileResourceLoader(new File(location).getParent())), location);
 	}
 
 }

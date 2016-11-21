@@ -62,4 +62,13 @@ public class Registry {
 	public String asString(){
 		return new StoreRegistry().apply(this);
 	}
+	public void append(Registry apply) {
+		apply.apis.forEach(x->{
+			this.apis.add(x.clone());
+		});
+		apply.libraries.forEach(x->{
+			this.libraries.add(x.clone());
+		});		
+		this.includes.addAll(apply.includes);
+	}
 }

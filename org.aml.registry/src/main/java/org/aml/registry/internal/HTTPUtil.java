@@ -1,12 +1,16 @@
 package org.aml.registry.internal;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.apache.commons.io.FileUtils;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -21,6 +25,12 @@ public class HTTPUtil {
 	static Executor exect=Executors.newFixedThreadPool(100);
 	static{
 		
+	}
+	public static void readToFile(String url,File target) throws IOException {
+		HttpRequest buildGetRequest;	
+		buildGetRequest = createRequestFactory.buildGetRequest(new GenericUrl(url));
+		InputStream str=buildGetRequest.execute().getContent();
+		FileUtils.copyInputStreamToFile(str, target);
 	}
 	
 	public static String readString(String url) throws IOException {

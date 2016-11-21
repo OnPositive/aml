@@ -1,6 +1,7 @@
 package org.aml.registry.operations;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -34,14 +35,28 @@ public class PublishRegistry implements Consumer<Registry>{
 		File fs=new File(property,".aml_registry");
 		RegistryMaterialize registryMaterialize = new RegistryMaterialize(fs.getAbsolutePath(),false);
 		Registry apply = registryMaterialize.apply(t);
-		IndexBuilder indexBuilder = new IndexBuilder(registryMaterialize.getLocalRegistry());
 		String format = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date()).replace(' ', '_').replace(':','-');
+		Registry local=new Registry();
+		local.setName(format);
+		local.append(apply);
+		local.items().forEach(x->{
+			x.setLocation(x.getLocation().substring(fs.getAbsolutePath().length()+1));
+		});		
+		String content=new StoreRegistry().apply(local);
+		try {
+			FileWriter fileWriter = new FileWriter(new File(fs,"registry.json"));
+			fileWriter.write(content);
+			fileWriter.close();
+		} catch (IOException e1) {
+			throw new IllegalStateException();
+		}
+		IndexBuilder indexBuilder = new IndexBuilder(registryMaterialize.getLocalRegistry());		
 		File file = new File(fs.getParent(),"registry"+format+".zip");
 		String absolutePath = file.getAbsolutePath();
 		ZipUtil.zipDir(absolutePath, fs.getAbsolutePath());
 		
 		new PublishHelper(info,"Publishing zipped registry",id).commitFile("releases/", file.getParent(),  file.getName());
-		for (ItemDescription d : apply.items()) {
+		for (ItemDescription d : t.items()) {
 			indexBuilder.append(d.getLocation());
 		}
 		StringWriter w = new StringWriter();

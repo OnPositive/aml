@@ -574,6 +574,7 @@ public class SwaggerWriter extends GenericWriter {
 			mp.put("type", "oauth2");
 			Object object2 = x.settings().get("authorizationGrants");
 			if (object2 instanceof List){
+				@SuppressWarnings("unchecked")
 				List<String>sm=(List<String>) object2;
 				System.err.println("flow is a single item in swagger, conversion is not perfect");
 				object2=sm.get(0);

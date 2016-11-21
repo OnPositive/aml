@@ -184,7 +184,7 @@ public class SwaggerReader {
 			result.setBaseUrl(host + basePath);
 		}
 		List<String> prod = swagger.getProduces();
-		List<String> cons = swagger.getConsumes();
+		//List<String> cons = swagger.getConsumes();
 		if (prod != null) {
 			// if (!prod.equals(cons)) {
 			// throw new IllegalStateException();
@@ -402,6 +402,7 @@ public class SwaggerReader {
 			FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type,format));
 			type=mapFormat.type;
 			if (((AbstractSerializableParameter) p).getEnum()!=null){
+				@SuppressWarnings("unchecked")
 				LinkedHashSet<Object> linkedHashSet = new LinkedHashSet<>(((AbstractSerializableParameter) p).getEnum());
 				linkedHashSet.remove(null);
 				((AbstractSerializableParameter) p).setEnum(new ArrayList<>(linkedHashSet));

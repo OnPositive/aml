@@ -8,6 +8,9 @@ import junit.framework.TestCase;
 public class LoadGurusTest extends TestCase {
 
 	public void test0() {
+		if (System.getenv().get("SKIP_HEAVY")!=null){
+			return;
+		}
 		TemporaryFolder temporaryFolder = new TemporaryFolder();
 		try {
 			temporaryFolder.create();

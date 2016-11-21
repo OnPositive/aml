@@ -28,14 +28,14 @@ paths:
         format: double
         description: Longitude component of location
       responses:
-        default:
-          description: default response
+        201:
+          description: H
       x-amazon-apigateway-auth: aws_iam
       x-amazon-apigateway-integration:
         type: aws
-        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:ACCOUNT_ID:function:myFunction/invocations
+        uri: arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:393636047515:function:MyFunction/invocations
         httpMethod: POST
-        credentials: arn:aws:iam::ACCOUNT_ID:role/lambda_exec_role
+        credentials: arn:aws:iam::393636047515:role/lambda_exec_role
         requestTemplates:
           application/json: json request template 2
           application/xml: xml request template 2
@@ -45,17 +45,13 @@ paths:
         cacheNamespace: cache namespace
         cacheKeyParameters: []
         responses:
-          2\d{2}:
+          '200':
             statusCode: '200'
-            responseParameters:
-              method.response.header.test-method-response-header: integration.response.header.integrationResponseHeaderParam1
             responseTemplates:
               application/json: json 200 response template
               application/xml: xml 200 response template
-          default:
+          '400':
             statusCode: '400'
-            responseParameters:
-              method.response.header.test-method-response-header: '''static value'''
             responseTemplates:
               application/json: json 400 response template
               application/xml: xml 400 response template

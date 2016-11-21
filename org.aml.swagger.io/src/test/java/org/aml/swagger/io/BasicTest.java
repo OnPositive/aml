@@ -5,6 +5,7 @@ import org.aml.apimodel.TopLevelModel;
 import org.aml.registry.model.ApiDescription;
 import org.aml.registry.model.Registry;
 import org.aml.registry.model.RegistryManager;
+import org.aml.swagger.utils.ILog;
 import org.aml.swagger.writer.SwaggerWriter;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 import org.raml.v2.internal.utils.StreamUtils;
@@ -70,7 +71,15 @@ public class BasicTest extends TestCase{
 			}
 			Api api = (Api) resolve;							
 			try{
-			String store = new SwaggerWriter().store((Api) api);
+			SwaggerWriter swaggerWriter = new SwaggerWriter();
+			swaggerWriter.setLog(new ILog() {
+				
+				@Override
+				public void logProblem(String problem) {
+					
+				}
+			});
+			String store = swaggerWriter.store((Api) api);
 			Swagger assertParsableSwagger = assertParsableSwagger(store);
 			TestCase.assertTrue(api.allResources().size()==assertParsableSwagger.getPaths().size());
 			successfullCount++;
@@ -99,7 +108,16 @@ public class BasicTest extends TestCase{
 	}
 	protected void assertCorrectTransformation(String resource,String testAgainst){
 		Api build = (Api) TopLevelRamlModelBuilder.build(StreamUtils.toString(BasicTest.class.getResourceAsStream(resource)));
-		String store = new SwaggerWriter().store((Api) build);
+		SwaggerWriter swaggerWriter = new SwaggerWriter();
+		swaggerWriter.setLog(new ILog() {
+			
+			@Override
+			public void logProblem(String problem) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		String store = swaggerWriter.store((Api) build);
 		Swagger assertParsableSwagger = assertParsableSwagger(store);
 		TestCase.assertTrue(build.allResources().size()==assertParsableSwagger.getPaths().size());
 		if (testAgainst!=null){

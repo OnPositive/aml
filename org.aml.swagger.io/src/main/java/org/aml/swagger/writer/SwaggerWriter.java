@@ -27,6 +27,7 @@ import org.aml.apimodel.SecurityScheme;
 import org.aml.apimodel.TopLevelModel;
 import org.aml.apimodel.impl.MimeTypeImpl;
 import org.aml.apimodel.impl.NamedParamImpl;
+import org.aml.swagger.utils.ILog;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeRegistry;
@@ -65,6 +66,22 @@ public class SwaggerWriter extends GenericWriter {
 	private static final String TYPE = "type";
 
 	static HashSet<String> skipFacets = new HashSet<>();
+	
+	ILog log=new ILog() {
+		
+		@Override
+		public void logProblem(String problem) {
+			log.logProblem(problem);
+		}
+	};
+
+	public ILog getLog() {
+		return log;
+	}
+
+	public void setLog(ILog log) {
+		this.log = log;
+	}
 
 	static {
 		skipFacets.add("displayName");
@@ -77,11 +94,11 @@ public class SwaggerWriter extends GenericWriter {
 		
 		Set<AbstractType> superTypes = t.superTypes();
 		if (t.isExternal()){
-			System.err.println("Swagger can not represent external types correctly - ignoring type");
+			log.logProblem("Swagger can not represent external types correctly - ignoring type");
 			return result;
 		}
 		if (t.isUnion()) {
-			System.err.println("Swagger can not represent union types correctly - ignoring type");
+			log.logProblem("Swagger can not represent union types correctly - ignoring type");
 			return result;
 		} else {
 			if (inParam){
@@ -160,7 +177,7 @@ public class SwaggerWriter extends GenericWriter {
 				if (p.isAdditional()) {
 					result.put("additionalProperties", vl);
 				} else if (p.isMap()) {
-					System.err.println("pattern properties are not supported in swagger");
+					log.logProblem("pattern properties are not supported in swagger");
 				} else {
 					dumpedProps.put(id, vl);
 				}
@@ -287,7 +304,7 @@ public class SwaggerWriter extends GenericWriter {
 			extras.add(t);
 			String findPath = findPath(api, t);
 			if (findPath == null) {
-				System.err.println("Can not find path to type:" + t.name());
+				log.logProblem("Can not find path to type:" + t.name());
 			}
 			LinkedHashMap<String, Object> ref = new LinkedHashMap<>();
 			ref.put("$ref", "#/definitions/" + findPath +"."+ t.name());
@@ -398,7 +415,7 @@ public class SwaggerWriter extends GenericWriter {
 		}
 		if (tps.size() > 1) {
 			// TODO FIX ME
-			System.err.println("Warning, multiple bodies are not supported in swagger:" + a.resource().getUri() + "."
+			log.logProblem("Warning, multiple bodies are not supported in swagger:" + a.resource().getUri() + "."
 					+ a.method());
 		}
 		dumpParameters(value, mp);
@@ -533,7 +550,7 @@ public class SwaggerWriter extends GenericWriter {
 			
 		}
 		if (tps.size() > 1) {
-			System.err.println("Warning - response has more then one body:" + r.code());
+			log.logProblem("Warning - response has more then one body:" + r.code());
 		}
 		addAnnotations(r, mp);
 
@@ -579,7 +596,7 @@ public class SwaggerWriter extends GenericWriter {
 			if (object2 instanceof List){
 				@SuppressWarnings("unchecked")
 				List<String>sm=(List<String>) object2;
-				System.err.println("flow is a single item in swagger, conversion is not perfect");
+				log.logProblem("flow is a single item in swagger, conversion is not perfect");
 				object2=sm.get(0);
 			}
 			String object = (String) object2;
@@ -597,7 +614,7 @@ public class SwaggerWriter extends GenericWriter {
 					mp.remove("authorizationUrl");
 				}
 				else {
-					System.err.println("Can not map authorizationGrants:" + object);
+					log.logProblem("Can not map authorizationGrants:" + object);
 				}
 			}
 			else{
@@ -618,17 +635,17 @@ public class SwaggerWriter extends GenericWriter {
 			mp.put("type", "apiKey");
 			MethodBase base = x.describedBy();
 			if (base == null) {
-				System.err.println("Path through securiry scheme misses described by");
+				log.logProblem("Path through securiry scheme misses described by");
 			} else {
 				ArrayList<INamedParam> ps = new ArrayList<>();
 				ps.addAll(base.queryParameters());
 				ps.addAll(base.headers());
 				if (ps.size() > 1) {
-					System.err.println(
+					log.logProblem(
 							"Path through securiry scheme has more then one parameter and can not be converted to ApiKey scheme correctly");
 				}
 				if (ps.size() < 1) {
-					System.err.println(
+					log.logProblem(
 							"Path through securiry scheme has less then one parameter and can not be converted to ApiKey scheme correctly");
 				}
 				else{
@@ -642,17 +659,17 @@ public class SwaggerWriter extends GenericWriter {
 			mp.put("type", "apiKey");
 			MethodBase base = x.describedBy();
 			if (base == null) {
-				System.err.println("Path through securiry scheme misses described by");
+				log.logProblem("Path through securiry scheme misses described by");
 			} else {
 				ArrayList<INamedParam> ps = new ArrayList<>();
 				ps.addAll(base.queryParameters());
 				ps.addAll(base.headers());
 				if (ps.size() > 1) {
-					System.err.println(
+					log.logProblem(
 							"Custom securiry scheme has more then one parameter and can not be converted to ApiKey scheme correctly");
 				}
 				if (ps.size() < 1) {
-					System.err.println(
+					log.logProblem(
 							"Custom securiry scheme has less then one parameter and can not be converted to ApiKey scheme correctly");
 				}
 				else{
@@ -661,23 +678,23 @@ public class SwaggerWriter extends GenericWriter {
 				mp.put("in", iNamedParam.location().name().toLowerCase());
 				}
 			}
-			System.err.println("Swagger does not support Oath 1.0");
+			log.logProblem("Swagger does not support Oath 1.0");
 		}
 		else {
 			mp.put("type", "apiKey");
 			MethodBase base = x.describedBy();
 			if (base == null) {
-				System.err.println("Path through securiry scheme misses described by");
+				log.logProblem("Path through securiry scheme misses described by");
 			} else {
 				ArrayList<INamedParam> ps = new ArrayList<>();
 				ps.addAll(base.queryParameters());
 				ps.addAll(base.headers());
 				if (ps.size() > 1) {
-					System.err.println(
+					log.logProblem(
 							"Custom securiry scheme has more then one parameter and can not be converted to ApiKey scheme correctly");
 				}
 				if (ps.size() < 1) {
-					System.err.println(
+					log.logProblem(
 							"Custom securiry scheme has less then one parameter and can not be converted to ApiKey scheme correctly");
 				}
 				else{
@@ -712,7 +729,7 @@ public class SwaggerWriter extends GenericWriter {
 					toStore.put("basePath", path);
 				}
 			} catch (MalformedURLException e) {
-				System.err.println("Mailformed base url:" + baseUrl);
+				log.logProblem("Mailformed base url:" + baseUrl);
 			}
 		}
 		addAnnotations(model, toStore);

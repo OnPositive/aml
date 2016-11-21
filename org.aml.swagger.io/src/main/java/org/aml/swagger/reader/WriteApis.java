@@ -46,6 +46,5 @@ public class WriteApis {
 		} catch (IOException e) {
 			throw new IllegalStateException();
 		}
-	}
-	
+	}	
 }

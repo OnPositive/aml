@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.aml.apimodel.impl.ActionImpl;
 import org.aml.apimodel.impl.ApiImpl;
 import org.aml.apimodel.impl.MimeTypeImpl;
@@ -31,6 +30,7 @@ import org.aml.typesystem.meta.facets.Discriminator;
 import org.aml.typesystem.meta.facets.DisplayName;
 import org.aml.typesystem.meta.facets.Example;
 import org.aml.typesystem.meta.facets.Format;
+import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.Enum;
 import org.aml.typesystem.meta.restrictions.Pattern;
@@ -47,11 +47,9 @@ import org.raml.v2.api.loader.CompositeResourceLoader;
 import org.raml.v2.api.loader.UrlResourceLoader;
 import org.raml.yagi.framework.util.DateType;
 import org.raml.yagi.framework.util.DateUtils;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.swagger.models.AbstractModel;
 import io.swagger.models.ArrayModel;
 import io.swagger.models.ComposedModel;
@@ -372,7 +370,7 @@ public class SwaggerReader {
 		return null;
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private AbstractType convertParameterToType(Parameter p) {
 		if (p instanceof AbstractSerializableParameter<?>) {
 			AbstractSerializableParameter<?> basicModel = (AbstractSerializableParameter<?>) p;
@@ -393,8 +391,7 @@ public class SwaggerReader {
 					type="string";	
 				}
 				//FIXME
-			}
-			
+			}			
 			if (type!=null&&type.equals("boolean")){
 				basicModel.setEnum(null);//FIXME
 			}
@@ -680,10 +677,26 @@ public class SwaggerReader {
 	}
 
 	private void addXMLInfo(AbstractType range, Xml xml) {
-		// TODO Auto-generated method stub
-
+		XMLFacet xf=new XMLFacet();
+		if (xml.getAttribute()){
+			xf.setAttribute(xml.getAttribute());
+		}
+		if (xml.getWrapped()){
+			xf.setWrapped(xml.getWrapped());
+		}
+		if (xml.getName()!=null){
+			xf.setName(xml.getName());
+		}
+		if (xml.getPrefix()!=null){
+			xf.setPrefix(xml.getPrefix());
+		}
+		if (xml.getNamespace()!=null){
+			xf.setNamespace(xml.getNamespace());
+		}
+		range.addMeta(xf);
 	}
 
+	@SuppressWarnings("deprecation")
 	void transferTo(AbstractType tp, Class<? extends TypeInformation> cl, Object value) {
 		if (value == null || value.toString().length() == 0) {
 			return;
@@ -733,7 +746,6 @@ public class SwaggerReader {
 	}
 
 	AbstractType base(String type) {
-		
 		if (maps.containsKey(type)) {
 			return maps.get(type);
 		}

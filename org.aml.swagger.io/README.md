@@ -42,4 +42,8 @@ Succesfully converted:129 of 141 api gurus apis (absolute most of errors seemed 
 So it seems that the status of both converters may be considered as stable beta. (Any issues and suggestions are greatly apreciated)
  
  
- 
+###Testing
+
+```
+mvn test
+```

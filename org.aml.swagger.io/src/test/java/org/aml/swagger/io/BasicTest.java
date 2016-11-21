@@ -53,7 +53,7 @@ public class BasicTest extends TestCase{
 	}
 	
 	public void test11(){
-		Registry registry = RegistryManager.getInstance().aquireRelease("20.11.16_20-15");		
+		Registry registry = RegistryManager.getInstance().getDefault();		
 		int successfullCount=0;
 		int errorCount=0;
 		int assertionCount=0;

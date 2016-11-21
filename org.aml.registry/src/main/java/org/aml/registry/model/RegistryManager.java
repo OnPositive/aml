@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.StringReader;
 
 import org.aml.registry.internal.LocalRegistry;
+import org.aml.registry.internal.ZipUtil;
 import org.aml.registry.operations.AquireRegistryFromZip;
 import org.apache.commons.io.FileUtils;
 
 import com.github.fge.jackson.JacksonUtils;
 
 public class RegistryManager {
+
+	private static final String DEFAULT = "20.11.16_20-15";
 
 	private final static RegistryManager instance = new RegistryManager();
 
@@ -19,8 +22,12 @@ public class RegistryManager {
 		managerFolder = new File(System.getProperty("user.home"), ".api-registry-releases");
 	}
 	
+	public Registry getDefault(){
+		return aquireRelease(DEFAULT);
+	}
 
 	public Registry aquireRelease(String releaseId) {
+		
 		File releaseFolder = new File(managerFolder, releaseId);
 		if (releaseFolder.exists()) {
 			for (File f : releaseFolder.listFiles()) {
@@ -41,6 +48,26 @@ public class RegistryManager {
 				}
 			}
 		} else {
+			if (releaseId.equals(DEFAULT)){
+				try{
+				File fs=File.createTempFile("ddd", "tmp");
+				FileUtils.copyInputStreamToFile(RegistryManager.getInstance().getClass().getResourceAsStream("/registry20.11.16_20-15.zip"), fs);
+				ZipUtil.extractFolder(fs.getAbsolutePath(), releaseFolder.getAbsolutePath());
+				for (File f:releaseFolder.listFiles()){
+					if (f.getName().endsWith(".json")){
+						String str=FileUtils.readFileToString(f);
+						Registry readValue = JacksonUtils.getReader().forType(Registry.class)
+								.readValue(new StringReader(str));
+						readValue.items().forEach(x->{
+							x.setLocation(new File(releaseFolder,x.getLocation()).getAbsolutePath());
+						});
+						return readValue;
+					}
+				}
+				}catch (Exception e) {
+					throw new IllegalStateException();
+				}
+			}
 			AquireRegistryFromZip aquireRegistryFromZip = new AquireRegistryFromZip(
 					"https://github.com/apiregistry/registry/raw/gh-pages/releases/registry" + releaseId + ".zip",
 					releaseFolder.getAbsolutePath());

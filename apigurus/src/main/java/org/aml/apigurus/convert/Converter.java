@@ -48,6 +48,7 @@ public class Converter implements Supplier<org.aml.registry.model.Registry> {
 
 	HttpRequestFactory createRequestFactory = new NetHttpTransport().createRequestFactory();
 	HashSet<String> checked = new HashSet<>();
+	private int succcessCount;
 
 	@Override
 	public org.aml.registry.model.Registry get() {
@@ -179,16 +180,17 @@ public class Converter implements Supplier<org.aml.registry.model.Registry> {
 		} catch (Exception e1) {
 			throw new IllegalStateException(e1);
 		}
+		this.succcessCount=sc;
 		return result;
 	}
 
-	public static void main(String[] args) {
-		Converter converter = new Converter("C:\\Users\\Павел\\git\\misc");
-		//converter.filter="nytimes";
-		//converter.filter="wiki";
-		//converter.dryRun=true;
-		org.aml.registry.model.Registry vv = converter.get();
+	public int getSucccessCount() {
+		return succcessCount;
+	}
 
+	public static void main(String[] args) {
+		Converter converter = new Converter(args[0]);
+		org.aml.registry.model.Registry vv = converter.get();
 	}
 
 }

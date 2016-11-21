@@ -51,8 +51,11 @@ public class RegistryManager {
 			if (releaseId.equals(DEFAULT)){
 				try{
 				File fs=File.createTempFile("ddd", "tmp");
+				
 				FileUtils.copyInputStreamToFile(RegistryManager.getInstance().getClass().getResourceAsStream("/registry20.11.16_20-15.zip"), fs);
+				System.out.println("Starting to extract...");
 				ZipUtil.extractFolder(fs.getAbsolutePath(), releaseFolder.getAbsolutePath());
+				System.out.println("Extracted");
 				for (File f:releaseFolder.listFiles()){
 					if (f.getName().endsWith(".json")){
 						String str=FileUtils.readFileToString(f);

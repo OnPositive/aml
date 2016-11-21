@@ -10,6 +10,7 @@ public class CreateFromZipTest extends TestCase{
 
 	public void test0(){
 		Registry registry = RegistryManager.getInstance().getDefault();		
+		System.out.println("Registry aquired");
 		registry.items().forEach(x->{
 			TopLevelModel mod=x.resolve();
 			TestCase.assertTrue(mod!=null);

@@ -13,8 +13,8 @@ public class CreateFromZipTest extends TestCase{
 		System.out.println("Registry aquired");
 		
 		registry.items().forEach(x->{
-			TopLevelModel mod=x.resolve();
 			System.out.println(x.getLocation());
+			TopLevelModel mod=x.resolve();
 			TestCase.assertTrue(mod!=null);
 		});
 		TestCase.assertTrue(registry.items().size()>400);

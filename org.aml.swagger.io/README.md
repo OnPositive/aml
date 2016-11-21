@@ -18,6 +18,23 @@ String store = swaggerWriter.store(api);
 ApiImpl rs = new SwaggerReader().read(content);//content is string containing swagger api definition
 ```
 
-###Limitations
+###Major Limitations
 
+ - Swagger can not represent union types so union types are converted to the types without restrictions at all.
+ - Swagger does not support full json schema and xsd schemas so they are converted to the types without restrictions (this should be improved)
+ - Swagger does not support OAuth 1.0 as well as does not support full capabilities of Path Through security schemes, so Oauth1.0 is not represented correctly, and Path Through security schemes are represented only if described by allows conversion of them to Swagger Apikey security scheme type.
+ - Swagger does not supports  different bodies for different media types so in the cases when body payloads are different first one is used.
+
+###Project status
+
+ Swagger->RAML: Project is capable to convert [microsoft azure swagger specifications](https://github.com/Azure/azure-rest-api-specs.git) as well as  [API gurus registry of apis](https://apis.guru)
+ 
+ RAML->Swagger: Project was able to succesfully convert 511 of 546 specification in [our Raml api registry](https://github.com/apiregistry/registry).  
+ Absolute most of problems is caused by inability of Java Parser to parse specification 
+ RAML Java parser failed with exception:27
+ Successful:511 of 546 Errored:6 Incorrect swagger:2 
+ 
+ So it the status of both converters may be considered as stable beta. (Any issues and suggestions are greatly apreciated)
+ 
+ 
  

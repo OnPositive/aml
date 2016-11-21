@@ -39,7 +39,7 @@ Succesfully converted:129 of 141 api gurus apis (absolute most of errors seemed 
   - Errored:6  (this are actual bugs to solve)
   - Incorrect swagger:2  (both are Oath 1.0 APIs)
   
- So it the status of both converters may be considered as stable beta. (Any issues and suggestions are greatly apreciated)
+So it seems that the status of both converters may be considered as stable beta. (Any issues and suggestions are greatly apreciated)
  
  
  

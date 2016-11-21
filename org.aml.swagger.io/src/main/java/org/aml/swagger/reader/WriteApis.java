@@ -15,8 +15,12 @@ import org.apache.commons.io.FileUtils;
 public class WriteApis {
 
 	public static void main(String[] args) {
-		ArrayList<Api> parse = new DirectoryLister().parse(new File("C:\\Users\\Павел\\git\\azure-rest-api-specs"));
-		File fl=new File("C:\\Users\\Павел\\git\\microsoft");
+		write(args[0], args[1]);
+	}
+	
+	public static void write(String pathToSpecs, String targetDir) {
+		ArrayList<Api> parse = new DirectoryLister().parse(new File(pathToSpecs));
+		File fl=new File(targetDir);
 		Registry rs=new Registry();
 		rs.setName("Misrosoft Azure APIS");
 		for (Api a:parse){

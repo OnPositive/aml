@@ -1,6 +1,6 @@
-# Amazon API Gateway Importer
+# Amazon API Gateway RAML Importer
 
-The **Amazon API Gateway Importer** lets you create or update [Amazon API Gateway][service-page] APIs from a Swagger or RAML API representation.
+The **Amazon API Gateway RAML Importer** lets you create or update [Amazon API Gateway][service-page] APIs from  RAML 1.0 API representation.
 
 To learn more about API Gateway, please see the [service documentation][service-docs] or the [API documentation][api-docs].
 
@@ -9,20 +9,6 @@ To learn more about API Gateway, please see the [service documentation][service-
 [api-docs]: http://docs.aws.amazon.com/apigateway/api-reference
 
 [![Build Status](https://api.travis-ci.org/awslabs/aws-apigateway-importer.svg?branch=master)](https://travis-ci.org/awslabs/aws-apigateway-importer)
-
-#### Updates
-
-April 5, 2016: Swagger/OpenAPI import is now generally available in the API Gateway [REST API][api], the AWS [CLI][cli] and all AWS [SDKs][sdks]. You can also import and export Swagger definitions using the API Gateway [console][console]. This release addresses many of the open issues and feedback in this repository.
-
-Customers are encouraged to migrate their workflow to the standard AWS tools. aws-apigateway-importer will receive minimal support from the API Gateway team going forward. Pull requests will be periodically reviewed. Customers using RAML definitions should continue to use aws-apigateway-importer for the time being.
-
-Thanks for all of your feedback and contributions to this tool. Any feedback or issues going forward should be directed to the official API Gateway [forums][forums]. - @rpgreen
-
-[sdks]: https://aws.amazon.com/tools
-[cli]: http://docs.aws.amazon.com/cli/latest/reference/apigateway/put-rest-api.html
-[forums]: https://forums.aws.amazon.com/forum.jspa?forumID=199
-[api]: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html
-[console]: https://console.aws.amazon.com/apigateway/home
 
 ## Usage
 
@@ -37,11 +23,9 @@ It will look for configured credentials in environment variables, Java system pr
 
 Build with `mvn assembly:assembly`
 
-### Import a new API
+### Import or update API 
 
 ```sh
-./aws-api-import.sh --create path/to/swagger.json
-
 ./aws-api-import.sh -c path/to/api.raml
 ```
 

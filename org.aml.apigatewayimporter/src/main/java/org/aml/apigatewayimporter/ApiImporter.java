@@ -31,14 +31,14 @@ public class ApiImporter {
 		amazonApiGatewayClient = new AmazonApiGatewayClient(credentialsProvider);
 	}
 
-	void doImport(Api api) {
+	ImportRestApiResult doImport(Api api) {
 		ImportRestApiRequest importRestApiRequest = new ImportRestApiRequest();
 		Swagger swaggerObject = new SwaggerWriter().toSwaggerObject(api);
 		try {
 			String writeValueAsString = new ObjectMapper().writeValueAsString(swaggerObject);
 			importRestApiRequest.setBody(ByteBuffer.wrap(writeValueAsString.getBytes("UTF-8")));
 			ImportRestApiResult importRestApi = amazonApiGatewayClient.importRestApi(importRestApiRequest);
-			System.out.println(importRestApi);
+			return importRestApi;
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException(e);
 		} catch (UnsupportedEncodingException e) {

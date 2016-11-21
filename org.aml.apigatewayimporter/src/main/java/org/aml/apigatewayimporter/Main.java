@@ -7,6 +7,8 @@ import org.aml.apimodel.Api;
 import org.aml.apimodel.TopLevelModel;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 
+import com.amazonaws.services.apigateway.model.ImportRestApiResult;
+
 public class Main {
 
 	public static void main(String[] args) {
@@ -18,7 +20,8 @@ public class Main {
 			}
 			build = TopLevelRamlModelBuilder.build(new File(args[0]));
 			try{
-			new ApiImporter(null).doImport((Api) build);
+			ImportRestApiResult doImport = new ApiImporter(null).doImport((Api) build);
+			System.out.println("Successfully imported:"+doImport.getId()+"("+doImport.getName()+")");
 			}catch (Exception e) {
 				System.err.println(e.getMessage());
 			}

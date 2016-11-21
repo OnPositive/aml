@@ -53,6 +53,9 @@ public class BasicTest extends TestCase{
 	}
 	
 	public void test11(){
+		if (System.getenv().get("SKIP_HEAVY")!=null){
+			return;
+		}
 		Registry registry = RegistryManager.getInstance().getDefault();		
 		int successfullCount=0;
 		int errorCount=0;

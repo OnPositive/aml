@@ -9,6 +9,7 @@ The goal of this project is to provide a set of tools making work with RAML 1.0 
 #Currently supported
 * [Common API model on top of RAML 0.8 and RAML 1.0](https://github.com/OnPositive/aml/blob/master/commonModel.md).
 * [Emitter which allows you to produce RAML code from instances of common model](https://github.com/OnPositive/aml/blob/master/emitter.md).
+* [Conversion of Swagger to RAML 1.0 and back](https://github.com/OnPositive/aml/blob/master/org.aml.swagger.io/README.md).
 * [Conversion of Java classes and Annotations to RAML Libraries](https://github.com/OnPositive/aml/blob/master/java2raml.md).
 * [Conversion of RAML Types and Annotations to Java classes](https://github.com/OnPositive/aml/blob/master/raml2java.md).
 

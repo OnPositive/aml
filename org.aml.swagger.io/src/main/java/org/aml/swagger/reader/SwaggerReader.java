@@ -677,11 +677,12 @@ public class SwaggerReader {
 	}
 
 	private void addXMLInfo(AbstractType range, Xml xml) {
+		if (xml!=null){
 		XMLFacet xf=new XMLFacet();
-		if (xml.getAttribute()){
+		if (xml.getAttribute()!=null){
 			xf.setAttribute(xml.getAttribute());
 		}
-		if (xml.getWrapped()){
+		if (xml.getWrapped()!=null){
 			xf.setWrapped(xml.getWrapped());
 		}
 		if (xml.getName()!=null){
@@ -694,6 +695,7 @@ public class SwaggerReader {
 			xf.setNamespace(xml.getNamespace());
 		}
 		range.addMeta(xf);
+		}
 	}
 
 	@SuppressWarnings("deprecation")

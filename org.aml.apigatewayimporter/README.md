@@ -21,7 +21,8 @@ It will look for configured credentials in environment variables, Java system pr
 
 #### Build
 
-Build with `mvn assembly:assembly`
+Build parent project with `mvn install`
+Build project with `mvn assembly:assembly`
 
 ### Import or update API 
 
@@ -29,66 +30,47 @@ Build with `mvn assembly:assembly`
 ./aws-api-import.sh -c path/to/api.raml
 ```
 
-### Update an existing API and deploy it to a stage
-
-```sh
-./aws-api-import.sh --update API_ID --deploy STAGE_NAME path/to/swagger.yaml
-
-./aws-api-import.sh --update API_ID --deploy STAGE_NAME --raml-config path/to/config.json path/to/api.raml
-```
-
 For Windows environments replace `./aws-api-import.sh` with `./aws-api-import.cmd` in the examples.
 
 ### API Gateway Extension Example
 
-You can fully define an API Gateway API in Swagger using the `x-amazon-apigateway-auth` and `x-amazon-apigateway-integration` extensions,
-or in RAML using an external configuration file.
+Typical usage is to to write an overlay to existing RAML api, using aws-lib.raml as a sample
 
 Defined on an Operation:
 
-```json
+```raml
+#%RAML 1.0 Overlay
+extends: apigateway.raml
+uses:
+  AWS: aws-lib.raml
+/products:
+  get:
+    (AWS.amazon-apigateway-auth): aws_iam
+    (AWS.amazon-apigateway-integration):
+      type: aws
+      uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:393636047515:function:MyFunction/invocations"
+      httpMethod: POST
+      credentials: "arn:aws:iam::393636047515:role/lambda_exec_role"
+      requestTemplates:
+        application/json: "json request template 2"
+        application/xml: "xml request template 2"
+      requestParameters:
+          integration.request.path.integrationPathParam: "method.request.querystring.latitude"
+          integration.request.querystring.integrationQueryParam: "method.request.querystring.longitude"
+      cacheNamespace: "cache namespace"
+      cacheKeyParameters: []
+      responses:
+          "200":
+            statusCode: "200"
+            responseTemplates:
+              application/json: "json 200 response template"
+              application/xml: "xml 200 response template"
+          "400":
+            statusCode: "400"
+            responseTemplates:
+              application/json: "json 400 response template"
+              application/xml: "xml 400 response template"
 
-"x-amazon-apigateway-auth" : {
-    "type" : "aws_iam"
-},
-"x-amazon-apigateway-integration" : {
-   "type" : "aws",
-   "uri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:MY_ACCT_ID:function:helloWorld/invocations",
-   "httpMethod" : "POST",
-   "credentials" : "arn:aws:iam::MY_ACCT_ID:role/lambda_exec_role",
-   "requestTemplates" : {
-       "application/json" : "json request template 2",
-       "application/xml" : "xml request template 2"
-   },
-   "requestParameters" : {
-       "integration.request.path.integrationPathParam" : "method.request.querystring.latitude",
-       "integration.request.querystring.integrationQueryParam" : "method.request.querystring.longitude"
-   },
-   "cacheNamespace" : "cache-namespace",
-   "cacheKeyParameters" : [],
-   "responses" : {
-       "2\\d{2}" : {
-           "statusCode" : "200",
-           "responseParameters" : {
-               "method.response.header.test-method-response-header" : "integration.response.header.integrationResponseHeaderParam1"
-           },
-           "responseTemplates" : {
-               "application/json" : "json 200 response template",
-               "application/xml" : "xml 200 response template"
-           }
-       },
-       "default" : {
-           "statusCode" : "400",
-           "responseParameters" : {
-               "method.response.header.test-method-response-header" : "'static value'"
-           },
-           "responseTemplates" : {
-               "application/json" : "json 400 response template",
-               "application/xml" : "xml 400 response template"
-           }
-       }
-   }
-}
 ```
 
 ## Testing

@@ -31,7 +31,7 @@ types:
       httpMethod: amazon-apigateway-method
       credentials:
       requestTemplates: amazon-apigateway-templates
-      requestParameters: object
+      requestParameters?: object
       cacheNamespace:
       cacheKeyParameters: string[]
       responses:
@@ -39,7 +39,7 @@ types:
           //:
             properties:
               statusCode: amazon-apigateway-status
-              responseParameters: object
+              responseParameters?: object
               responseTemplates: amazon-apigateway-templates
     example:
       type: aws

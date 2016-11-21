@@ -45,6 +45,9 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Yaml;
 
+import io.swagger.models.Swagger;
+import io.swagger.parser.SwaggerParser;
+
 /**
  * <p>
  * RamlWriter class.
@@ -763,5 +766,9 @@ public class SwaggerWriter extends GenericWriter {
 		for (Annotation a : model.annotations()) {
 			toStore.put("x-" + a.annotationType().name(), a.value());
 		}
+	}
+
+	public Swagger toSwaggerObject(Api raml) {
+		return new SwaggerParser().parse(store(raml));
 	}
 }

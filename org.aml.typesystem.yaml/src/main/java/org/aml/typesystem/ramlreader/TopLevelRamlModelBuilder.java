@@ -1,5 +1,8 @@
 package org.aml.typesystem.ramlreader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -33,6 +36,7 @@ import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.loader.ClassPathResourceLoader;
 import org.raml.v2.api.loader.CompositeResourceLoader;
+import org.raml.v2.api.loader.FileResourceLoader;
 import org.raml.v2.api.loader.ResourceLoader;
 import org.raml.v2.api.loader.UrlResourceLoader;
 import org.raml.v2.api.model.common.ValidationResult;
@@ -679,6 +683,12 @@ public class TopLevelRamlModelBuilder {
 			e.printStackTrace();
 			return build2;
 		}
+	}
+	
+	public static TopLevelModel build(File file) throws FileNotFoundException{
+		final CompositeResourceLoader loader = new CompositeResourceLoader(new UrlResourceLoader(),new FileResourceLoader(file.getParentFile()));
+		final TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(StreamUtils.toString(new FileInputStream(file)), loader, file.getName());
+		return build;		
 	}
 
 	public static TopLevelModel build(String raml) {

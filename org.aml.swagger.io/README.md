@@ -27,13 +27,17 @@ ApiImpl rs = new SwaggerReader().read(content);//content is string containing sw
 
 ###Project status
 
- Swagger->RAML: Project is capable to convert [microsoft azure swagger specifications](https://github.com/Azure/azure-rest-api-specs.git) as well as  [API gurus registry of apis](https://apis.guru)
+ `Swagger->RAML`: Project is capable to convert [microsoft azure swagger specifications](https://github.com/Azure/azure-rest-api-specs.git) as well as absolute most selected APIs (not microsoft and not google) from [API gurus registry of apis](https://apis.guru)
+Succesfully converted:129 of 141 api gurus apis (absolute most of errors seemed to be caused by totally broken swagger files)
+
  
- RAML->Swagger: Project was able to succesfully convert 511 of 546 specification in [our Raml api registry](https://github.com/apiregistry/registry).  
+ `RAML->Swagger`: Project was able to succesfully convert 511 of 546 specification in [our Raml api registry](https://github.com/apiregistry/registry).  
+ 
  Absolute most of problems is caused by inability of Java Parser to parse specification 
- RAML Java parser failed with exception:27
- Successful:511 of 546 Errored:6 Incorrect swagger:2 
- 
+  - RAML Java parser failed with exception:27
+  - Errored:6  (this are actual bugs to solve)
+  - Incorrect swagger:2  (both are Oath 1.0 APIs)
+  
  So it the status of both converters may be considered as stable beta. (Any issues and suggestions are greatly apreciated)
  
  

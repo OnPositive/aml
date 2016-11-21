@@ -27,7 +27,7 @@ ApiImpl rs = new SwaggerReader().read(content);//content is string containing sw
 
 ###Project status
 
- `Swagger->RAML`: Project is capable to convert [microsoft azure swagger specifications](https://github.com/Azure/azure-rest-api-specs.git) as well as absolute most selected APIs (not microsoft and not google) from [API gurus registry of apis](https://apis.guru)
+ `Swagger->RAML`: Project is capable to convert [microsoft azure swagger specifications](https://github.com/Azure/azure-rest-api-specs.git)(there are couple of exceptions when Swagger parser can not parse their specs) as well as absolute most selected APIs (not microsoft and not google) from [API gurus registry of apis](https://apis.guru)
 
 Succesfully converted:129 of 141 api gurus apis (absolute most of errors seemed to be caused by totally broken swagger files) and all microsoft apis.
 

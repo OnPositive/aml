@@ -45,10 +45,9 @@ Defined on an Operation:
 #%RAML 1.0 Overlay
 extends: apigateway.raml
 uses:
-  AWS: aws-lib.raml
+  AWS: https://raw.githubusercontent.com/OnPositive/aml/master/org.aml.apigatewayimporter/apigateway-lib.raml
 /products:
   get:
-    (AWS.amazon-apigateway-auth): aws_iam
     (AWS.amazon-apigateway-integration):
       type: aws
       uri: "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:393636047515:function:MyFunction/invocations"
@@ -75,6 +74,8 @@ uses:
               application/xml: "xml 400 response template"
 
 ```
+Detailed guide on annotations that might be used to customize import to Apigateway, may be viewed [here](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/org.aml.apigatewayimporter/apigateway-lib.raml)
+
 
 ## Testing
 

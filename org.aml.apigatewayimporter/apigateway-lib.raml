@@ -1,0 +1,171 @@
+#%RAML 1.0 Library
+usage: Data types and annotation types for AWS API Gateway
+annotationTypes:
+  amazon-apigateway-any-method:
+     type: swaggerOperation
+     description: |
+       Specifies the object for the API Gateway catch-all ANY method in a resource.
+       This object can exist alongside other Operation objects and will catch any HTTP method that was not explicitly declared.
+     properties:
+        x-amazon-apigateway-integration:
+           type: amazon-apigateway-integration
+           description: Specifies the integration of the method with the back end. This is an extended property of the Swagger Operation object. The integration can be of type AWS, AWS_PROXY, HTTP, HTTP_PROXY, or MOCK.
+     allowedTargets: Resource
+     example:
+        produces: [ "application/json" ]
+        parameters:
+            - name: proxy
+              in: path
+              required: true
+              type: string
+        responses:
+          default:
+        x-amazon-apigateway-integration:
+          uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:123456789012:function:TestSimpleProxy/invocations"
+          passthroughBehavior: "when_no_match"
+          httpMethod: POST
+          "type": "aws_proxy"
+  amazon-apigateway-authorizer:
+     allowedTargets: SecurityScheme
+     description: Defines a custom authorizer to be applied for authorization of method invocations in API Gateway
+     type: object
+     properties:
+       type:
+        type: string
+        description: The type of the authorizer. This is a required property and the value must be "token"
+        enum: [token]
+       authorizerUri?:
+         type: string
+         description: The Uniform Resource Identifier (URI) of the authorizer (a Lambda function)
+         example: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:account-id:function:auth_function_name/invocations
+       authorizerCredentials?:
+         description: Credentials required for the authorizer, if any, in the form of an ARN of an IAM execution role
+         example: arn:aws:iam::account-id:IAM_role
+       identityValidationExpression?:
+         description: A regular expression for validating the incoming identity. For example, "^x-[a-z]+".
+         example: ^x-[a-z]+
+       authorizerResultTtlInSeconds?:
+         type:  integer
+         description: The number of seconds during which the resulting IAM policy is cached
+     example:
+      "type" : "token"
+      "authorizerUri" : "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:account-id:function:function-name/invocations"
+      "authorizerCredentials" : "arn:aws:iam::account-id:role"
+      "identityValidationExpression" : "^x-[a-z]+"
+      "authorizerResultTtlInSeconds" : 60
+  amazon-apigateway-authtype:
+    description: Specify the type of a custom authorizer. It is parsed by the API Gateway API import and export features
+    type: string
+    example: awsSigv4
+    allowedTargets: SecurityScheme
+  amazon-apigateway-binary-media-types:
+    description: Specifies the list of binary media types to be supported by API Gateway, such as application/octet-stream, image/jpeg, etc. This extension is a JSON Array.
+    type: mediaType[]
+  amazon-apigateway-integration:
+    description: Specifies details of the back-end integration used for this method.
+    allowedTargets: Method
+    type: amazon-apigateway-integration
+types:
+  mediaType: string
+  amazon-apigateway-integration:
+    description: Specifies details of the back-end integration used for this method
+    properties:
+      type:
+        enum: [http, aws, aws_proxy]
+        description: The type of integration with the specified back end. The valid value is http (for integration with an HTTP back end) or aws (for integration with AWS Lambda functions or other AWS services, such as DynamoDB, SNS or SQS).
+      contentHandling?:
+        enum: [CONVERT_TO_TEXT, CONVERT_TO_BINARY]
+        description: Request payload encoding conversion types. Valid values are 1) CONVERT_TO_TEXT, for converting a binary payload into a Base64-encoded string or converting a text payload into a utf-8-encoded string or passing through the text payload natively without modification, and 2) CONVERT_TO_BINARY, for converting a text payload into Base64-decoded blob or passing through a binary payload natively without modification.
+      uri:
+        type: string
+        description: The endpoint URI of the back end. For integrations of the aws type, this is an ARN value. For the HTTP integration, this is the URL of the HTTP endpoint including the https or http scheme.
+      httpMethod:
+        type: amazon-apigateway-method
+        description: The HTTP method used in the integration request. For Lambda function invocations, the value must be POST.
+      credentials?:
+        description: "For AWS IAM role-based credentials, specify the ARN of an appropriate IAM role. If unspecified, credentials will default to resource-based permissions that must be added manually to allow the API to access the resource. For more information, see Granting Permissions Using a Resource Policy. Note: when using IAM credentials, please ensure that AWS STS regional endpoints are enabled for the region where this API is deployed for best performance."
+      requestTemplates?:
+        type: requestTemplates
+        description: Mapping templates for a request payload of specified MIME types.
+      requestParameters?:
+        type: requestParameters
+        description: Specifies mappings from method request parameters to integration request parameters. Supported request parameters are querystring, path, header, and body.
+      cacheNamespace?:
+        type: string
+        description: An API-specific tag group of related cached parameters.
+      cacheKeyParameters?:
+        type: string[]
+        description: A list of request parameters whose values are to be cached.
+      responses?:
+        type: responses
+        description: Defines the method's responses and specifies desired parameter mappings or payload mappings from integration responses to method responses.
+  requestTemplates:
+    description: Specifies mapping templates for a request payload of the specified MIME types
+    properties:
+      /\w+/[-.\w]+(?:\+[-.\w]+)?/:
+        type: velocityTemplate
+        description: An example of the MIME type is application/json. For information about creating a mapping template, see [Mapping Templates](http://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html#models-mappings-mappings)
+    example:
+      "application/json" : "#set ($root=$input.path('$')) { \"stage\": \"$root.name\", \"user-id\": \"$root.key\" }"
+      "application/xml" : "#set ($root=$input.path('$')) <stage>$root.name</stage> "
+  requestParameters:
+    description: Specifies mappings from named method request parameters to integration request parameters. The method request parameters must be defined before being referenced.
+    properties:
+      /integration\.request\.(.+)\.(.+)/:
+        description: The value must be a predefined method request parameter of the method.request.<param-type>.<param-name> format, where <param-type> can be querystring, path, header, or body. For the body parameter, the <param-name> is a JSON path expression without the $. prefix.
+    example:
+      "integration.request.querystring.stage" : "method.request.querystring.version"
+      "integration.request.header.x-userid" : "method.request.header.x-user-id"
+      "integration.request.path.op" : "method.request.path.service"
+  responses:
+    description: Defines the method's responses and specifies parameter mappings or payload mappings from integration responses to method responses.
+    properties:
+      /.+/:
+        type: response
+        description: |
+          Selection regular expression used to match the integration response to the method response. For HTTP integrations, this regex applies to the integration response status code. For Lambda invocations, the regex applies to the errorMessage field of the error information object returned by AWS Lambda as a failure response body when the Lambda function execution throws an exception.
+          Note: The Response status pattern property name refers to a response status code or regular expression describing a group of response status codes. It does not correspond to any identifier of an IntegrationResponse resource in the API Gateway REST API.
+  response:
+    description: Defines a response and specifies parameter mappings or payload mappings from the integration response to the method response.
+    properties:
+      statusCode:
+        type: amazon-apigateway-status
+        description: HTTP status code for the method response; for example, "200". This must correspond to a matching response in the raml.
+      responseTemplates?:
+        description: Specifies MIME type-specific mapping templates for the response’s payload
+        type: responseTemplates
+      responseParameters?:
+        description: Specifies parameter mappings for the response. Only the header and body parameters of the integration response can be mapped to the header parameters of the method.
+        type: requestParameters
+      contentHandling?:
+        description: Response payload encoding conversion types. Valid values are 1) CONVERT_TO_TEXT, for converting a binary payload into a Base64-encoded string or converting a text payload into a utf-8-encoded string or passing through the text payload natively without modification, and 2) CONVERT_TO_BINARY, for converting a text payload into Base64-decoded blob or passing through a binary payload natively without modification.
+  responseTemplates:
+    properties:
+      /\w+/[-.\w]+(?:\+[-.\w]+)?/:
+        type: velocityTemplate
+        description: Specifies a mapping template to transform the integration response body to the method response body for a given MIME type. For information about creating a mapping template, see [Mapping Templates](http://docs.aws.amazon.com/apigateway/latest/developerguide/models-mappings.html#models-mappings-mappings). An example of the MIME type is application/json.
+        example: "#set ($root=$input.path('$')) { \"stage\": \"$root.name\", \"user-id\": \"$root.key\" }"
+  responseParameters:
+    description: Specifies mappings from integration method response parameters to method response parameters. Only the header and body types of the integration response parameters can be mapped to the header type of the method response
+    properties:
+      /method\.response\.header(.)+/:
+        description: The named parameter value can be derived from the header and body types of the integration response parameters only.
+        example: integration.response.body.redirect.url
+  velocityTemplate:
+    type: string
+    description: Velocity Teamplate
+    example: "#set ($root=$input.path('$')) { \"stage\": \"$root.name\", \"user-id\": \"$root.key\" }"
+  amazon-apigateway-method:
+      description: HTTP method
+      enum: [ GET, PUT, POST, DELETE, PATCH ]
+      example: POST
+  amazon-apigateway-status:
+      description: HTTP Status
+      pattern: "^[12345]\\d\\d$"
+  swaggerOperation:
+    description: Swagger Operation object
+    properties:
+      responses?: any
+      produces?: string[]
+      consumes?: string[]
+      parameters?: any

@@ -19,10 +19,13 @@ This tool requires AWS credentials to be configured in at least one of the locat
 
 It will look for configured credentials in environment variables, Java system properties, [AWS SDK/CLI](http://aws.amazon.com/cli) profile credentials, and EC2 instance profile credentials.
 
-#### Build
+#### Installation
 
-Build parent project with `mvn install`
-Build project with `mvn assembly:assembly`
+ - Run `git clone https://github.com/petrochenko-pavel-a/aml.git`
+ - Goto to project folder
+ - Run `mvn install`
+ - Goto apigatewayimporter folder (`cd org.aml.apigatewayimporter`)
+ - Build apigatewayimporter using following command: `mvn assembly:assembly`
 
 ### Import or update API 
 

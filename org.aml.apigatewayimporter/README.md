@@ -27,7 +27,7 @@ It will look for configured credentials in environment variables, Java system pr
  - Goto apigatewayimporter folder (`cd org.aml.apigatewayimporter`)
  - Build apigatewayimporter using following command: `mvn assembly:assembly`
 
-### Import or update API 
+### Import API 
 
 ```sh
 ./aws-api-import.sh -c path/to/api.raml

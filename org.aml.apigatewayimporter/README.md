@@ -74,7 +74,7 @@ uses:
               application/xml: "xml 400 response template"
 
 ```
-Detailed reference about annotation types that might be used to customize import to Apigateway, may be viewed [here](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/org.aml.apigatewayimporter/apigateway-lib.raml)
+Detailed reference about annotation types that might be used to customize import to Apigateway, is located here [here](https://petrochenko-pavel-a.github.io/raml-explorer/#https://raw.githubusercontent.com/OnPositive/aml/master/org.aml.apigatewayimporter/apigateway-lib.raml)
 
 
 ## Testing

@@ -1,5 +1,14 @@
 #%RAML 1.0 Library
-usage: Data types and annotation types for AWS API Gateway
+usage: Data types and annotation types for AWS API Gateway. 
+(commons.Id): org.aml.apigateway
+(commons.Version): 0.0.1
+(commons.Title): AWS ApiGateWay annotations
+(commons.Links):
+   - title: Amazon API Gateway RAML Importer
+     url: "https://github.com/OnPositive/aml/blob/master/org.aml.apigatewayimporter/README.md"
+     role: Tool Location
+uses:
+  commons: "https://raw.githubusercontent.com/apiregistry/commons/master/commons.raml"
 annotationTypes:
   amazon-apigateway-any-method:
      type: swaggerOperation

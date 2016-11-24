@@ -50,7 +50,7 @@ public class Registry {
 	}
 	public void setIncludes(ArrayList<SubRegistryDescription> includes) {
 		this.includes = includes;
-	}  
+	}
 	
 	public List<ItemDescription>items(){
 		ArrayList<ItemDescription>result=new ArrayList<ItemDescription>();

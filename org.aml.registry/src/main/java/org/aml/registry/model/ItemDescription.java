@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.aml.apimodel.TopLevelModel;
 import org.aml.registry.internal.LocalRegistry;
@@ -20,6 +21,9 @@ public class ItemDescription implements Cloneable {
 
 	protected String name;
 	protected String org;
+	protected String product;
+
+
 	protected String version;
 	protected String description;
 	protected String icon;
@@ -27,6 +31,7 @@ public class ItemDescription implements Cloneable {
 	protected String kind;
 	protected String originalLocation;
 	protected String originalSpecLanguage;
+	protected ArrayList<String>tags=new ArrayList<>();
 
 	public String getOriginalSpecLanguage() {
 		return originalSpecLanguage;
@@ -144,5 +149,19 @@ public class ItemDescription implements Cloneable {
 		return new TopLevelRamlModelBuilder().build(contents(),
 				new CompositeResourceLoader(new FileResourceLoader(new File(location).getParent())), location);
 	}
+	public String getProduct() {
+		return product;
+	}
 
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public ArrayList<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(ArrayList<String> tags) {
+		this.tags = tags;
+	}
 }

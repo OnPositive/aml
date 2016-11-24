@@ -6,6 +6,7 @@ import org.aml.typesystem.acbuilder.AcElementKind;
 import org.aml.typesystem.acbuilder.AcScheme;
 import org.aml.typesystem.acbuilder.CompositeAcElement;
 import org.aml.typesystem.acbuilder.CompositeAcElement.TypeFamily;
+import org.aml.typesystem.acbuilder.TestPropertyValueAcElement;
 
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -51,6 +52,11 @@ public class JacksonDeserializerWriter extends GenericAcAdapterWriter{
 		for (AcElement x:ac.getChildren()){
 			if (x.kind()==AcElementKind.PROPERTY_EXISTANCE){
 				_then=_then._if(JExpr.direct("vl.has(\""+x.getProperty()+"\")"))._then();
+			}
+			if (x.kind()==AcElementKind.PROPERTY_VALUE){
+				TestPropertyValueAcElement el=(TestPropertyValueAcElement) x;
+				
+				_then=_then._if(JExpr.direct("vl.has(\""+x.getProperty()+"\")&&vl.get(\""+x.getProperty()+"\").asText().equals(\""+el.getValue()+"\")"))._then();
 			}
 		};
 		_then.add(new JStatement() {

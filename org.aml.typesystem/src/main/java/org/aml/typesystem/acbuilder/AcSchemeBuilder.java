@@ -1,12 +1,17 @@
 package org.aml.typesystem.acbuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.acbuilder.CompositeAcElement.TypeFamily;
+import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.meta.facets.Discriminator;
 import org.aml.typesystem.meta.facets.DiscriminatorValue;
 
@@ -25,7 +30,7 @@ public class AcSchemeBuilder {
 	
 	public AcScheme build(AbstractType type) {
 		if (type.isUnion()) {
-			Set<AbstractType> unionTypeFamily = type.unionTypeFamily();
+			Set<AbstractType> unionTypeFamily = extendedUnionTypeFamily(type);
 			AcScheme scheme = new AcScheme(type);
 			HashSet<TypeFamily> filledKinds = new HashSet<>();
 			HashMap<Set<String>, CompositeAcElement> objectTypes = new HashMap<>();
@@ -98,17 +103,54 @@ public class AcSchemeBuilder {
 					if (rs!=p.original){
 						p.required.removeAll(rs);
 					}
-				}
-				
+				}				
 			}
+			Collections.sort(protos,new Comparator<ACProto>() {
+
+				@Override
+				public int compare(ACProto o1, ACProto o2) {
+					return o2.required.size()-o1.required.size();
+				}
+			});
 			for (ACProto p:protos){
 				for (String s:p.required){
 					p.element.getChildren().add(new TestPropertyAcElement(s, false));
 				}
 			}
+			for (ACProto p:protos){
+				scheme.schemes.remove(p.element.associtatedType);
+			}
+//			scheme.schemes.clear();
+			for (ACProto p:protos){
+				scheme.schemes.put(p.element.associtatedType, p.element);
+			}
 			return scheme;
 		}
 		
 		return null;
+	}
+	protected HashMap<AbstractType,Set<AbstractType>>extendedFamily=new HashMap<>();
+	
+	public Set<AbstractType> extendedUnionTypeFamily(AbstractType type) {
+		if (extendedFamily.containsKey(type)){
+			return extendedFamily.get(type);
+		}
+		Set<AbstractType> unionTypeFamily = type.unionTypeFamily();
+		if (!type.toPropertiesView().properties().isEmpty()){
+			LinkedHashSet<AbstractType>tps=new LinkedHashSet<>();
+			for (AbstractType z:unionTypeFamily){
+				AbstractType newType=TypeOps.derive(type.name()+z.name(), z);
+				for (IProperty p:type.toPropertiesView().properties()){
+					newType.declareProperty(p.id(), p.range(), !p.isRequired());
+				}
+				if (z.oneMeta(DiscriminatorValue.class)==null){
+					newType.addMeta(new DiscriminatorValue(z.name()));
+				}				
+				tps.add(newType);					
+			}
+			unionTypeFamily=tps;
+		}
+		this.extendedFamily.put(type, unionTypeFamily);
+		return unionTypeFamily;
 	}
 }

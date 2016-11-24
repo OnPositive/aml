@@ -1,11 +1,14 @@
 package org.aml.raml2java;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.acbuilder.AcScheme;
 import org.aml.typesystem.acbuilder.AcSchemeBuilder;
+import org.aml.typesystem.beans.IProperty;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -27,17 +30,22 @@ public class UnionTypeGenerator implements ITypeGenerator {
 		this.writer = wr;
 
 	}
+	
+	
 
 	@Override
 	public JType define(AbstractType t) {
 		JDefinedClass defineClass = writer.defineClass(t, ClassType.CLASS);
-		Set<AbstractType> typeFamily = t.unionTypeFamily();
+		AcSchemeBuilder acSchemeBuilder = new AcSchemeBuilder();
+		Set<AbstractType> typeFamily = acSchemeBuilder.extendedUnionTypeFamily(t);
 		for (AbstractType option:typeFamily){
 			generateProperty(defineClass, option,typeFamily);
 		}
+		
 		writer.annotate(defineClass, t);
+		
 		if (writer.getConfig().isGsonSupport()){
-			AcScheme build = new AcSchemeBuilder().build(t);
+			AcScheme build = acSchemeBuilder.build(t);
 			String generateAdapter = new GsonAcElementWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
 			String adapterName = defineClass.fullName()+"Adapter";
 			String qName = defineClass.name()+"Adapter.java";
@@ -45,7 +53,7 @@ public class UnionTypeGenerator implements ITypeGenerator {
 			defineClass.annotate(JsonAdapter.class).param("value", JExpr.dotclass(writer.getModel().directClass(adapterName)));
 		}
 		if (writer.getConfig().isJacksonSupport()){
-			AcScheme build = new AcSchemeBuilder().build(t);
+			AcScheme build = acSchemeBuilder.build(t);
 			String generateAdapter = new JacksonDeserializerWriter().generateAdapter(defineClass.getPackage().name(),build, defineClass.name(), writer);
 			String adapterName = defineClass.fullName()+"Deserializer";
 			String qName = defineClass.name()+"Deserializer.java";
@@ -63,8 +71,9 @@ public class UnionTypeGenerator implements ITypeGenerator {
 	}
 
 	private void generateProperty(JDefinedClass defineClass, AbstractType option,Set<AbstractType>allOptions) {
-		String gset=writer.escape(option.name());
-		String name = writer.escape(option.name().toLowerCase());
+		String oname = option.name();
+		String gset=writer.escape(oname);
+		String name = writer.escape(oname.toLowerCase());
 		JType propType = writer.getType(option, false, false, null);
 		if (propType.isPrimitive()){
 			propType=propType.boxify();
@@ -85,7 +94,8 @@ public class UnionTypeGenerator implements ITypeGenerator {
 				f.nl();
 				for(AbstractType other:allOptions){
 					if (other!=option){
-						String name = writer.escape(other.name().toLowerCase());
+						String oname = other.name();						
+						String name = writer.escape(oname.toLowerCase());
 						f.p("this." + name + "=null;");
 						f.nl();
 					}

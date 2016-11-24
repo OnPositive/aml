@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+types:
+  CatOrDog: Cat | Dog
+  HasKind:
+    properties:
+      kind: string
+    discriminator: kind  
+  Cat:
+    type: HasKind
+    properties:
+      name: string
+  Dog:
+    type: HasKind
+    properties:
+      name: string

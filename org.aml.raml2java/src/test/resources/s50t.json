@@ -1,0 +1,8 @@
+{
+"catOrDogDog":{
+	"name": "Ada",
+	"kind": "Dog",
+	"fangs":" big",
+	"price": 10.0
+	}
+}

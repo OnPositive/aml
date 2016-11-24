@@ -25,6 +25,24 @@ public class ItemDescription implements Cloneable {
 	protected String icon;
 	protected String location;
 	protected String kind;
+	protected String originalLocation;
+	protected String originalSpecLanguage;
+
+	public String getOriginalSpecLanguage() {
+		return originalSpecLanguage;
+	}
+
+	public void setOriginalSpecLanguage(String originalLanguage) {
+		this.originalSpecLanguage = originalLanguage;
+	}
+
+	public String getOriginalLocation() {
+		return originalLocation;
+	}
+
+	public void setOriginalLocation(String originalLocation) {
+		this.originalLocation = originalLocation;
+	}
 
 	public String getKind() {
 		return kind;

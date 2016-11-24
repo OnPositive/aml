@@ -1288,5 +1288,7 @@ public class BasicTest extends CompilerTestCase {
 //		
 		TestCase.assertEquals(true, true);
 	}
+	
+	
 }
 

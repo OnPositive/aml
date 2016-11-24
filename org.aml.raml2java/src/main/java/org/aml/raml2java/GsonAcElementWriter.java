@@ -5,6 +5,7 @@ import org.aml.typesystem.acbuilder.AcElement;
 import org.aml.typesystem.acbuilder.AcElementKind;
 import org.aml.typesystem.acbuilder.AcScheme;
 import org.aml.typesystem.acbuilder.CompositeAcElement;
+import org.aml.typesystem.acbuilder.TestPropertyValueAcElement;
 import org.aml.typesystem.acbuilder.CompositeAcElement.TypeFamily;
 
 import com.sun.codemodel.JBlock;
@@ -47,6 +48,10 @@ public class GsonAcElementWriter extends GenericAcAdapterWriter{
 		for (AcElement x:ac.getChildren()){
 			if (x.kind()==AcElementKind.PROPERTY_EXISTANCE){
 				_then=_then._if(JExpr.direct("vl.getAsJsonObject().has(\""+x.getProperty()+"\")"))._then();
+			}
+			if (x.kind()==AcElementKind.PROPERTY_VALUE){
+				 TestPropertyValueAcElement pv=(TestPropertyValueAcElement) x;
+				_then=_then._if(JExpr.direct("vl.getAsJsonObject().has(\""+x.getProperty()+"\")&&vl.getAsJsonObject().get(\""+x.getProperty()+"\").getAsString()!=null&&vl.getAsJsonObject().get(\""+x.getProperty()+"\").getAsString().equals(\""+pv.getValue()+"\")"))._then();
 			}
 		};
 		_then.add(new JStatement() {

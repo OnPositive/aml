@@ -20,5 +20,9 @@ public class TestPropertyValueAcElement extends AcElement{
 	public String getProperty() {
 		return property;
 	}
+
+	public String getValue() {
+		return value;
+	}
 	
 }

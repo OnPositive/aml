@@ -1,0 +1,21 @@
+#%RAML 1.0
+baseUri: http://example.org/dd
+title: Hello
+protocols: [HTTP]
+types:
+  Numb: number
+  Numb2: Numb 
+/q:
+  get:
+    responses: 
+     200:
+       headers:
+         hs: Numb2 
+       body: 
+         application/json:
+           type: object
+           properties: 
+            x: number
+            y: 
+             type: number
+             description: hello

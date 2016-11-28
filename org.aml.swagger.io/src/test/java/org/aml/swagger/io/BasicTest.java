@@ -53,6 +53,14 @@ public class BasicTest extends TestCase{
 		assertCorrectTransformation("/test10.raml","/test10.yaml");
 	}
 	
+	public void test16(){
+		assertCorrectTransformation("/t16.raml","/t16.yaml");
+	}
+	public void test17(){
+		assertCorrectTransformation("/t17.raml","/t17.yaml");
+	}
+	
+	
 	public void test11(){
 		if (System.getenv().get("SKIP_HEAVY")!=null){
 			return;
@@ -127,6 +135,15 @@ public class BasicTest extends TestCase{
 	}
 	
 	private String cleanWhiteSpace(String string) {
+		if (true){
+			return cleanWhiteSpaceAll(string);
+		}
+		string=string.replaceAll("\r\n","\r");
+		string=string.replaceAll("\r","\n");
+		return string;
+	}
+
+	private String cleanWhiteSpaceAll(String string) {
 		StringBuilder bld=new StringBuilder();
 		for (int i=0;i<string.length();i++){
 			char c=string.charAt(i);

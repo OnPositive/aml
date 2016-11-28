@@ -42,6 +42,7 @@ import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
 import org.aml.typesystem.meta.restrictions.PropertyIs;
 import org.aml.typesystem.ramlreader.NamedParam;
 import org.aml.typesystem.yamlwriter.GenericWriter;
+import org.mozilla.javascript.TopLevel.Builtins;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.Yaml;
@@ -102,24 +103,7 @@ public class SwaggerWriter extends GenericWriter {
 			return result;
 		} else {
 			if (inParam){
-			   result.put(TYPE, "string");
-			   if(t.isString()){
-				   result.put(TYPE, "string");
-			   }
-			   if(t.isNumber()){
-				   if (t.isInteger()){
-					   result.put(TYPE, "integer");   
-				   }
-				   else{
-					   result.put(TYPE, "number");
-				   }
-			   }
-			   if(t.isBoolean()){
-				   result.put(TYPE, "boolean");
-			   }
-			   if (t.isArray()){
-				   result.put(TYPE, "array");
-			   }
+			   dumpTypeMembers(t, result);
 				//this means that we can not use allOf, and $ref to global definition
 			}
 			else if (superTypes.size() > 0) {
@@ -140,15 +124,17 @@ public class SwaggerWriter extends GenericWriter {
 							ts.add(typeRespresentation(t.superType(), true));
 							result.put("allOf", ts);
 						} else {
-							AbstractType next = superTypes.iterator().next();
-							String name = next.name();
-							if (next==BuiltIns.ANY){
-								
+							if (t.isBuiltIn()){
+								result.put(TYPE, transformName(t.name()));
 							}
 							else{
-								
-								result.put(TYPE, transformName(name));
+								AbstractType next = superTypes.iterator().next();
+								String name = next.name();
+								if (next!=BuiltIns.ANY){																
+									result.put(TYPE, transformName(name));
+								}
 							}
+							
 						}
 					}
 				} else {
@@ -244,11 +230,32 @@ public class SwaggerWriter extends GenericWriter {
 		}
 		return result;
 	}
+
+	public void dumpTypeMembers(AbstractType t, LinkedHashMap<String, Object> result) {
+		result.put(TYPE, "string");
+		   if(t.isString()){
+			   result.put(TYPE, "string");
+		   }
+		   if(t.isNumber()){
+			   if (t.isInteger()){
+				   result.put(TYPE, "integer");   
+			   }
+			   else{
+				   result.put(TYPE, "number");
+			   }
+		   }
+		   if(t.isBoolean()){
+			   result.put(TYPE, "boolean");
+		   }
+		   if (t.isArray()){
+			   result.put(TYPE, "array");
+		   }
+	}
 	protected static HashSet<String>allowedTypes=new HashSet<>();
 
 	
 	static{
-		allowedTypes.add("array");
+		allowedTypes.add("array");		
 		allowedTypes.add("object");
 		allowedTypes.add("string");
 		allowedTypes.add("number");
@@ -264,7 +271,7 @@ public class SwaggerWriter extends GenericWriter {
 
 	protected LinkedHashMap<String, Object>  typeRespresentation(AbstractType p, boolean allowNamed) {
 		LinkedHashMap<String, Object>  vl;
-		if (p.isAnonimous() || !allowNamed) {
+		if ((p.isAnonimous()||p.isBuiltIn()) || !allowNamed) {
 			LinkedHashMap<String, Object> dumpType = dumpType(p);
 			vl = dumpType;
 		} else {

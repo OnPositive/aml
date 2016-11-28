@@ -38,7 +38,7 @@ public class RegistryManager {
 								.readValue(new StringReader(str));
 						LocalRegistry rs=new LocalRegistry(releaseFolder.getAbsolutePath());
 						readValue.items().forEach(x -> {
-							x.setLocation(new File(releaseFolder, x.getLocation()).getAbsolutePath());
+							x.setLocation(new File(releaseFolder, x.getLocation()).getAbsolutePath().replace('\\', '/'));
 							x.setLocalRegistry(rs);
 						});
 						return readValue;
@@ -62,7 +62,7 @@ public class RegistryManager {
 						Registry readValue = JacksonUtils.getReader().forType(Registry.class)
 								.readValue(new StringReader(str));
 						readValue.items().forEach(x->{
-							x.setLocation(new File(releaseFolder,x.getLocation()).getAbsolutePath());
+							x.setLocation(new File(releaseFolder,x.getLocation()).getAbsolutePath().replace('\\', '/'));
 						});
 						return readValue;
 					}

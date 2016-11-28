@@ -57,7 +57,7 @@ public class ZipUtil {
 			Enumeration<?> zipFileEntries = zip.entries();
 			while (zipFileEntries.hasMoreElements()) {
 				ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
-				String currentEntry = entry.getName();
+				String currentEntry = entry.getName().replace('\\', '/');
 				File destFile = new File(newPath, currentEntry);
 				File destinationParent = destFile.getParentFile();
 				destinationParent.mkdirs();

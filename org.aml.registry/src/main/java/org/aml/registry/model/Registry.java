@@ -71,4 +71,13 @@ public class Registry {
 		});		
 		this.includes.addAll(apply.includes);
 	}
+	
+	public Overlays getOverlays(String string) {
+		for (ApiDescription d:apis){
+			if (d.name.replace(' ', '_').equals(string)){
+				return OverlaysProvider.getOverlaysFor(d.location);
+			}
+		}
+		return null;
+	}
 }

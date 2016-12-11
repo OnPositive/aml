@@ -1,13 +1,17 @@
 package org.aml.registry;
 
 import org.aml.registry.internal.CommitterInfo;
+import org.aml.registry.model.Overlays;
 import org.aml.registry.model.Registry;
+import org.aml.registry.model.RegistryManager;
 import org.aml.registry.operations.BuildStat;
 import org.aml.registry.operations.LoadRegistry;
 import org.aml.registry.operations.PublishRegistry;
 import org.aml.registry.operations.ResolveRegistry;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.junit.Test;
+
+import junit.framework.TestCase;
 
 public class BasicTest {
 
@@ -27,5 +31,10 @@ public class BasicTest {
 		System.out.println(new BuildStat().apply(apply));
 	}
 	
-
+	@Test
+	public void test1() {
+		Overlays overlays = RegistryManager.getInstance().getDefault().getOverlays("APIs.guru");
+		TestCase.assertTrue(!overlays.getOverlaysFor().isEmpty());
+	}
+	
 }

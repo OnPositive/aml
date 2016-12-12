@@ -75,6 +75,9 @@ public class Registry {
 	public Overlays getOverlays(String string) {
 		for (ApiDescription d:apis){
 			if (d.name.replace(' ', '_').equals(string)){
+				if (d.originalLocation!=null){
+					return OverlaysProvider.getOverlaysFor(d.originalLocation.replace('\\', '/'));
+				}
 				return OverlaysProvider.getOverlaysFor(d.location);
 			}
 		}

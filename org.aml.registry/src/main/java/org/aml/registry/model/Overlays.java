@@ -5,16 +5,18 @@ import java.util.Map;
 
 public class Overlays {
 
-	String name;
-	Map<String,String>overlaysFor=new LinkedHashMap<String, String>();
-	
-	public String getName() {
-		return name;
+	String nameId;
+	public String getNameId() {
+		return nameId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setNameId(String nameId) {
+		this.nameId = nameId;
 	}
+
+	Map<String,String>overlaysFor=new LinkedHashMap<String, String>();
+	
+
 
 	public Map<String, String> getOverlaysFor() {
 		return overlaysFor;

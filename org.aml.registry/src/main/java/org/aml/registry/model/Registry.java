@@ -3,7 +3,9 @@ package org.aml.registry.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aml.apimodel.TopLevelModel;
 import org.aml.registry.operations.StoreRegistry;
+import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 
 public class Registry {
 
@@ -82,5 +84,24 @@ public class Registry {
 			}
 		}
 		return null;
+	}
+	public TopLevelModel getApi(String string){
+		for (ApiDescription d:apis){
+			if (d.name.replace(' ', '_').equals(string)){
+				return d.resolve();
+			}
+		}
+		return null;
+	}
+	
+	public TopLevelModel getOverlayed(String string,String libraryId){
+		Overlays overlays = getOverlays(string);
+		if (overlays!=null){
+			String string2 = overlays.getOverlaysFor().get(libraryId);
+			if (string2!=null){
+				return TopLevelRamlModelBuilder.build(string2);
+			}
+		}
+		return getApi(string);
 	}
 }

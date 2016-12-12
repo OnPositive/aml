@@ -1,5 +1,6 @@
 package org.aml.registry;
 
+import org.aml.apimodel.TopLevelModel;
 import org.aml.registry.internal.CommitterInfo;
 import org.aml.registry.model.Overlays;
 import org.aml.registry.model.Registry;
@@ -8,6 +9,7 @@ import org.aml.registry.operations.BuildStat;
 import org.aml.registry.operations.LoadRegistry;
 import org.aml.registry.operations.PublishRegistry;
 import org.aml.registry.operations.ResolveRegistry;
+import org.aml.typesystem.AbstractType;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.junit.Test;
 
@@ -37,4 +39,10 @@ public class BasicTest {
 		TestCase.assertTrue(!overlays.getOverlaysFor().isEmpty());
 	}
 	
+	@Test
+	public void test2() {
+		TopLevelModel overlays = RegistryManager.getInstance().getDefault().getOverlayed("APIs.guru", "https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml");
+		AbstractType type = overlays.types().getType("Metrics");
+		TestCase.assertNotNull(overlays);
+	}
 }

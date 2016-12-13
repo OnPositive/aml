@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.onpositive.aml</groupId>
 		<artifactId>org.aml.parent</artifactId>
-		<version>0.0.11-SNAPSHOT</version>
+		<version>0.0.12</version>
 	</parent>
 	<artifactId>apigurus</artifactId>
 	<dependencies>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.onpositive.aml</groupId>
 			<artifactId>org.aml.swagger.io</artifactId>
-			<version>0.0.11-SNAPSHOT</version>
+			<version>0.0.12</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

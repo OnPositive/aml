@@ -17,6 +17,7 @@ public class ResolveRegistry implements Function<Registry, Registry> {
 		for (SubRegistryDescription d : t.getIncludes()) {
 			Registry sub=INSTANCE.apply(new LoadRegistry(d.getLocation()).get());
 			result.getApis().addAll(sub.getApis());
+			result.getTools().addAll(sub.getTools());
 			result.getLibraries().addAll(sub.getLibraries());
 			
 		}		

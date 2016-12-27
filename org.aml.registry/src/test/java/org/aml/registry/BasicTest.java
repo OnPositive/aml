@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 public class BasicTest {
 
 	protected LoadRegistry loadRegistry = new LoadRegistry(
-			//"https://raw.githubusercontent.com/apiregistry/registry/master/oldApis.raml");
+			// "https://raw.githubusercontent.com/apiregistry/registry/master/oldApis.raml");
 			"https://raw.githubusercontent.com/apiregistry/registry/master/registry.json");
 
 	@Test
@@ -32,16 +32,17 @@ public class BasicTest {
 		}
 		System.out.println(new BuildStat().apply(apply));
 	}
-	
+
 	@Test
 	public void test1() {
 		Overlays overlays = RegistryManager.getInstance().getDefault().getOverlays("APIs.guru");
 		TestCase.assertTrue(!overlays.getOverlaysFor().isEmpty());
 	}
-	
+
 	@Test
 	public void test2() {
-		TopLevelModel overlays = RegistryManager.getInstance().getDefault().getOverlayed("APIs.guru", "https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml");
+		TopLevelModel overlays = RegistryManager.getInstance().getDefault().getOverlayed("APIs.guru",
+				"https://raw.githubusercontent.com/OnPositive/aml/master/raml2java.raml");
 		AbstractType type = overlays.types().getType("Metrics");
 		TestCase.assertNotNull(overlays);
 	}

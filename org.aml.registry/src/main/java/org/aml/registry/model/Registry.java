@@ -20,6 +20,13 @@ public class Registry {
 	protected String version="v1";
 	
 	protected ArrayList<ApiDescription> apis=new ArrayList<ApiDescription>();
+	protected ArrayList<ToolDescription> tools=new ArrayList<ToolDescription>();
+	public ArrayList<ToolDescription> getTools() {
+		return tools;
+	}
+	public void setTools(ArrayList<ToolDescription> tools) {
+		this.tools = tools;
+	}
 	protected ArrayList<LibraryDescription> libraries=new ArrayList<LibraryDescription>();
 	protected ArrayList<SubRegistryDescription>includes=new ArrayList<SubRegistryDescription>();
 	

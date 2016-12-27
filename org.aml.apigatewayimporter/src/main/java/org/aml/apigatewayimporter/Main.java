@@ -20,7 +20,7 @@ public class Main {
 			}
 			build = TopLevelRamlModelBuilder.build(new File(args[0]));
 			try{
-			ImportRestApiResult doImport = new ApiImporter(null).doImport((Api) build);
+			ImportRestApiResult doImport = new ApiImporter(null,null,null).doImport((Api) build);
 			System.out.println("Successfully imported:"+doImport.getId()+"("+doImport.getName()+")");
 			}catch (Exception e) {
 				System.err.println(e.getMessage());

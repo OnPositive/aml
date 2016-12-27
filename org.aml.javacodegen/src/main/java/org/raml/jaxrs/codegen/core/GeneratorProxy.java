@@ -41,5 +41,4 @@ public class GeneratorProxy {
 			new Generator().run(ramlReader, configuration,location);
 		}
 	}
-
 }

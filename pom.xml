@@ -161,10 +161,12 @@
 		<module>org.aml.registry</module>
 
 		<module>org.aml.apigatewayimporter</module>
+		<module>org.aml.javacodegen</module>
+		<module>aml.server</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>
-	<version>0.0.12</version>
+	<version>0.13-SNAPSHOT</version>
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>

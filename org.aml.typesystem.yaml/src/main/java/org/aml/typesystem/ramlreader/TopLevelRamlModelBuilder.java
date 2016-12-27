@@ -566,6 +566,10 @@ public class TopLevelRamlModelBuilder {
 			SYObjectNode mm = (SYObjectNode) n;
 			LinkedHashMap<String, Object> vals = new LinkedHashMap<>();
 			mm.getChildren().forEach(x -> {
+				if (x instanceof org.raml.yagi.framework.nodes.ErrorNode){
+					return;
+				}
+				System.out.println(x);
 				KeyValueNode kv = (KeyValueNode) x;
 				SimpleTypeNode key = (SimpleTypeNode) kv.getKey();
 				String pName = key.getLiteralValue();

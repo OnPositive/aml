@@ -36,6 +36,7 @@ import org.aml.typesystem.beans.IPropertyView;
 import org.aml.typesystem.beans.ISimpleFacet;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
+import org.aml.typesystem.meta.facets.Example;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
@@ -72,7 +73,7 @@ public class SwaggerWriter extends GenericWriter {
 		
 		@Override
 		public void logProblem(String problem) {
-			log.logProblem(problem);
+			System.err.println(problem);;
 		}
 	};
 
@@ -89,6 +90,16 @@ public class SwaggerWriter extends GenericWriter {
 	}
 
 	private Api api;
+	
+	boolean dumpExamples=true;
+
+	public boolean isDumpExamples() {
+		return dumpExamples;
+	}
+
+	public void setDumpExamples(boolean dumpExamples) {
+		this.dumpExamples = dumpExamples;
+	}
 
 	protected LinkedHashMap<String, Object> dumpType(AbstractType t) {
 		LinkedHashMap<String, Object> result = new LinkedHashMap<>();
@@ -156,7 +167,7 @@ public class SwaggerWriter extends GenericWriter {
 				Object vl = null;
 				vl = typeRespresentation(p.range(), true);
 				String id = p.id();
-				if (p.isRequired()) {
+				if (p.isRequired()&&!p.isMap()&&!p.isAdditional()) {
 					required.add(p.id());
 				}
 
@@ -193,6 +204,11 @@ public class SwaggerWriter extends GenericWriter {
 				ISimpleFacet fs = (ISimpleFacet) ti;
 				if (skipFacets.contains(fs.facetName())) {
 					continue;
+				}
+				if (fs instanceof Example){
+					if (!dumpExamples){
+						continue;
+					}
 				}
 				Object value = fs.value();
 				if (value instanceof Map) {
@@ -294,7 +310,7 @@ public class SwaggerWriter extends GenericWriter {
 					if (findPath.isEmpty()) {
 						return s;
 					}
-					return s + "." + findPath;
+					return s + "" + findPath;
 				}
 			}
 		}
@@ -314,7 +330,7 @@ public class SwaggerWriter extends GenericWriter {
 				log.logProblem("Can not find path to type:" + t.name());
 			}
 			LinkedHashMap<String, Object> ref = new LinkedHashMap<>();
-			ref.put("$ref", "#/definitions/" + findPath +"."+ t.name());
+			ref.put("$ref", "#/definitions/" + findPath +""+ t.name());
 			return ref;
 		}
 		LinkedHashMap<String, Object> ref = new LinkedHashMap<>();
@@ -759,7 +775,7 @@ public class SwaggerWriter extends GenericWriter {
 			for (AbstractType c : ts) {
 				LinkedHashMap<String, Object> dumpType = dumpType(c);
 				String findPath = findPath(api, c);
-				object.put(findPath+"."+c.name(), dumpType);
+				object.put(findPath+""+c.name(), dumpType);
 				
 			}
 		}

@@ -17,36 +17,20 @@ package org.raml.jaxrs.codegen.core;
 
 import static org.apache.commons.lang.StringUtils.defaultString;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.apache.commons.lang.StringUtils.join;
 import static org.apache.commons.lang.StringUtils.strip;
-import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 import static org.raml.jaxrs.codegen.core.Names.EXAMPLE_PREFIX;
 import static org.raml.jaxrs.codegen.core.Names.GENERIC_PAYLOAD_ARGUMENT_NAME;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.lang.annotation.Annotation;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.mail.internet.MimeMultipart;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -64,29 +48,11 @@ import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
-import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
-import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 import org.raml.jaxrs.codegen.core.ext.InterfaceNameBuilderExtension;
-import org.raml.v2.api.loader.ClassPathResourceLoader;
-import org.raml.v2.api.loader.CompositeResourceLoader;
-import org.raml.v2.api.loader.FileResourceLoader;
-import org.raml.v2.api.loader.ResourceLoader;
-import org.raml.v2.api.loader.UrlResourceLoader;
-import org.raml.v2.api.model.common.ValidationResult;
-import org.raml.v2.internal.impl.commons.model.RamlValidationResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
@@ -100,101 +66,13 @@ import com.sun.codemodel.JVar;
  * @author kor
  * @version $Id: $Id
  */
-public abstract class AbstractGenerator {
-	/** Constant <code>DEFAULT_ANNOTATION_PARAMETER="value"</code> */
-	protected static final String DEFAULT_ANNOTATION_PARAMETER = "value";
-
-	/** Constant <code>LOGGER</code> */
-	protected static final Logger LOGGER = LoggerFactory
-			.getLogger(Generator.class);
-
+public abstract class AbstractGenerator extends BasicGenerator {
 	protected Context context;
 	protected Types types;
 	protected List<GeneratorExtension> extensions;
 
-	private ResourceLoader[] prepareResourceLoaders(
-			final Configuration configuration,final String location) {
-		File sourceDirectory = configuration.getSourceDirectory();
-		ArrayList<ResourceLoader> loaderList = new ArrayList<ResourceLoader>(
-				Arrays.asList(new UrlResourceLoader(),
-						new ClassPathResourceLoader()));
-		if (sourceDirectory != null) {
-			String sourceDirAbsPath = sourceDirectory.getAbsolutePath();
-			loaderList.add(new FileResourceLoader(sourceDirAbsPath));
-		}
-		//Supporting all  options that occured in real life at the moment
-		//TODO make loading more consistent (we should drop some options)
-		if (location!=null&&location.length()>0){
-			String sourceDirAbsPath = sourceDirectory.getAbsolutePath();
-			String fl=new File(location).getParent();
-			if (sourceDirAbsPath.endsWith(fl)){
-				sourceDirAbsPath=sourceDirAbsPath.substring(0,sourceDirAbsPath.length()-fl.length());
-				loaderList.add(new FileResourceLoader(sourceDirAbsPath));
-				loaderList.add(new FileResourceLoader(sourceDirectory){
-					 	
-					 	@Override
-					    public InputStream fetchResource(String resourceName)
-					    {						
-					        File includedFile = new File(resourceName);
-					        FileInputStream inputStream = null;
-//					        if (logger.isDebugEnabled())FIXME
-//					        {
-//					            logger.debug(String.format("Looking for resource: %s on directory: %s...", resourceName));
-//					        }
-					        try
-					        {
-					            return new FileInputStream(includedFile);
-					        }
-					        catch (FileNotFoundException e)
-					        {
-					            //ignore
-					        }
-					        return inputStream;
-					    }
-				});
-			}
-			else{
-				loaderList.add(new FileResourceLoader(location));
-				loaderList.add(new FileResourceLoader(""));
-			}
-		}
-		ResourceLoader[] loaderArray = loaderList
-				.toArray(new ResourceLoader[loaderList.size()]);
-		return loaderArray;
-	}
+	
 
-	private void validate(final Configuration configuration) {
-		Validate.notNull(configuration, "configuration can't be null");
-
-		final File outputDirectory = configuration.getOutputDirectory();
-		Validate.notNull(outputDirectory, "outputDirectory can't be null");
-
-		Validate.isTrue(outputDirectory.isDirectory(), outputDirectory
-				+ " is not a pre-existing directory");
-		Validate.isTrue(outputDirectory.canWrite(), outputDirectory
-				+ " can't be written to");
-
-		if (outputDirectory.listFiles().length > 0) {
-			LOGGER.warn("Directory "
-					+ outputDirectory
-					+ " is not empty, generation will work but pre-existing files may remain and produce unexpected results");
-		}
-
-		Validate.notEmpty(configuration.getBasePackageName(),
-				"base package name can't be empty");
-	}
-	/**
-	 * <p>run.</p>
-	 *
-	 * @param raml a {@link org.aml.apimodel.Api} object.
-	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
-	 * @return a {@link java.util.Set} object.
-	 * @throws java.lang.Exception if any.
-	 */
-	public Set<String> run(final Reader raml, final Configuration configuration)throws Exception{
-		System.out.println("relative includes are not supported in this mode!");
-		return run(raml,configuration,"",true);
-	}
 	/**
 	 * <p>run.</p>
 	 *
@@ -214,13 +92,11 @@ public abstract class AbstractGenerator {
 			e.setRaml(raml);
 			e.setCodeModel(context.getCodeModel());
 		}
-
 		List<Resource> resources = raml.resources();
 
 		for (final Resource resource : resources) {
 			createResourceInterface(resource, raml,configuration);
 		}
-
 		return context.generate();
 	}
 
@@ -647,65 +523,10 @@ public abstract class AbstractGenerator {
 		}
 
 		if (context.getConfiguration().isUseJsr303Annotations()) {
-			addJsr303Annotations(parameter, argumentVariable);
+			new ParameterValidationGenerator().addValidation(parameter, argumentVariable);
 		}
 
 		addParameterJavaDoc(parameter, argumentVariable.name(), javadoc);
-	}
-
-	private void addJsr303Annotations(final INamedParam parameter,
-			final JVar argumentVariable) {
-		if (isNotBlank(parameter.getPattern())) {
-			JAnnotationUse patternAnnotation = argumentVariable.annotate(Pattern.class);
-			patternAnnotation.param("regexp", parameter.getPattern());
-		}
-
-		final Integer minLength = parameter.getMinLength();
-		final Integer maxLength = parameter.getMaxLength();
-		if ((minLength != null) || (maxLength != null)) {
-			final JAnnotationUse sizeAnnotation = argumentVariable
-					.annotate(Size.class);
-
-			if (minLength != null) {
-				sizeAnnotation.param("min", minLength);
-			}
-
-			if (maxLength != null) {
-				sizeAnnotation.param("max", maxLength);
-			}
-		}
-
-		final BigDecimal minimum = parameter.getMinimum();
-		if (minimum != null) {
-			addMinMaxConstraint(parameter, "minimum", Min.class, minimum,
-					argumentVariable);
-		}
-
-		final BigDecimal maximum = parameter.getMaximum();
-		if (maximum != null) {
-			addMinMaxConstraint(parameter, "maximum", Max.class, maximum,
-					argumentVariable);
-		}
-
-		if (parameter.isRequired()) {
-			argumentVariable.annotate(NotNull.class);
-		}
-	}
-
-	private void addMinMaxConstraint(final INamedParam parameter,
-			final String name, final Class<? extends Annotation> clazz,
-			final BigDecimal value, final JVar argumentVariable) {
-		try {
-			final long boundary = value.longValueExact();
-			argumentVariable.annotate(clazz).param(
-					DEFAULT_ANNOTATION_PARAMETER, boundary);
-		} catch (final ArithmeticException ae) {
-			LOGGER.info("Non integer "
-					+ name
-					+ " constraint ignored for parameter: "
-					+ ToStringBuilder.reflectionToString(parameter,
-							SHORT_PREFIX_STYLE));
-		}
 	}
 
 	private void addResourceMethods(final JDefinedClass resourceInterface,
@@ -719,79 +540,5 @@ public abstract class AbstractGenerator {
 		addResourceMethod(resourceInterface, resource, resourceInterfacePath, action,
 				bodyMimeType, addBodyMimeTypeInMethodName,
 				uniqueResponseMimeTypes);
-	}
-
-	/**
-	 * <p>toDetailedString.</p>
-	 *
-	 * @param item a {@link ValidationResult} object.
-	 * @return a {@link java.lang.String} object.
-	 */
-	protected static String toDetailedString(RamlValidationResult item) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(item.getMessage());
-//		stringBuilder.append("\t");
-//		stringBuilder.append(item.getLevel());
-//		stringBuilder.append(" ");
-//		stringBuilder.append(item.getMessage());
-//		if (item.getLine() != ValidationResult.UNKNOWN) {
-//			stringBuilder.append(" (line ");
-//			stringBuilder.append(item.getLine());
-//			if (item.getStartColumn() != ValidationResult.UNKNOWN) {
-//				stringBuilder.append(", col ");
-//				stringBuilder.append(item.getStartColumn());
-//				if (item.getEndColumn() != item.getStartColumn()) {
-//					stringBuilder.append(" to ");
-//					stringBuilder.append(item.getEndColumn());
-//				}
-//			}
-//			stringBuilder.append(")");
-//		}
-		return stringBuilder.toString();
-	}
-
-	public Set<String> run(final Reader ramlReader,
-			final Configuration configuration,String readerLocation) throws Exception {
-		return run(ramlReader, configuration,readerLocation,false);
-	}
-	/**
-	 * <p>run.</p>
-	 *
-	 * @param ramlReader a {@link java.io.Reader} object.
-	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
-	 * @return a {@link java.util.Set} object.
-	 * @throws java.lang.Exception if any.
-	 * @param readerLocation a {@link java.lang.String} object.
-	 */
-	public Set<String> run(final Reader ramlReader,
-			final Configuration configuration,String readerLocation,boolean ignoreErrors) throws Exception {
-		if (isNotBlank(configuration.getAsyncResourceTrait())
-				&& configuration.getJaxrsVersion() == JaxrsVersion.JAXRS_1_1) {
-			throw new IllegalArgumentException(
-					"Asynchronous resources are not supported in JAX-RS 1.1");
-		}
-		final String ramlBuffer = IOUtils.toString(ramlReader);
-		String folder=new File(readerLocation).getParent();
-		ResourceLoader[] loaderArray = prepareResourceLoaders(configuration,folder);
-		TopLevelRamlModelBuilder bld=new TopLevelRamlModelBuilder();
-		TopLevelRamlImpl build = bld.build(ramlBuffer, new CompositeResourceLoader(loaderArray), readerLocation);
-		if(ignoreErrors||(build.isOk())){
-			if (build instanceof Api){
-				return run((Api)build, configuration);
-			}
-			return new LinkedHashSet<>();
-		}			
-		 else {			 
-			final List<String> validationErrors = Lists.transform(build.validationResults(),
-					new Function<ValidationResult, String>() {
-
-						public String apply(final ValidationResult vr) {
-							return toDetailedString((RamlValidationResult) vr);
-						}
-					});
-
-			throw new IllegalArgumentException("Invalid RAML definition:\n"
-					+ join(validationErrors, "\n"));
-		}
 	}
 }

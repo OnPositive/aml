@@ -330,7 +330,7 @@ public class SwaggerWriter extends GenericWriter {
 				log.logProblem("Can not find path to type:" + t.name());
 			}
 			LinkedHashMap<String, Object> ref = new LinkedHashMap<>();
-			ref.put("$ref", "#/definitions/" + findPath +""+ t.name());
+			ref.put("$ref", "#/definitions/" + findPath +"."+ t.name());
 			return ref;
 		}
 		LinkedHashMap<String, Object> ref = new LinkedHashMap<>();
@@ -775,7 +775,7 @@ public class SwaggerWriter extends GenericWriter {
 			for (AbstractType c : ts) {
 				LinkedHashMap<String, Object> dumpType = dumpType(c);
 				String findPath = findPath(api, c);
-				object.put(findPath+""+c.name(), dumpType);
+				object.put(findPath+"."+c.name(), dumpType);
 				
 			}
 		}

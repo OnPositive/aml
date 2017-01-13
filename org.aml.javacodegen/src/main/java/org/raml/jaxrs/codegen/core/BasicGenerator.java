@@ -62,10 +62,13 @@ public abstract class BasicGenerator {
 	}
 
 	/**
-	 * <p>toDetailedString.</p>
+	 * <p>run.</p>
 	 *
-	 * @param item a {@link ValidationResult} object.
-	 * @return a {@link java.lang.String} object.
+	 * @param ramlReader a {@link org.aml.apimodel.Api} object.
+	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+	 * @param readerLocation a {@link java.lang.String} object.
+	 * @return a {@link java.util.Set} object.
+	 * @throws java.lang.Exception if any.
 	 */
 	public Set<String> run(final Reader ramlReader, final Configuration configuration, String readerLocation) throws Exception {
 		return run(ramlReader, configuration,readerLocation,false);
@@ -76,9 +79,10 @@ public abstract class BasicGenerator {
 	 *
 	 * @param ramlReader a {@link java.io.Reader} object.
 	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+	 * @param readerLocation a {@link java.lang.String} object.
+	 * @param ignoreErrors a {@link java.lang.Boolean} object.
 	 * @return a {@link java.util.Set} object.
 	 * @throws java.lang.Exception if any.
-	 * @param readerLocation a {@link java.lang.String} object.
 	 */
 	public Set<String> run(final Reader ramlReader, final Configuration configuration, String readerLocation, boolean ignoreErrors) throws Exception {
 		if (isNotBlank(configuration.getAsyncResourceTrait())

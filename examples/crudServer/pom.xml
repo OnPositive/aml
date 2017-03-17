@@ -12,7 +12,7 @@
 		<version>0.13-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>aml.server</artifactId>
+	<artifactId>crud.server.example</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -59,21 +59,6 @@
 		<dependency>
 			<groupId>com.onpositive.aml</groupId>
 			<artifactId>org.aml.typesystem.yaml</artifactId>
-			<version>0.13-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.onpositive.aml</groupId>
-			<artifactId>org.aml.apigatewayimporter</artifactId>
-			<version>0.13-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-codegen</artifactId>
-			<version>2.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.onpositive.aml</groupId>
-			<artifactId>org.aml.registry</artifactId>
 			<version>0.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -131,6 +116,24 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-		</plugins>
+		<plugin>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-maven-plugin</artifactId>
+            <version>5.0.2</version>
+            <configuration>
+                <log4jConfiguration>${basedir}/log4j.properties</log4jConfiguration>
+                <verbose>true</verbose>
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>process-classes</phase>
+                    <goals>
+                        <goal>enhance</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+   	</plugins>
+		
 	</build>
 </project>

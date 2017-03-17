@@ -160,7 +160,7 @@
 		<module>org.aml.swagger.io</module>
 		<module>org.aml.apigatewayimporter</module>
 		<module>org.aml.javacodegen</module>
-		<module>aml.server</module>
+		
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.channels.IllegalSelectorException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -91,7 +92,7 @@ public class SwaggerReader {
 
 	private ApiImpl result;
 	private Swagger swagger;
-	
+
 	public ApiImpl read(String content) {
 		result = new ApiImpl();
 		result.getUsesLocations().put("commons",
@@ -122,39 +123,37 @@ public class SwaggerReader {
 							od.getTokenUrl() != null ? od.getTokenUrl() : od.getAuthorizationUrl());
 					sd.settings().put("authorizationUri", od.getAuthorizationUrl());
 					String flow = od.getFlow();
-					if (flow.equals("accessCode")){
-						flow="authorization_code";
+					if (flow.equals("accessCode")) {
+						flow = "authorization_code";
 					}
 					sd.settings().put("authorizationGrants", new String[] { flow });
-					ArrayList<String>scopeDescriptions=new ArrayList<>();
-					if (od.getScopes()!=null){
+					ArrayList<String> scopeDescriptions = new ArrayList<>();
+					if (od.getScopes() != null) {
 						Set<String> keySet = od.getScopes().keySet();
 						sd.settings().put("scopes", new ArrayList<>(keySet));
-						boolean hasDescr=true;
-						for (String k:keySet){
+						boolean hasDescr = true;
+						for (String k : keySet) {
 							String e = od.getScopes().get(k);
-							if (e!=null&&e.trim().length()>0){
-							scopeDescriptions.add(e);
-							}
-							else{
-								hasDescr=false;
+							if (e != null && e.trim().length() > 0) {
+								scopeDescriptions.add(e);
+							} else {
+								hasDescr = false;
 							}
 						}
-						if (hasDescr&&scopeDescriptions.size()>0){
+						if (hasDescr && scopeDescriptions.size() > 0) {
 							sd.annotations().add(new Annotation("commons.OathScopeDescriptions", scopeDescriptions));
 						}
 					}
 				} else if (securitySchemeDefinition instanceof ApiKeyAuthDefinition) {
 					sd.setType("Pass Through");
-					ActionImpl action=new ActionImpl("");
-					ApiKeyAuthDefinition kd=(ApiKeyAuthDefinition) securitySchemeDefinition;
+					ActionImpl action = new ActionImpl("");
+					ApiKeyAuthDefinition kd = (ApiKeyAuthDefinition) securitySchemeDefinition;
 					sd.setDescribedBy(action);
 					In in = kd.getIn();
-					NamedParamImpl pr=new NamedParamImpl(kd.getName(),BuiltIns.STRING,true,false);
-					if (in==In.QUERY){					
+					NamedParamImpl pr = new NamedParamImpl(kd.getName(), BuiltIns.STRING, true, false);
+					if (in == In.QUERY) {
 						action.queryParameters().add(pr);
-					}
-					else{
+					} else {
 						action.headers().add(pr);
 					}
 				} else if (securitySchemeDefinition instanceof BasicAuthDefinition) {
@@ -182,7 +181,7 @@ public class SwaggerReader {
 			result.setBaseUrl(host + basePath);
 		}
 		List<String> prod = swagger.getProduces();
-		//List<String> cons = swagger.getConsumes();
+		// List<String> cons = swagger.getConsumes();
 		if (prod != null) {
 			// if (!prod.equals(cons)) {
 			// throw new IllegalStateException();
@@ -195,7 +194,7 @@ public class SwaggerReader {
 				p = p.substring(1);
 			}
 			if (p.endsWith("/")) {
-				p = p.substring(0, p.length()-1);
+				p = p.substring(0, p.length() - 1);
 			}
 			ResourceImpl orCreateResource = result.getOrCreateResource(p);
 			addOperation(orCreateResource, "get", path.getGet(), path.getParameters());
@@ -245,8 +244,8 @@ public class SwaggerReader {
 		if (op.getProduces() != null) {
 			produces = op.getProduces();
 		}
-		produces=cleanupMedia(produces);
-		mediaType=cleanupMedia(mediaType);
+		produces = cleanupMedia(produces);
+		mediaType = cleanupMedia(mediaType);
 		AbstractType fdt = TypeOps.derive("", BuiltIns.OBJECT);
 		boolean hasFdt = false;
 		for (Parameter p : ps) {
@@ -330,38 +329,37 @@ public class SwaggerReader {
 			orCreateMethod.responses().add(impl);
 		}
 		Object object = op.getVendorExtensions().get("x-ms-pageable");
-		if (object!=null){
-			if (object instanceof ObjectNode){
-				ObjectNode nm=(ObjectNode) object;
-				LinkedHashMap<String, Object>vl=new LinkedHashMap<>();
+		if (object != null) {
+			if (object instanceof ObjectNode) {
+				ObjectNode nm = (ObjectNode) object;
+				LinkedHashMap<String, Object> vl = new LinkedHashMap<>();
 				JsonNode value = nm.get("nextLinkName");
 				String asText = value.asText();
-				if (asText!=null&&!asText.equals("null")){
+				if (asText != null && !asText.equals("null")) {
 					vl.put("nextLinkName", asText);
-					object=vl;
-				}
-				else{
-					object=null;
+					object = vl;
+				} else {
+					object = null;
 				}
 			}
-			if (object!=null){
+			if (object != null) {
 				orCreateMethod.annotations().add(new Annotation("extras.Pagination", object));
 			}
 		}
 	}
 
 	private List<String> cleanupMedia(List<String> produces) {
-		if (produces!=null){
-			ArrayList<String>result=new ArrayList<>();
-			for (String s:produces){
-				if (s.indexOf(';')!=-1){
-					s=s.substring(0, s.indexOf(';'));
+		if (produces != null) {
+			ArrayList<String> result = new ArrayList<>();
+			for (String s : produces) {
+				if (s.indexOf(';') != -1) {
+					s = s.substring(0, s.indexOf(';'));
 				}
-				if (s.startsWith("/")){
-					s=s.substring(1);
+				if (s.startsWith("/")) {
+					s = s.substring(1);
 				}
-				if (s.equals("plain")){
-					s="text/plain";
+				if (s.equals("plain")) {
+					s = "text/plain";
 				}
 				result.add(s);
 			}
@@ -375,36 +373,37 @@ public class SwaggerReader {
 		if (p instanceof AbstractSerializableParameter<?>) {
 			AbstractSerializableParameter<?> basicModel = (AbstractSerializableParameter<?>) p;
 			String type = basicModel.getType();
-			if (type==null&&basicModel.getMinimum()!=null){
-				type="number";
+			if (type == null && basicModel.getMinimum() != null) {
+				type = "number";
 			}
-			if (type==null&&basicModel.getMaximum()!=null){
-				type="number";
+			if (type == null && basicModel.getMaximum() != null) {
+				type = "number";
 			}
-			
-			if (type==null&&basicModel.getEnum()!=null){
-				type="string";
+
+			if (type == null && basicModel.getEnum() != null) {
+				type = "string";
 			}
-			
-			if (type!=null&&type.equals("array")){
-				if (basicModel.getEnum()!=null){
-					type="string";	
+
+			if (type != null && type.equals("array")) {
+				if (basicModel.getEnum() != null) {
+					type = "string";
 				}
-				//FIXME
-			}			
-			if (type!=null&&type.equals("boolean")){
-				basicModel.setEnum(null);//FIXME
+				// FIXME
+			}
+			if (type != null && type.equals("boolean")) {
+				basicModel.setEnum(null);// FIXME
 			}
 			String format = basicModel.getFormat();
-			FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type,format));
-			type=mapFormat.type;
-			if (((AbstractSerializableParameter) p).getEnum()!=null){
+			FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type, format));
+			type = mapFormat.type;
+			if (((AbstractSerializableParameter) p).getEnum() != null) {
 				@SuppressWarnings("unchecked")
-				LinkedHashSet<Object> linkedHashSet = new LinkedHashSet<>(((AbstractSerializableParameter) p).getEnum());
+				LinkedHashSet<Object> linkedHashSet = new LinkedHashSet<>(
+						((AbstractSerializableParameter) p).getEnum());
 				linkedHashSet.remove(null);
 				((AbstractSerializableParameter) p).setEnum(new ArrayList<>(linkedHashSet));
 			}
-			format=mapFormat.format;
+			format = mapFormat.format;
 			AbstractType st = base(type);
 			AbstractType derive = TypeOps.derive("", st);
 			transferTo(derive, Description.class, basicModel.getDescription());
@@ -443,6 +442,8 @@ public class SwaggerReader {
 
 	int id = 0;
 
+	HashSet<String> references = new HashSet<>();
+
 	public AbstractType convertType(String name, Model m) {
 		name = name.replace('[', '_');
 		name = name.replace(']', '_');
@@ -450,8 +451,8 @@ public class SwaggerReader {
 		name = name.replace('(', '_');
 		name = name.replace(')', '_');
 		name = name.replace('.', '_');
-		if (BuiltIns.getBuiltInTypes().getType(name)!=null){
-			name=Character.toUpperCase(name.charAt(0))+name.substring(1);
+		if (BuiltIns.getBuiltInTypes().getType(name) != null) {
+			name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 		}
 		if (reg.getType(name) != null) {
 			return reg.getType(name);
@@ -460,7 +461,7 @@ public class SwaggerReader {
 			if (m instanceof ArrayModel) {
 				ArrayModel basicModel = (ArrayModel) m;
 				String type = basicModel.getType();
-				
+
 				AbstractType st = base(type);
 				AbstractType derive = TypeOps.derive(name, st);
 				transferTo(derive, Description.class, basicModel.getDescription());
@@ -498,15 +499,15 @@ public class SwaggerReader {
 			} else {
 				ModelImpl basicModel = (ModelImpl) m;
 				String type = basicModel.getType();
-				if (type==null){
-					if (basicModel.getEnum()!=null){
-						type="string";
+				if (type == null) {
+					if (basicModel.getEnum() != null) {
+						type = "string";
 					}
 				}
 				String format = basicModel.getFormat();
 				FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type, format));
-				type=mapFormat.type;
-				format=mapFormat.format;
+				type = mapFormat.type;
+				format = mapFormat.format;
 				AbstractType st = base(type);
 				AbstractType derive = TypeOps.derive(name, st);
 				transferTo(derive, Description.class, basicModel.getDescription());
@@ -514,7 +515,7 @@ public class SwaggerReader {
 				transferTo(derive, DisplayName.class, basicModel.getTitle());
 				transferTo(derive, Default.class, basicModel.getDefaultValue());
 				transferTo(derive, Discriminator.class, basicModel.getDiscriminator());
-				if (!derive.isArray()&&!derive.isObject()){
+				if (!derive.isArray() && !derive.isObject()) {
 					transferTo(derive, Enum.class, basicModel.getEnum());
 				}
 				transferTo(derive, Format.class, format);
@@ -546,20 +547,26 @@ public class SwaggerReader {
 			if (!get$ref.startsWith("#/definitions/")) {
 				throw new IllegalArgumentException("Only internal references are supported at this moment");
 			}
+			if (references.add(simpleRef)) {
+				try{
+				Model actual = swagger.getDefinitions().get(simpleRef);
+				AbstractType convertType = convertType(simpleRef, actual);
 
-			Model actual = swagger.getDefinitions().get(simpleRef);
-			AbstractType convertType = convertType(simpleRef, actual);
-
-			return convertType;
+				return convertType;
+				}finally{
+					references.remove(simpleRef);
+					
+				}
+			}
 		}
-		
+
 		return null;
 	}
 
 	public AbstractType propertyToType(Property p) {
 		String type;
 		AbstractType range = null;
-		
+
 		if (p instanceof RefProperty) {
 			RefProperty rm = (RefProperty) p;
 			RefFormat refFormat = rm.getRefFormat();
@@ -572,12 +579,11 @@ public class SwaggerReader {
 				throw new IllegalArgumentException("Only internal references are supported at this moment");
 			}
 			Model actual = swagger.getDefinitions().get(simpleRef);
-			AbstractType convertType=null;
-			if (actual==null){
-				System.err.println("Warning can not find definition for :"+simpleRef);
-				convertType=BuiltIns.OBJECT;
-			}
-			else{
+			AbstractType convertType = null;
+			if (actual == null) {
+				System.err.println("Warning can not find definition for :" + simpleRef);
+				convertType = BuiltIns.OBJECT;
+			} else {
 				convertType = convertType(simpleRef, actual);
 			}
 			range = TypeOps.derive("", convertType);
@@ -590,8 +596,8 @@ public class SwaggerReader {
 			String format = p.getFormat();
 			if (format != null) {
 				FormatMapper mapFormat = FormatMapper.mapFormat(new FormatMapper(type, format));
-				format=mapFormat.format;
-				type=mapFormat.type;
+				format = mapFormat.format;
+				type = mapFormat.type;
 			}
 			AbstractType bs = base(type);
 			range = TypeOps.derive("", bs);
@@ -613,10 +619,9 @@ public class SwaggerReader {
 
 			} else if (ps instanceof FileProperty) {
 
-			}
-			else if (ps instanceof DateProperty) {
+			} else if (ps instanceof DateProperty) {
 
-			}else if (ps instanceof ByteArrayProperty) {
+			} else if (ps instanceof ByteArrayProperty) {
 
 			} else if (ps instanceof StringProperty) {
 				StringProperty sp = (StringProperty) ps;
@@ -661,40 +666,40 @@ public class SwaggerReader {
 		if (p.getXml() != null) {
 			addXMLInfo(range, p.getXml());
 		}
-		if(range.isSubTypeOf(BuiltIns.DATETIME)){
+		if (range.isSubTypeOf(BuiltIns.DATETIME)) {
 			Example oneMeta = range.oneMeta(Example.class);
-			if (oneMeta!=null){
-				String val=""+oneMeta.value();
-				if (!DateUtils.isValidDate(val, DateType.datetime, null)){
+			if (oneMeta != null) {
+				String val = "" + oneMeta.value();
+				if (!DateUtils.isValidDate(val, DateType.datetime, null)) {
 					range.removeMeta(oneMeta);
 				}
 			}
 		}
-		if (p.getReadOnly()!=null&&p.getReadOnly()){
-			range.addMeta(new Annotation("extras.Readonly",true ));			
+		if (p.getReadOnly() != null && p.getReadOnly()) {
+			range.addMeta(new Annotation("extras.Readonly", true));
 		}
 		return range;
 	}
 
 	private void addXMLInfo(AbstractType range, Xml xml) {
-		if (xml!=null){
-		XMLFacet xf=new XMLFacet();
-		if (xml.getAttribute()!=null){
-			xf.setAttribute(xml.getAttribute());
-		}
-		if (xml.getWrapped()!=null){
-			xf.setWrapped(xml.getWrapped());
-		}
-		if (xml.getName()!=null){
-			xf.setName(xml.getName());
-		}
-		if (xml.getPrefix()!=null){
-			xf.setPrefix(xml.getPrefix());
-		}
-		if (xml.getNamespace()!=null){
-			xf.setNamespace(xml.getNamespace());
-		}
-		range.addMeta(xf);
+		if (xml != null) {
+			XMLFacet xf = new XMLFacet();
+			if (xml.getAttribute() != null) {
+				xf.setAttribute(xml.getAttribute());
+			}
+			if (xml.getWrapped() != null) {
+				xf.setWrapped(xml.getWrapped());
+			}
+			if (xml.getName() != null) {
+				xf.setName(xml.getName());
+			}
+			if (xml.getPrefix() != null) {
+				xf.setPrefix(xml.getPrefix());
+			}
+			if (xml.getNamespace() != null) {
+				xf.setNamespace(xml.getNamespace());
+			}
+			range.addMeta(xf);
 		}
 	}
 
@@ -708,21 +713,21 @@ public class SwaggerReader {
 				value = ((Double) value).intValue();
 			}
 		}
-		if (value instanceof ObjectNode){
-			ObjectNode n=(ObjectNode) value;
+		if (value instanceof ObjectNode) {
+			ObjectNode n = (ObjectNode) value;
 			try {
-				value=new ObjectMapper().reader(Object.class).readValue(n);
+				value = new ObjectMapper().reader(Object.class).readValue(n);
 			} catch (IOException e) {
 				throw new IllegalStateException();
 			}
 		}
-		if (value instanceof Number){
-			long v=((Number) value).longValue();
-			if (v>10000000){
-				return ;
+		if (value instanceof Number) {
+			long v = ((Number) value).longValue();
+			if (v > 10000000) {
+				return;
 			}
-			if (v<-10000000){
-				return ;
+			if (v < -10000000) {
+				return;
 			}
 		}
 		TypeInformation facet = FacetRegistry.facet(FacetRegistry.getFacetName((Class<? extends TypeInformation>) cl));
@@ -751,8 +756,8 @@ public class SwaggerReader {
 		if (maps.containsKey(type)) {
 			return maps.get(type);
 		}
-		if (type.startsWith("commons.")){
-			AbstractType derive = TypeOps.derive(type,BuiltIns.STRING);
+		if (type.startsWith("commons.")) {
+			AbstractType derive = TypeOps.derive(type, BuiltIns.STRING);
 			maps.put(type, derive);
 			return derive;
 		}

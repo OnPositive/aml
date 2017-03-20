@@ -1,0 +1,64 @@
+#%RAML 1.0
+title: Issue tracker
+mediaType: application/json
+uses:
+  core: coreLib.raml
+types:
+  Base:
+    properties:
+      id:
+        type: integer
+        (core.id):
+        (core.readonly): true
+        format: long
+      title: string
+  Label:
+    type: Base
+    properties:
+      parent?:
+        type: Project
+        (core.parent): true
+        (core.visibleWhen): "&details"
+      color: string
+  Project:
+    type: Base
+    properties:
+      labels: Label[]
+  Issue:
+    type: Base
+    properties:
+      parent?:
+        type: Project
+        (core.parent): true
+        (core.visibleWhen): "&details"
+      body:
+        (core.visibleWhen): "&details, &create, &update"
+        type: string
+      labels:
+        type: Label[]
+        (core.visibleWhen): "&details, &create, &update"
+        (core.reference): true
+  Comment:
+    type: Base
+    properties:
+      parent?:
+        (core.visibleWhen): &details
+        type: Issue
+      body:
+        type: string
+        (core.visibleWhen): "&details, &create, &update"
+
+/projects:
+  get:
+    (core.basicPaging):
+      total: total
+      offset: offset
+      limit: limit
+      results: items
+    queryParameters:
+      offset?: integer
+      limit?: integer
+    (core.list):
+    responses:
+      200:
+        body: Project

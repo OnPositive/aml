@@ -82,9 +82,10 @@ public interface Resource extends Annotable, Comparable<Resource>, IHasResources
 			}
 			for (String s : pNames) {
 				boolean found = false;
-				for (INamedParam p : result) {
+				for (INamedParam p : this.uriParameters()) {
 					if (p.getKey().equals(s)) {
 						found = true;
+						result.add(p);
 						break;
 					}
 				}

@@ -6,6 +6,7 @@ import org.aml.apimodel.Action;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Response;
 import org.aml.apimodel.TopLevelModel;
+import org.aml.apimodel.impl.MimeTypeImpl;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 
 public class ResponseImpl extends AbstractWrappedNodeImpl<Action, KeyValueNode> implements Response{

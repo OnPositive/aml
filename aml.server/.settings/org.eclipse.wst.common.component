@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="org.aml.server">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <dependent-module archiveName="org.aml.swagger.io-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.swagger.io/org.aml.swagger.io">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="org.aml.typesystem.yaml-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.typesystem.yaml/org.aml.typesystem.yaml">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="org.aml.typesystem-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.typesystem/org.aml.typesystem">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="org.aml.apigatewayimporter-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.apigatewayimporter/org.aml.apigatewayimporter">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="org.aml.server"/>
+        <property name="java-output-path" value="/aml.server/target/classes"/>
+    </wb-module>
+</project-modules>

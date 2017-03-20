@@ -21,6 +21,16 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType {
 	protected Action owner;
 	protected Response owningResponse;
 	protected String name;
+	
+	protected boolean isDefault=false;
+	
+	public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
 	public MimeTypeImpl(AbstractType model, Action owner) {
 		this.model = model;
@@ -62,7 +72,7 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType {
 		if (model.isBuiltIn()) {
 			return model;
 		}
-		if (!model.isAnonimous()){
+		if (!isDefault()&&!model.isAnonimous()){
 			return model;
 		}
 		if (!model.isUnion() && model.superTypes().size() == 1) {
@@ -110,6 +120,10 @@ public class MimeTypeImpl extends AnnotableImpl implements MimeType {
 
 	public void setName(String s) {
 		this.name = s;
+	}
+
+	public void setOwningReponse(Response responseImpl) {
+		this.owningResponse=responseImpl;
 	}
 
 }

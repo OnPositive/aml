@@ -156,11 +156,14 @@
 		<module>org.aml.model</module>
 		<module>org.aml.typesystem.jsonschema</module>
 		<module>org.aml.registry</module>
-		<module>apigurus</module>
+		
 		<module>org.aml.swagger.io</module>
 		<module>org.aml.apigatewayimporter</module>
 		<module>org.aml.javacodegen</module>
-		
+
+		<module>raml-to-jaxrs/core</module>
+		<module>raml-to-jaxrs/maven-plugin</module>
+		<module>org.aml.persistance</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

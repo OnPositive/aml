@@ -365,5 +365,12 @@ public class BasicTest extends TestCase{
 		TopLevelModel raml = new TopLevelRamlModelBuilder().build(build,header);
 		return raml;
 	}
-
+	@Test
+	public void test811() {
+		TopLevelModel raml = parse("/api.raml");
+		AbstractType type = raml.types().getType("Issue");
+		TestCase.assertTrue(type.isObject());
+		type = raml.types().getType("Project");
+		TestCase.assertTrue(type.isObject());		
+	}
 }

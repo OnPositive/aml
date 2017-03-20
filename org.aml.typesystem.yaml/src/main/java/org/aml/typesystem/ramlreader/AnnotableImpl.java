@@ -12,6 +12,7 @@ import org.raml.yagi.framework.nodes.Node;
 import org.raml.yagi.framework.nodes.ObjectNode;
 import org.raml.yagi.framework.nodes.SimpleTypeNode;
 import org.raml.yagi.framework.nodes.StringNode;
+import org.raml.yagi.framework.nodes.snakeyaml.SYStringNode;
 
 public abstract class AnnotableImpl implements Annotable{
 	
@@ -49,6 +50,8 @@ public abstract class AnnotableImpl implements Annotable{
 		}
 		return results;
 	}
+	
+	
 
 	protected <V> List<V> getChildWithType(Class<V>cl) {
 		ArrayList<V>result=new ArrayList<>();
@@ -75,7 +78,10 @@ public abstract class AnnotableImpl implements Annotable{
 		Node childNodeWithKey = this.getChildNodeWithKey(key);
 		ArrayList<String>results=new ArrayList<>();
 		if (childNodeWithKey!=null){
-			for (Node n:childNodeWithKey.getChildren()){
+			if (childNodeWithKey instanceof SYStringNode){
+				results.add(((SYStringNode) childNodeWithKey).getLiteralValue());
+			}
+			else for (Node n:childNodeWithKey.getChildren()){
 				if (n instanceof SimpleTypeNode){
 					SimpleTypeNode<?>tn=(SimpleTypeNode<?>) n;
 					results.add(tn.getLiteralValue());

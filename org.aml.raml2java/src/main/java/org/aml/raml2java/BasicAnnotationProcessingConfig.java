@@ -2,6 +2,8 @@ package org.aml.raml2java;
 
 import java.util.HashSet;
 
+import org.aml.java.mapping.implementsExisting;
+import org.aml.java.mapping.skipAnnotation;
 import org.aml.typesystem.AbstractType;
 
 public class BasicAnnotationProcessingConfig implements IAnnotationProcessingConfig{
@@ -43,6 +45,9 @@ public class BasicAnnotationProcessingConfig implements IAnnotationProcessingCon
 	
 	@Override
 	public boolean skipDefinition(AbstractType t) {
+		if (t.annotation(skipAnnotation.class, true)!=null){
+			return true;
+		}
 		if (skipAllDefinitions){
 			return true;
 		}
@@ -59,6 +64,9 @@ public class BasicAnnotationProcessingConfig implements IAnnotationProcessingCon
 
 	@Override
 	public boolean skipReference(AbstractType t) {
+		if (t.annotation(skipAnnotation.class, true)!=null){
+			return true;
+		}
 		if (skipAllReferences){
 			return true;
 		}

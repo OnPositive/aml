@@ -15,4 +15,10 @@ public class AnnotableImpl implements Annotable{
 		return annotations;
 	}
 
+	@Override
+	public <T> T annotation(Class<T> cl) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

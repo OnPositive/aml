@@ -15,7 +15,7 @@ public class JavaGenerationConfig {
 	}
 
 	public static enum MultipleInheritanceStrategy{
-		ALL_PLAIN,MIX_IN
+		ALL_PLAIN,MIX_IN,ALWAYS_PLAIN
 	}
 	
 	public static enum WrappersStrategy{

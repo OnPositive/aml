@@ -62,7 +62,7 @@ public class ApiImpl extends TopLevelRamlImpl implements Api{
 
 	@Override
 	public List<String> getMediaType() {
-		return getStringList("mediatype");
+		return getStringList("mediaType");
 	}
 
 	@Override

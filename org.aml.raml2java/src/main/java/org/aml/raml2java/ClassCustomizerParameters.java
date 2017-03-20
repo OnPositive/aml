@@ -22,6 +22,10 @@ public class ClassCustomizerParameters {
 		this.props = props;
 	}
 	
+	public AbstractType getType(){
+		return this.type;
+	}
+	
 	public JavaWriter getWriter() {
 		return writer;
 	}

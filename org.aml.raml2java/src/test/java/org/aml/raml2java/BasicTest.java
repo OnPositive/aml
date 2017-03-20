@@ -62,6 +62,17 @@ public class BasicTest extends CompilerTestCase {
 			TestCase.assertTrue(m.getDefaultValue().equals(""));
 		}
 	}
+	
+	@Test
+	public void testIssues() {
+		TopLevelRamlImpl build = new TopLevelRamlModelBuilder().build(BasicTest.class.getResourceAsStream("/api.raml"),
+				new ClassPathResourceLoader(), "at1.raml");
+		JavaWriter wr = new JavaWriter();
+		wr.setDefaultPackageName("org.aml.test");
+		wr.write(build);
+		HashMap<String, Class<?>> compileAndTest = compileAndTest(wr.getModel(), "org.aml.test.Issue");
+		TestCase.assertEquals(compileAndTest.size(), 1);		
+	}
 
 	@Test
 	public void test2() {

@@ -3,7 +3,6 @@ package org.aml.apimodel;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public interface Action extends Annotable,IHasBody,MethodBase{
 
 	/**
@@ -86,4 +85,6 @@ public interface Action extends Annotable,IHasBody,MethodBase{
 		results.addAll(headers());
 		return results;
 	}
+
+	
 }

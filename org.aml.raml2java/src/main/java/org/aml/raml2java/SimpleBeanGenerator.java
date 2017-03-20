@@ -86,7 +86,9 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			superType=null;
 			noInheritance=true;
 		}
-		
+		if (this.writer.getConfig().multipleInheritance==MultipleInheritanceStrategy.ALWAYS_PLAIN){
+			superType=null;
+		}
 		if (superType != null) {
 			JType type = writer.getType(superType);
 			defineClass._extends((JClass) type);

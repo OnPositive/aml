@@ -1240,7 +1240,7 @@ public abstract class AbstractType implements IType {
 		for (IAnnotation a : this.getSource().annotations()) {
 			AbstractType annotationType = a.annotationType();
 			if (annotationType != null) {
-				if (annotationType.name().equals("Id")) {
+				if (annotationType.name().toLowerCase().equals("id")) {
 					if (annotationType.isString()) {
 						return "" + a.value();
 					}
@@ -1289,7 +1289,7 @@ public abstract class AbstractType implements IType {
 		return null;		
 	}
 
-	private <T> T tryConvert(Class<T> clazz, IAnnotation a) {
+	public static <T> T tryConvert(Class<T> clazz, IAnnotation a) {
 		AbstractType annotationType = a.annotationType();
 		if (annotationType!=null){
 			if ((annotationType.getNameSpaceId()+"."+annotationType.name()).toLowerCase().equals(clazz.getName().toLowerCase())){

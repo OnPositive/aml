@@ -114,6 +114,10 @@ public class JavaWriter {
 	public JCodeModel getModel() {
 		return mdl;
 	}
+	
+	public void setModel(JCodeModel mdl){
+		this.mdl=mdl;
+	}
 
 	protected INameGenerator nameGenerator = new DefaultNameGenerator("org.aml.test");
 	public IPropertyNameGenerator propNameGenerator = new IPropertyNameGenerator() {
@@ -258,6 +262,10 @@ public class JavaWriter {
 		if (value instanceof Integer) {
 			annotate.param(name, (Integer) value);
 		}
+		if (value==null){
+			annotate.param(name,"");
+			return;
+		}
 		if (value.getClass().isArray()) {
 			JAnnotationArrayMember paramArray = annotate.paramArray(name);
 			for (int i = 0; i < Array.getLength(value); i++) {
@@ -320,6 +328,8 @@ public class JavaWriter {
 		}
 		throw new IllegalArgumentException();
 	}
+	
+	
 
 	public JType getType(AbstractType range) {
 		return getType(range, true, false, null);
@@ -327,6 +337,9 @@ public class JavaWriter {
 
 	public JType getType(AbstractType range, boolean allowNotJava, boolean convertComplexToAnnotation,
 			IProperty member) {
+		if (range==null){
+			return null;
+		}
 		mapsToExisting annotation = range.annotation(mapsToExisting.class, false);
 		if (annotation!=null){
 			return this.mdl.directClass(annotation.value());

@@ -10,11 +10,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jdo.Query;
 
+import org.aml.persistance.HALLinks;
 import org.aml.persistance.PersistanceManager;
+
+import com.google.gson.Gson;
 
 public class JDOPersistanceManager implements PersistanceManager {
 
@@ -226,34 +231,10 @@ public class JDOPersistanceManager implements PersistanceManager {
 		Query<?> newQuery = manager.newQuery(actualRequestType);
 
 		newQuery.setResult("count(this)");
+		fillParams(meta2, actualRequestType, newQuery, args);
 		Long count = (Long) newQuery.executeResultUnique();
 		newQuery = manager.newQuery(actualRequestType);
-		HashMap<String, Object> parameters = new HashMap<>();
-		for (int i = 0; i < meta2.list.size(); i++) {
-			ArgumentMeta argumentMeta = meta2.list.get(i);
-			ReferenceInfo meta3 = argumentMeta.meta(ReferenceInfo.class);
-			if (meta3 != null) {
-				// okey now we should check for parent key
-				Class<?> cl;
-				try {
-					cl = Class.forName(actualRequestType.getPackage().getName() + "." + meta3.clazz);
-					Field[] fields = actualRequestType.getDeclaredFields();
-					for (Field f : fields) {
-
-						if (f.getType().equals(cl)) {
-							newQuery.setFilter(f.getName() + "." + meta3.property + "==p" + i);
-							newQuery.declareParameters("long p" + i);
-							parameters.put("p" + i, args[i]);
-							// okey.
-						}
-
-					}
-				} catch (ClassNotFoundException e) {
-					throw new IllegalStateException(e);
-				}
-			}
-		}
-		newQuery.setNamedParameters(parameters);
+		fillParams(meta2, actualRequestType, newQuery, args);
 		if (end != -1) {
 			newQuery = newQuery.range(offset, end);
 		}
@@ -301,6 +282,36 @@ public class JDOPersistanceManager implements PersistanceManager {
 		return null;
 	}
 
+	protected void fillParams(MethodMeta meta2, Class<?> actualRequestType, Query<?> newQuery, Object... args) {
+		HashMap<String, Object> parameters = new HashMap<>();
+		for (int i = 0; i < meta2.list.size(); i++) {
+			ArgumentMeta argumentMeta = meta2.list.get(i);
+			ReferenceInfo meta3 = argumentMeta.meta(ReferenceInfo.class);
+			if (meta3 != null) {
+				// okey now we should check for parent key
+				Class<?> cl;
+				try {
+					cl = Class.forName(actualRequestType.getPackage().getName() + "." + meta3.clazz);
+					Field[] fields = actualRequestType.getDeclaredFields();
+					for (Field f : fields) {
+
+						if (f.getType().equals(cl)) {
+							newQuery.setFilter(f.getName() + "." + meta3.property + "==p" + i);
+							newQuery.declareParameters("long p" + i);
+							parameters.put("p" + i, args[i]);
+							// okey.
+						}
+
+					}
+				} catch (ClassNotFoundException e) {
+					throw new IllegalStateException(e);
+				}
+			}
+		}
+		
+		newQuery.setNamedParameters(parameters);
+	}
+
 	Object transformInstance(Class<?> requestType, String role, Object val) {
 		try {
 			Object result = requestType.newInstance();
@@ -344,7 +355,32 @@ public class JDOPersistanceManager implements PersistanceManager {
 						f.set(result, vl);
 					}
 				}
+				else if (HALLinks.class.isAssignableFrom(f.getType())){
+					HALLinks links=new HALLinks();
+					links.put("self", "hello");
+					f.set(result, links);
+					try {
+						Field tf=requestType.getDeclaredField("_teplateLinks");
+						tf.setAccessible(true);
+						String linksTemplate=(String) tf.get(null);
+						List<Object>map=new Gson().fromJson(linksTemplate, Object.class);
+						for (Object i:map){
+							Map<String,Object>mp=(Map<String, Object>) i;
+							String key=(String) mp.get("rel");
+							String url=(String) mp.get("url");
+							LinkedHashMap<String, Object>rs=new LinkedHashMap<>();
+							rs.put("href", url);
+							rs.put("method", mp.get("method"));
+							links.put(key,rs);
+						}
+						
+					} catch (NoSuchFieldException | SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
+			
 			clazz = clazz.getSuperclass();
 		}
 	}

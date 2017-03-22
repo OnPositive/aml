@@ -27,9 +27,9 @@ import org.aml.core.mappings.reference;
 import org.aml.core.mappings.update;
 import org.aml.persistance.ResourceWithPersitanceManager;
 import org.aml.persistance.jdo.VisibleWhen;
-import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.raml2java.ClassCustomizerParameters;
 import org.aml.raml2java.IClassCustomizer;
+import org.aml.raml2java.JavaGenerationConfig.MultipleInheritanceStrategy;
 import org.aml.raml2java.JavaWriter;
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.meta.TypeInformation;
@@ -39,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.gson.Gson;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpr;
@@ -50,7 +51,6 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JMods;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
-import com.sun.codemodel.JTypeVar;
 import com.sun.codemodel.JVar;
 
 public class ImplementationGenerator extends Generator {
@@ -58,6 +58,21 @@ public class ImplementationGenerator extends Generator {
 	HashMap<JDefinedClass, String> original = new HashMap<>();
 
 	HashMap<AbstractType, JType> defined = new HashMap<>();
+
+	static class Link {
+		String rel;
+		String url;
+		String method;
+
+		public Link(String rel, String url, String method) {
+			super();
+			this.rel = rel;
+			this.url = url;
+			this.method = method;
+		}
+	}
+
+	protected HashMap<AbstractType, ArrayList<Link>> links = new HashMap<>();
 
 	static class ChildDefinition {
 		public ChildDefinition(String pName, AbstractType type, JDefinedClass child) {
@@ -69,6 +84,19 @@ public class ImplementationGenerator extends Generator {
 		String propName;
 		AbstractType range;
 		JDefinedClass child;
+	}
+
+	protected void postProcess() {
+		for (AbstractType t : links.keySet()) {
+			JDefinedClass cl = (JDefinedClass) context.getType(t);
+			if (cl != null) {
+				String json = new Gson().toJson(links.get(t));
+				if (cl.fields().containsKey("_teplateLinks")){
+					return;
+				}
+				cl.field(JMod.PRIVATE | JMod.STATIC, String.class, "_teplateLinks").init(JExpr.lit(json));
+			}
+		}
 	}
 
 	HashMap<AbstractType, ArrayList<ChildDefinition>> children = new HashMap<>();
@@ -95,11 +123,11 @@ public class ImplementationGenerator extends Generator {
 		if (jDefinedClass.fields().get(trtLabel) != null) {
 			return;
 		}
-		JVar init = jDefinedClass.field(JMod.PRIVATE, context.getCodeModel().ref(Set.class).narrow(childDefinition.child), trtLabel)
+		JVar init = jDefinedClass
+				.field(JMod.PRIVATE, context.getCodeModel().ref(Set.class).narrow(childDefinition.child), trtLabel)
 				.init(JExpr._new(context.getCodeModel().ref(HashSet.class)));
-		init.annotate(Element.class)
-				.param("dependent", "true");
-		init.annotate(VisibleWhen.class).param("value","+none");
+		init.annotate(Element.class).param("dependent", "true");
+		init.annotate(VisibleWhen.class).param("value", "+none");
 		// System.out.println(jType);
 	}
 
@@ -116,18 +144,21 @@ public class ImplementationGenerator extends Generator {
 				dbWriter.getConfig().setMultipleInheritanceStrategy(MultipleInheritanceStrategy.ALWAYS_PLAIN);
 				dbWriter.getConfig().getClassCustomizers()
 						.add(new ImplementationClassCustomizer(ImplementationGenerator.this));
+				dbWriter.getConfig().setSkip("halLinks");
 				getWriter().getConfig().getClassCustomizers().add(new IClassCustomizer() {
-					
+
 					@Override
 					public void customize(ClassCustomizerParameters parameters) {
-						parameters.getClazz().annotate(JsonInclude.class).param("value", com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+						parameters.getClazz().annotate(JsonInclude.class).param("value",
+								com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
 					}
 				});
 			}
 
 			@Override
 			public JType getType(AbstractType tp) {
-				if (!defined.containsKey(tp) && !tp.name().startsWith("Anonimous") && !tp.isAnonimous()) {
+				if (!tp.name().equals("halLinks") && !defined.containsKey(tp) && !tp.name().startsWith("Anonimous")
+						&& !tp.isAnonimous()) {
 					JType type = dbWriter.getType(tp);
 					defined.put(tp, type);
 				}
@@ -275,31 +306,31 @@ public class ImplementationGenerator extends Generator {
 			if (annotation != null) {
 				AbstractType determineTargetClass = determineTargetClass(action);
 				String kind = "delete";
-				addCode(method, determineTargetClass, kind);
+				addCode(method, determineTargetClass, kind, action);
 			}
 			details det = action.annotation(details.class);
 			if (det != null) {
 				AbstractType determineTargetClass = determineTargetClass(action);
 				String kind = "get";
-				addCode(method, determineTargetClass, kind);
+				addCode(method, determineTargetClass, kind, action);
 			}
 			list list = action.annotation(list.class);
 			if (list != null) {
 				AbstractType determineTargetClass = determineTargetClass(action);
 				String kind = "list";
-				addCode(method, determineTargetClass, kind);
+				addCode(method, determineTargetClass, kind, action);
 			}
 			create create = action.annotation(create.class);
 			if (create != null) {
 				AbstractType determineTargetClass = determineTargetClass(action);
 				String kind = "create";
-				addCode(method, determineTargetClass, kind);
+				addCode(method, determineTargetClass, kind, action);
 			}
 			update update = action.annotation(update.class);
 			if (update != null) {
 				AbstractType determineTargetClass = determineTargetClass(action);
 				String kind = "update";
-				addCode(method, determineTargetClass, kind);
+				addCode(method, determineTargetClass, kind, action);
 			}
 			method.body()._return(new JExpressionImpl() {
 
@@ -314,7 +345,18 @@ public class ImplementationGenerator extends Generator {
 		return;
 	}
 
-	protected void addCode(JMethod method, AbstractType tp, String kind) {
+	protected void addCode(JMethod method, AbstractType tp, String kind, Action action) {
+		ArrayList<Link> arrayList = links.get(tp);
+		if (arrayList == null) {
+			arrayList = new ArrayList<>();
+			links.put(tp, arrayList);
+		}
+		String role = kind;
+		if (kind.equals("get")) {
+			role = "self";
+		}
+		arrayList.add(new Link(role, action.resource().getUri(), action.method()));
+
 		JType type = context.getType(tp);
 		if (type == null) {
 			return;

@@ -64,7 +64,7 @@ public class RAML1Test {
 		configuration.setJaxrsVersion(jaxrsVersion);
 		configuration.setUseJsr303Annotations(useJsr303Annotations);
 		File root = codegenOutputFolder.getRoot();
-		root=new File("C:\\work\\aml\\raml-to-jaxrs\\core\\src\\test\\javagen");
+		//root=new File("C:\\work\\aml\\raml-to-jaxrs\\core\\src\\test\\javagen");
 
 		configuration.setBasePackageName(TEST_BASE_PACKAGE);
 		configuration.setOutputDirectory(root);
@@ -133,7 +133,7 @@ public class RAML1Test {
 		configuration.setJaxrsVersion(jaxrsVersion);
 		configuration.setUseJsr303Annotations(useJsr303Annotations);
 		File root = codegenOutputFolder.getRoot();
-		root=new File("C:\\work\\aml\\raml-to-jaxrs\\core\\src\\test\\javagen");
+		root=new File("/Users/kor/git/aml/raml-to-jaxrs/core/src/test/javagen");
 		configuration.setOutputDirectory(root);
 		configuration.setGenerateImpl(true);
 		configuration.setBasePackageName(TEST_BASE_PACKAGE);

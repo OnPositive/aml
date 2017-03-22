@@ -10,8 +10,9 @@ types:
         type: integer
         (core.id):
         (core.readonly): true
-        format: long
+        format: int64
       title: string
+      _links: core.halLinks
   Label:
     type: Base
     properties:
@@ -74,9 +75,9 @@ resourceTypes:
           body: <<Type>>
   item:
     uriParameters:
-      <<id>>:
+      <<resourcePathName | !singularize>>Id:
         type: integer
-        format: long
+        format: int64
         (core.reference): <<Type>>.id
     put:
       (core.update):
@@ -94,19 +95,20 @@ resourceTypes:
        (core.delete):
        responses:
          204:
+
 /projects:
   type:  { collection: {Type : Project} }
   /{projectId}:
-    type:  { item: {Type : Project, id: projectId} }
+    type:  { item: {Type : Project} }
     /labels:
       type: { collection: {Type : Label} }
       /{labelId}:
-        type: { item: {Type : Label, id: labelId} }
+        type: { item: {Type : Label} }
     /issues:
       type: { collection: {Type : Issue} }
       /{issueId}:
-        type:  { item: {Type : Issue, id: issueId} }
+        type:  { item: {Type : Issue} }
         /commments:
           type: { collection: {Type : Comment} }
           /{commentId}:
-            type: { item: {Type : Comment, id: commentId} }
+            type: { item: {Type : Comment} }

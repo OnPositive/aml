@@ -78,16 +78,16 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		boolean hasMap = false;
 		Extras ext = new Extras();
 		extendExisting annotation = t.annotation(extendExisting.class, true);
-		boolean noInheritance=false;
-		if (annotation!=null){
-			noInheritance=true;
+		boolean noInheritance = false;
+		if (annotation != null) {
+			noInheritance = true;
 			JType type = writer.getModel().directClass(annotation.value());
 			defineClass._extends((JClass) type);
-			superType=null;
-			noInheritance=true;
+			superType = null;
+			noInheritance = true;
 		}
-		if (this.writer.getConfig().multipleInheritance==MultipleInheritanceStrategy.ALWAYS_PLAIN){
-			superType=null;
+		if (this.writer.getConfig().multipleInheritance == MultipleInheritanceStrategy.ALWAYS_PLAIN) {
+			superType = null;
 		}
 		if (superType != null) {
 			JType type = writer.getType(superType);
@@ -102,7 +102,7 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			}
 			;
 		} else {
-			if (this.writer.getConfig().multipleInheritance == MultipleInheritanceStrategy.MIX_IN&&!noInheritance) {
+			if (this.writer.getConfig().multipleInheritance == MultipleInheritanceStrategy.MIX_IN && !noInheritance) {
 				AbstractType primarySuper = null;
 				int pcount = 0;
 				for (AbstractType st : t.superTypes()) {
@@ -288,6 +288,13 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 		if (annotation != null) {
 			oname = annotation.value();
 		}
+		AbstractType rr = p.range();
+		while (rr != null) {
+			if (writer.getConfig().getSkip().contains(rr.name())) {
+				return;
+			}
+			rr=rr.superType();
+		}
 		String name = oname;
 		JType propType = writer.getType(p.range(), false, false, p);
 		JExpression initExpr = null;
@@ -365,10 +372,10 @@ public class SimpleBeanGenerator implements ITypeGenerator {
 			if (writer.getConfig().isGsonSupport()) {
 				if (p.isMap() || p.isAdditional()) {
 					field.annotate(Expose.class).param("serialize", false).param("deserialize", false);
-				} 
+				}
 				if (usesCustomName) {
-						field.annotate(SerializedName.class).param("value", p.id());
-				}				
+					field.annotate(SerializedName.class).param("value", p.id());
+				}
 			}
 
 			if (writer.getConfig().isJacksonSupport()) {

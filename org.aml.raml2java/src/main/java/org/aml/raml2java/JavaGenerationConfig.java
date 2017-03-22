@@ -1,6 +1,8 @@
 package org.aml.raml2java;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.aml.java.mapping.primarySuperType;
 
@@ -202,5 +204,15 @@ public class JavaGenerationConfig {
 
 	public void setMultipleInheritanceStrategy(MultipleInheritanceStrategy st) {
 		this.multipleInheritance=st;
+	}
+	
+	HashSet<String>skip=new HashSet<>();
+
+	public void setSkip(String string) {
+		this.skip.add(string);
+	}
+	
+	Set<String> getSkip(){
+		return this.skip;
 	}
 }

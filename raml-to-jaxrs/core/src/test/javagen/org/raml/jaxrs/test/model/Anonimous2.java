@@ -7,7 +7,7 @@ import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-@Generated(value = "org.aml.raml2java", date = "Mon Mar 20 17:15:47 ICT 2017")
+@Generated(value = "org.aml.raml2java", date = "Mon Mar 20 21:21:10 NOVT 2017")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class Anonimous2 {
 

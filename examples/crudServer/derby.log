@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Mon Mar 20 17:23:07 ICT 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-eb3d-e95c-00002d2e2488 
-on database directory C:\work\aml\examples\crudServer\registry with class loader WebAppClassLoader=478864778@1c8ae58a 
-Loaded from file:/C:/Users/Павел/.m2/repository/org/apache/derby/derby/10.13.1.1/derby-10.13.1.1.jar
+Mon Mar 20 23:50:29 NOVT 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-015a-eca0-8d69-00001437a838 
+on database directory /Users/kor/git/aml/examples/crudServer/registry with class loader WebAppClassLoader=1093352258@412b3b42 
+Loaded from file:/Users/kor/.m2/repository/org/apache/derby/derby/10.13.1.1/derby-10.13.1.1.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_102-b14
-user.dir=C:\work\aml\examples\crudServer
-os.name=Windows 10
-os.arch=amd64
-os.version=10.0
+java.runtime.version=1.8.0_25-b17
+user.dir=/Users/kor/git/aml/examples/crudServer
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.10.5
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

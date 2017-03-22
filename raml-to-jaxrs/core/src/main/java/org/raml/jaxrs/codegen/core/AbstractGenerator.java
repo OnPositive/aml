@@ -199,7 +199,8 @@ public abstract class AbstractGenerator {
 		if (configuration.isGenerateImpl()){
 			
 			final String ramlBuffer = IOUtils.toString(raml);
-			new ImplementationGenerator().run(new StringReader(ramlBuffer), configuration,"",true);
+			ImplementationGenerator implementationGenerator = new ImplementationGenerator();
+			implementationGenerator.run(new StringReader(ramlBuffer), configuration,"",true);
 			raml=new StringReader(ramlBuffer);
 		}
 		Set<String> run = run(raml,configuration,"",true);
@@ -232,8 +233,12 @@ public abstract class AbstractGenerator {
 		for (final Resource resource : resources) {
 			createResourceInterface(resource, raml,configuration);
 		}
-
+		this.postProcess();
 		return context.generate();
+	}
+
+	protected void postProcess() {
+		
 	}
 
 	protected void customizeContext() {
@@ -780,7 +785,9 @@ public abstract class AbstractGenerator {
 			
 			final String ramlBuffer = IOUtils.toString(ramlReader);
 			Set<String> run = run(new StringReader(ramlBuffer), configuration,readerLocation,false);
-			new ImplementationGenerator().run(new StringReader(ramlBuffer), configuration,"",true);
+			ImplementationGenerator implementationGenerator = new ImplementationGenerator();
+			implementationGenerator.run(new StringReader(ramlBuffer), configuration,"",true);
+			
 			//ramlReader=new StringReader(ramlBuffer);
 			return run;
 		}

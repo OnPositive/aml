@@ -1,0 +1,43 @@
+#%RAML 1.0
+mediaType: application/json
+annotationTypes:
+   setVariable:
+     properties:
+       target: string
+       value: string
+types:
+  Switcher:
+    properties:
+      value: boolean
+      id: string
+    examples:
+      turnedOn:
+          value:
+            value: true
+            id: exampleSwitcher
+      dynamic:
+          strict: false
+          value:
+            value: {state?state: false}
+            id: exampleSwitcher
+title: Example
+/{switcher}:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Switcher
+
+  put:
+    body:
+      application/json:
+        type: Switcher
+        (setVariable):
+          target: state
+          value: this.value
+    responses:
+      200:
+        body:
+          application/json:
+            type: Switcher

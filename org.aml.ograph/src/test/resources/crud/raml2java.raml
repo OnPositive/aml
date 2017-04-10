@@ -1,0 +1,91 @@
+#%RAML 1.0 Library
+uses:
+  commons: commons.raml
+usage: |
+  This library contains set of annotations which may be used to, customize mapping
+  of RAML types to Java as well as a set of similar languages (Scala,e.t.c)
+annotationTypes:
+  skipAnnotation: nil
+  package:
+    type: string
+    description: |
+      This annotation allows to specify desired package name for the generated types
+      When applied to type container works as the default package
+      name for all types in scope
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  primarySuperType:
+    type: TypeName
+    allowedTargets: TypeDeclaration
+    description: |
+      When RAML type with multiple super types is mapped to language without
+      support for multiple inheritance only one of super types may be used
+      as a real super type in the target language. This annotation allows to specify
+      the name of super type which should be used as primary super type in this case.
+  container:
+     type: string
+     enum: [array, list, set]
+     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+     description: |
+       Trivial mapping of RAML array types, is to map them to array types of the target language
+       however this behavior is not always desired. This annotation allows to customize
+       desired type of the container type when mapping array types. When used on type container
+       serves as default for all contained types.
+     default: list
+  javaName:
+     type: string
+     description: Allows to specify name of the generated java type or java property
+     allowedTargets: [TypeDeclaration]
+  implementsExisting:
+     type: string[]
+     description: |
+        Allows to specify additional existing interfaces which should be implemented by type.
+        Framework assumes that interface declarations already exists on class path
+     allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  extendExisting:
+        type: string
+        description: |
+           Allows to specify existing superclass which should be extended by type.
+           Framework assumes that superclass declaration already exists on class path
+        allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  mapsToExisting:
+        type: string
+        description: |
+           Allows to specify fully qualified name of existing class which should be mapped to this type
+        allowedTargets: [TypeDeclaration]
+  defaultNumberFormat:
+    description: This annotation allows to configure default java representation for number values
+    type: string
+    default: double
+    enum: [float, long, int, int16,int32, int64, double]
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  defaultIntegerFormat:
+    description: This annotation allows to configure default java representation for integer values
+    type: string
+    enum: [long, int, int16, int32, int64, int8]
+    default: int
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  cloneable:
+    type: nil
+    description: This marker annotation states that generated types should support cloning
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  serializable:
+    type: nil
+    description: This marker annotation states that generated types should be serializable
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  comparable:
+    #Not supported yet.
+    type: string
+    description: |
+       This annotation states that generated types should be comparable,
+       annotation argument is the name of property which should be used for comparison
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+  equalsAndHashCode:
+    type: nil
+    description: |
+      This marker annotation states that generated types should have equals and hashCode methods
+      which supports comparison by value
+    allowedTargets: [Library,TypeDeclaration,API,Overlay,Extension]
+types:
+  JavaPackage: string 
+  TypeName: string
+(commons.Id): org.aml.java.mapping

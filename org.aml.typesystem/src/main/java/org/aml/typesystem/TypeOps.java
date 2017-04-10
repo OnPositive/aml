@@ -1,9 +1,7 @@
 package org.aml.typesystem;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import org.aml.typesystem.meta.restrictions.AbstractRestricton;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
 import org.aml.typesystem.meta.restrictions.ExternalSchemaMeta;

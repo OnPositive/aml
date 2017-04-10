@@ -12,7 +12,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.aml.typesystem.beans.IProperty;
 import org.aml.typesystem.beans.IPropertyView;
 import org.aml.typesystem.beans.PropertyBean;
@@ -27,7 +26,6 @@ import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Discriminator;
 import org.aml.typesystem.meta.facets.DiscriminatorValue;
 import org.aml.typesystem.meta.facets.DisplayName;
-import org.aml.typesystem.meta.facets.Example;
 import org.aml.typesystem.meta.facets.Facet;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.Polymorphic;

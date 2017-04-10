@@ -1,0 +1,232 @@
+#%RAML 1.0 Library
+(id): org.aml.core.mappings
+uses:
+ r2j: raml2java.raml
+(r2j.skipAnnotation):
+annotationTypes:
+  disabledWhen: RAMLLocalExpression #
+  visibleWhen: RAMLLocalExpression  #
+  requiredWhen: RAMLLocalExpression
+  typeahead: RAMLLocalExpression
+  requiredWhenMessage: string
+  enumDescriptions: string[]
+  collectionFormat:
+    enum: [ csv, multi]
+  enumValues: RAMLLocalExpression
+  representation: string | any
+  primary: nil| boolean #
+  htmlLabel: boolean
+  immutable: nil | boolean
+  parent: nil | boolean #
+  child: nil | boolean  #
+
+  equalTo: string #!
+  ordering: OrderingMappings
+  foreignProperties:
+    properties:
+      //: string
+  NilInstance: any
+  detailsTemplate: string
+  views:
+    properties:
+      //: ViewDescription
+  usesApis:
+    properties:
+      //: string
+  labelDecorators:
+    properties:
+      //: DecoratorDescription
+  groupBy:
+    properties:
+        property?: string
+        allowUserConfiguration?: boolean
+        allowedGropings?: string[]
+  parametersLayout:
+    properties:
+       initiallyVisible?: string[]
+       allowConfiguration?: boolean
+       contributeToContextMenu?: boolean
+  filter: FilterMapping |  nil
+  label: RAMLLocalExpression
+  key: boolean #
+  computeFunction: RAMLLocalExpression
+  computedProperties:
+    properties:
+       //: computePropertyType
+  actions:
+    properties:
+      //: Action
+  readonly: boolean #
+  reference: boolean | RAMLReferenceExpression #
+  sortDirection: boolean
+
+
+  conversionRules:
+    properties:
+      //:
+        properties:
+          from: RAMLTypeName
+          to: RAMLTypeName
+          selfRule?: string
+          autoConvertKnownProperties?:
+            type: boolean
+            default: true
+          asssertions?:
+            properties:
+              //: string
+  columns:
+    type: array
+    items: string
+  errorMessage: string
+  instanceValidator: string
+
+  create: #
+    description: marks that this endpoint allows to create new instances of specified type. If type name is ommitted it assumes that type is defined by the body type
+    type: RAMLTypeName| nil
+  delete:   RAMLTypeName | nil #
+  relationKind: string | nil #
+  includeIn: string | string[] #
+  details: #
+    description: marks that this endpoint allows to get an additional details for specified type.
+    type: RAMLTypeName | nil
+  update: #
+    description: marks that this endpoint allows to update instances of specified type. If type name is ommitted it assumes that type is defined by the body type
+    type: RAMLTypeName| nil
+  list: #
+    description: marks that this endpoint allows to list instances of specified type.
+    type: RAMLTypeName | nil
+  action: #
+      description: marks that this endpoint contains an action related to specifed type.
+      type: RAMLTypeName | nil
+  memberProperty:
+    description: marks that this endpoint returns an object which is related to parent type
+    type: RAMLTypeName| nil
+  memberCollection: #
+    description: marks that this endpoint returns a collection of instances which is related to parent type
+    type: RAMLTypeName| nil
+  basicPaging:
+    description: |
+       This annotation allows to specify how framework may use parameters of the method to page collection.
+    properties:
+       total?:
+         description: specifies where total length of collection is located in response
+         type: RAMLResponseExpression
+       page?:
+         description: Specifies where framework should pass number of the page to get.
+         type: RAMLRequestExpression
+       moreResults?:
+         type: RAMLResponseExpression
+         description: specifies where framework should look in response to test if collection contains more results.
+       results?:
+         description: Specifies where content of collection is located in response
+         type: RAMLResponseExpression
+       offset?:
+         description: Specifies where framework should pass offset from the start of collection
+         type: RAMLRequestExpression
+  preTransform: any
+
+  errorMessageIn:
+    description: |
+      This annotation allows to specify location of human readable error messages
+      in responses. It uses RAML Response Expression notation.
+      it can be applied on API, Resource and Method level.
+    type: RAMLResponseExpression
+
+
+  icon: url
+  id: string | nil #
+  unique: boolean
+  propOrder:
+    type: string[]
+types:
+
+  Conditional:
+    properties:
+      disabledWhen?: RAMLLocalExpression
+      visibleWhen?: RAMLLocalExpression
+      requiredWhen?: RAMLLocalExpression
+  DecoratorDescription:
+    properties:
+      when?: RAMLLocalExpression
+      title?: string
+      summary?: string
+      details?: string
+      status?: string
+      action? : string
+
+      itemTransform?: DecoratorDescription
+      replace?: boolean
+      align?:
+        enum: [ left, right ]
+      class?: string
+      background?: string
+      image?: string
+  Action:
+    type: Conditional
+    properties:
+      parameters?:
+        properties:
+          //: RAMLTypeName
+      result?: RAMLTypeName
+      body: string
+  computePropertyType: any
+  RAMLLocalExpression: string
+  RAMLResponseExpression: string
+  RAMLRequestExpression: string
+  RAMLReferenceExpression: string
+  RAMLTypeName: string
+  ViewDescription:
+    properties:
+       resource: string
+       method?: string
+       displayName?: string
+       description?: string
+       fixedParameters?:
+         properties:
+           //: any
+  OrderingMapping:
+    properties:
+      property: string
+      descending?: boolean
+  OrderingMappings:
+    properties:
+      //: string | OrderingMapping
+  FilterMapping:
+    properties:
+      property?: string
+      valueMappings?:
+            properties:
+               //: string
+      noFilterValue?: string
+      filterOp?:
+            default: eq
+            enum: [ eq, lt, gt, like, ge, le ]
+  url:
+    type: string
+    facets:
+      kind?: string
+  html: text
+  code:
+    type: text
+    facets:
+      language?: string
+  htmlUrl:
+    type: url
+    #kind: html
+  link:
+    type: url
+    facets:
+      endpoint: string
+  halLinks: 
+    type: object  
+    (r2j.mapsToExisting): org.aml.persistance.HALLinks
+  imageUrl:
+    type: url
+    #kind: image
+  multiline:
+    type: string
+  text: multiline
+  markdown:
+      type: text
+  relation:
+    type: array

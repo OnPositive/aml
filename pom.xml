@@ -164,6 +164,8 @@
 		<module>raml-to-jaxrs/core</module>
 		<module>raml-to-jaxrs/maven-plugin</module>
 		<module>org.aml.persistance</module>
+		<module>org.aml.ograph</module>
+		<module>org.aml.mock</module>
 	</modules>
 	<groupId>com.onpositive.aml</groupId>
 	<artifactId>org.aml.parent</artifactId>

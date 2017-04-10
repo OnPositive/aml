@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -25,6 +26,7 @@ import org.aml.typesystem.meta.FacetRegistry;
 import org.aml.typesystem.meta.TypeInformation;
 import org.aml.typesystem.meta.facets.Annotation;
 import org.aml.typesystem.meta.facets.Example;
+import org.aml.typesystem.meta.facets.Examples;
 import org.aml.typesystem.meta.facets.FacetDeclaration;
 import org.aml.typesystem.meta.facets.XMLFacet;
 import org.aml.typesystem.meta.restrictions.ComponentShouldBeOfType;
@@ -48,6 +50,7 @@ import org.raml.v2.internal.impl.commons.nodes.AnnotationNode;
 import org.raml.v2.internal.impl.commons.nodes.AnnotationTypeNode;
 import org.raml.v2.internal.impl.commons.nodes.CustomFacetDefinitionNode;
 import org.raml.v2.internal.impl.commons.nodes.ExampleDeclarationNode;
+import org.raml.v2.internal.impl.commons.nodes.ExamplesNode;
 import org.raml.v2.internal.impl.commons.nodes.ExternalSchemaTypeExpressionNode;
 import org.raml.v2.internal.impl.commons.nodes.FacetNode;
 import org.raml.v2.internal.impl.commons.nodes.TypeDeclarationNode;
@@ -64,6 +67,7 @@ import org.raml.yagi.framework.nodes.ArrayNode;
 import org.raml.yagi.framework.nodes.BooleanNode;
 import org.raml.yagi.framework.nodes.KeyValueNode;
 import org.raml.yagi.framework.nodes.Node;
+import org.raml.yagi.framework.nodes.NodeAnnotation;
 import org.raml.yagi.framework.nodes.NullNode;
 import org.raml.yagi.framework.nodes.ObjectNode;
 import org.raml.yagi.framework.nodes.SimpleTypeNode;
@@ -445,6 +449,28 @@ public class TopLevelRamlModelBuilder {
 								result.addMeta(facet);
 							}
 						}
+					}
+					if (facet instanceof Examples){
+						ExamplesNode n=(ExamplesNode) node;
+						n.getChildren().get(1).getChildren().forEach(x->{
+							ExampleDeclarationNode decl=(ExampleDeclarationNode) x;
+							Object object = toObject(decl.getExampleValue());
+							Example ex=new Example();
+							ex.setValue(object);
+							x.getChildren().forEach(ch->{
+								ch.getChildren().forEach(v->{
+									if (v instanceof AnnotationNode){
+										AnnotationNode nm=(AnnotationNode) v;
+										Node value = nm.getValue();
+										ex.getAnnotations().add(new Annotation(nm.getName(), toObject(value)));
+										System.out.println(v);
+									}
+								});
+								//System.out.println(ch);
+							});
+							result.addMeta(ex);							
+						});
+						
 					}
 					if (facet instanceof XMLFacet) {
 						proceedXML(result, kv, facet);

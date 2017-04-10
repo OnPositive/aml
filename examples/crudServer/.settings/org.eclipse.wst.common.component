@@ -5,13 +5,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/raml-jaxrs"/>
-        <dependent-module archiveName="org.aml.swagger.io-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.swagger.io/org.aml.swagger.io">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="org.aml.typesystem.yaml-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.typesystem.yaml/org.aml.typesystem.yaml">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="org.aml.typesystem-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.typesystem/org.aml.typesystem">
+        <dependent-module archiveName="org.aml.registry-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.registry/org.aml.registry">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="org.aml.persistance-0.13-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.aml.persistance/org.aml.persistance">

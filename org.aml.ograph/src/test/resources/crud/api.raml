@@ -1,0 +1,114 @@
+#%RAML 1.0
+title: Issue tracker
+mediaType: application/json
+uses:
+  core: coreLib.raml
+types:
+  Base:
+    properties:
+      id:
+        type: integer
+        (core.id):
+        (core.readonly): true
+        format: int64
+      title: string
+      _links: core.halLinks
+  Label:
+    type: Base
+    properties:
+      parent?:
+        type: Project
+        (core.parent): true
+        (core.visibleWhen): +details
+      color: string
+  Project:
+    type: Base
+    properties:
+      labels: Label[]
+  Issue:
+    type: Base
+    properties:
+      parent?:
+        type: Project
+        (core.parent): true
+        (core.visibleWhen): +details
+      body:
+        (core.visibleWhen): +details, +create, +update
+        type: string
+      labels:
+        type: string[]
+        (core.visibleWhen): +details, +create, +update
+        (core.reference): Label.title
+  Comment:
+    type: Base
+    properties:
+      parent?:
+        (core.visibleWhen): +details
+        (core.parent): true
+        type: Issue
+      body:
+        type: string
+        (core.visibleWhen): +details, +create, +update
+resourceTypes:
+  collection:
+    get:
+      (core.basicPaging):
+        total: total
+        offset: offset
+        limit: limit
+        results: items
+      queryParameters:
+        offset?: integer
+        limit?: integer
+      (core.list):
+      responses:
+        200:
+          body:
+            properties:
+               items: <<Type>>[]
+               total: integer
+    post:
+      (core.create):
+      body: <<Type>>
+      responses:
+        201:
+          body: <<Type>>
+  item:
+    uriParameters:
+      <<resourcePathName | !singularize>>Id:
+        type: integer
+        format: int64
+        (core.reference): <<Type>>.id
+    put:
+      (core.update):
+      body: <<Type>>
+      responses:
+        203:
+          body: <<Type>>
+    get:
+      (core.details):
+      responses:
+        200:
+          body:
+            <<Type>>
+    delete:
+       (core.delete):
+       responses:
+         204:
+
+/projects:
+  type:  { collection: {Type : Project} }
+  /{projectId}:
+    type:  { item: {Type : Project} }
+    /labels:
+      type: { collection: {Type : Label} }
+      /{labelId}:
+        type: { item: {Type : Label} }
+    /issues:
+      type: { collection: {Type : Issue} }
+      /{issueId}:
+        type:  { item: {Type : Issue} }
+        /commments:
+          type: { collection: {Type : Comment} }
+          /{commentId}:
+            type: { item: {Type : Comment} }

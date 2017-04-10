@@ -363,7 +363,7 @@ public class JDOPersistanceManager implements PersistanceManager {
 						Field tf=requestType.getDeclaredField("_teplateLinks");
 						tf.setAccessible(true);
 						String linksTemplate=(String) tf.get(null);
-						List<Object>map=new Gson().fromJson(linksTemplate, Object.class);
+						List<Object>map=(List<Object>) new Gson().fromJson(linksTemplate, Object.class);
 						for (Object i:map){
 							Map<String,Object>mp=(Map<String, Object>) i;
 							String key=(String) mp.get("rel");

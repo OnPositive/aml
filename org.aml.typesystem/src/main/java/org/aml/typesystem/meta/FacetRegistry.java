@@ -16,6 +16,7 @@ import org.aml.typesystem.meta.facets.Discriminator;
 import org.aml.typesystem.meta.facets.DiscriminatorValue;
 import org.aml.typesystem.meta.facets.DisplayName;
 import org.aml.typesystem.meta.facets.Example;
+import org.aml.typesystem.meta.facets.Examples;
 import org.aml.typesystem.meta.facets.Format;
 import org.aml.typesystem.meta.facets.Polymorphic;
 import org.aml.typesystem.meta.facets.XMLFacet;
@@ -178,7 +179,7 @@ public class FacetRegistry {
 
 	@SuppressWarnings("unchecked")
 	static Class<? extends TypeInformation>[] metaInfo = new Class[] { Description.class,Format.class, DisplayName.class,
-			Discriminator.class, DiscriminatorValue.class, Default.class, Example.class, XMLFacet.class, Abstract.class, Polymorphic.class };
+			Discriminator.class, DiscriminatorValue.class, Default.class, Example.class,Examples.class, XMLFacet.class, Abstract.class, Polymorphic.class };
 
 	/**
 	 * <p>allRestrictionsNames.</p>

@@ -1,6 +1,7 @@
 package org.aml.typesystem.beans;
 
 import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.meta.facets.Default;
 import org.aml.typesystem.meta.facets.Description;
 
 /**
@@ -12,6 +13,7 @@ import org.aml.typesystem.meta.facets.Description;
 public class PropertyBean implements IProperty {
 
 	protected boolean additional;
+	protected boolean positional;
 	protected AbstractType declaredAt;
 	protected String id;
 	
@@ -171,6 +173,23 @@ public class PropertyBean implements IProperty {
 			return oneMeta.value();
 		}
 		return null;
+	}
+	
+	public Object defaultValue() {
+		Default oneMeta = type.oneMeta(Default.class);
+		if (oneMeta!=null){
+			return oneMeta.value();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isPositional() {	
+		return positional;
+	}
+
+	public void setPositional(boolean positional) {
+		this.positional = positional;
 	}
 
 }

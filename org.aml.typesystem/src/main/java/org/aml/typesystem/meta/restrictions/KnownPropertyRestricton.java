@@ -49,8 +49,17 @@ public class KnownPropertyRestricton extends InternalRestriction implements ITra
 			}
 		}
 		if (!propNames.isEmpty()) {
-			return new Status(Status.ERROR, 0, "unmatched properties:" + propNames.toString());
+			Status status = new Status(0, 0, "");
+			for (String s:propNames) {
+				Status status2 = new Status(Status.ERROR, 0, "unknown property " + s,o);
+				status2.setKey(s);
+				status2.setOnKey(true);
+				status.addSubStatus(status2);
+				
+			}
+			return status;
 		}
+		
 		return Status.OK_STATUS;
 	}
 

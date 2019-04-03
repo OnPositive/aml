@@ -93,7 +93,6 @@
 		</profile>
 	</profiles>
 	<build>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -206,5 +205,4 @@
 			<organizationUrl>http://onpositive.com</organizationUrl>
 		</developer>
 	</developers>
-
 </project>

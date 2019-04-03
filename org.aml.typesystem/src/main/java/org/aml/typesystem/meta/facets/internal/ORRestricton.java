@@ -21,7 +21,7 @@ public class ORRestricton extends InternalRestriction {
 				return Status.OK_STATUS;
 			}
 		}
-		return new Status(Status.ERROR, 0, "All options failed");
+		return new Status(Status.ERROR, 0, "All options failed",o);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class ORRestricton extends InternalRestriction {
 	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
-		final Status okStatus = new Status(Status.OK, 0, "");
+		final Status okStatus = new Status(Status.OK, 0, "",this);
 		for (final AbstractRestricton r : this.options) {
 			okStatus.addSubStatus(r.validate(registry));
 		}

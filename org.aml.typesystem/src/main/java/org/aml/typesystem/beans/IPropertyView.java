@@ -18,6 +18,13 @@ public interface IPropertyView extends INamedEntity {
 	 * @return a {@link java.util.List} object.
 	 */
 	List<IProperty> properties();
+	
+	/**
+	 * <p>properties.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
+	List<IProperty> positionalProperties();
 
 	/**
 	 * <p>allProperties.</p>

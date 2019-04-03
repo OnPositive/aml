@@ -1,13 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>raml2java-maven-plugin</artifactId>
-  <packaging>maven-plugin</packaging>
-  <name>RAML2Java Maven Plugin</name>
-  <description>Converts RAML Types to Java classes</description>
-  <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>raml2java-maven-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<name>RAML2Java Maven Plugin</name>
+	<description>Converts RAML Types to Java classes</description>
+	<properties>
 		<org.apache.maven.plugin-tools.version>3.3</org.apache.maven.plugin-tools.version>
-  </properties>
-  <dependencies>
+	</properties>
+	<dependencies>
 		<dependency>
 			<groupId>com.onpositive.aml</groupId>
 			<artifactId>org.aml.raml2java</artifactId>
@@ -28,24 +29,21 @@
 			<artifactId>maven-plugin-tools-annotations</artifactId>
 			<version>${org.apache.maven.plugin-tools.version}</version>
 		</dependency>
-		
-		
-		<!--  Test dependencies -->
+		<!-- Test dependencies -->
 		<dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>		
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
-
 		<plugins>
-	<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.3</version>
-      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>3.3</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -56,12 +54,12 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-</plugins></build>
-  <parent>
-  	<groupId> com.onpositive.aml</groupId>
-	<artifactId>org.aml.parent</artifactId>
-
-	<version>0.13-SNAPSHOT</version>
-  	<relativePath>..</relativePath>
-  </parent>
+		</plugins>
+	</build>
+	<parent>
+		<groupId> com.onpositive.aml</groupId>
+		<artifactId>org.aml.parent</artifactId>
+		<version>0.13-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 </project>

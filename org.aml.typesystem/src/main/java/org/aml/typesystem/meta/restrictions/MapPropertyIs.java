@@ -69,7 +69,7 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
-		final Status status = new Status(Status.OK, 0, "");
+		final Status status = new Status(Status.OK, 0, "",o);
 		final HashSet<String> knownProps = new HashSet<>();
 		for (final PropertyIs p : this.baseType.meta(PropertyIs.class)) {
 			knownProps.add(p.facetName());
@@ -180,7 +180,7 @@ public class MapPropertyIs extends IntersectRequires implements IMatchesProperty
 			}
 			return Status.OK_STATUS;
 		} catch (final PatternSyntaxException e) {
-			return new Status(Status.ERROR, 1, e.getMessage());
+			return new Status(Status.ERROR, 1, e.getMessage(),this);
 		}
 	}
 

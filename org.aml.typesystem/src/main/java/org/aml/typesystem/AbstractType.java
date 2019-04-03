@@ -44,6 +44,8 @@ import org.aml.typesystem.meta.restrictions.MapPropertyIs;
 import org.aml.typesystem.meta.restrictions.PropertyIs;
 import org.aml.typesystem.meta.restrictions.RestrictionStackEntry;
 import org.aml.typesystem.meta.restrictions.RestrictionsOptimizer;
+import org.aml.typesystem.values.IParseError;
+import org.aml.typesystem.values.ITypedObject;
 import org.aml.typesystem.values.ObjectAccess;
 
 /**
@@ -100,7 +102,8 @@ public abstract class AbstractType implements IType {
 		super();
 		this.name = name;
 	}
-
+	
+	
 	/**
 	 * <p>
 	 * isSubTypeOf.
@@ -135,7 +138,8 @@ public abstract class AbstractType implements IType {
 	 * @return a {@link org.aml.typesystem.beans.IPropertyView} object.
 	 */
 	public IPropertyView toPropertiesView() {
-		return new PropertyViewImpl(this);
+		propertyViewImpl = new PropertyViewImpl(this);
+		return propertyViewImpl;
 	}
 
 	/**
@@ -145,6 +149,24 @@ public abstract class AbstractType implements IType {
 	 */
 	@Override
 	public final AbstractType ac(Object obj) {
+		if (obj instanceof ITypedObject) {
+			AbstractType type = ((ITypedObject) obj).getType();
+			if (type!=null) {
+				return type;
+			}
+		}
+		if (this.isObject()) {
+			if (obj instanceof Boolean) {
+				return BuiltIns.BOOLEAN;
+			}
+			if (obj instanceof String) {
+				return BuiltIns.STRING;
+			}
+			if (obj instanceof Number) {
+				return BuiltIns.NUMBER;
+			}
+		}
+		
 		if (!this.isPolymorphic() && !this.isUnion()) {
 			return this;
 		}
@@ -208,10 +230,11 @@ public abstract class AbstractType implements IType {
 	 * @param m
 	 *            a {@link org.aml.typesystem.meta.TypeInformation} object.
 	 */
-	public final void addMeta(TypeInformation m) {
+	public final void addMeta(TypeInformation m) {		
 		if (this.locked) {
 			throw new IllegalArgumentException("type is locked for modification");
 		}
+		this.propertyViewImpl=null;
 		m.setOwnerType(this);
 		this.metaInfo.add(m);
 	}
@@ -450,6 +473,23 @@ public abstract class AbstractType implements IType {
 		}
 		if (type != null) {
 			this.addMeta(new PropertyIs(type, name));
+		}
+		return this;
+	}
+	
+	public final AbstractType declareProperty(String name, AbstractType type, boolean optional,boolean positional,Object defaultValue) {
+		if (defaultValue!=null) {
+			type=TypeOps.derive("", type);
+			type.addMeta(new Default(defaultValue));
+		}
+		if (!optional) {
+			this.addMeta(new HasPropertyRestriction(name));
+		}
+		if (type != null) {
+			this.addMeta(new PropertyIs(type, name,positional));
+		}
+		else if (positional) {
+			this.addMeta(new PropertyIs(BuiltIns.ANY, name,positional));
 		}
 		return this;
 	}
@@ -1021,7 +1061,26 @@ public abstract class AbstractType implements IType {
 	/** {@inheritDoc} */
 	@Override
 	public final Status validate(Object obj) {
-		return ac(obj).validateDirect(obj);
+		if (obj instanceof IParseError) {
+			return new Status(Status.ERROR, 0, ((IParseError) obj).getMessage(),obj);
+		}
+		AbstractType ac = ac(obj);
+		
+		if (!ac.isSubTypeOf(this)) {
+			String name2 = this.name;
+			if (this.isAnonimous())
+			{
+				name2=this.superType().name;
+			}
+			if (obj instanceof String) {
+				
+				return new Status(Status.ERROR, 0, "Expected "+name2+" but got "+obj,obj);
+			}
+			return new Status(Status.ERROR, 0, "Expected "+name2+" but got not compatible instance of "+ac.name,obj);
+		}
+		Status validateDirect = ac.validateDirect(obj);
+		validateDirect.setSource(obj);
+		return validateDirect;
 	}
 
 	/**
@@ -1329,6 +1388,8 @@ public abstract class AbstractType implements IType {
 	
 	protected boolean optional;
 
+	private PropertyViewImpl propertyViewImpl;
+
 	public boolean isOptional(){
 		return this.optional;
 	}
@@ -1347,5 +1408,9 @@ public abstract class AbstractType implements IType {
 
 	public void removeMeta(TypeInformation oneMeta) {
 		this.metaInfo.remove(oneMeta);
+	}
+
+	public boolean isSubTypeOf(String string) {		
+		return false;
 	}
 }

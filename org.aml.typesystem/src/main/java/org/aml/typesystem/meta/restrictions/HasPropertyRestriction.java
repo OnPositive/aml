@@ -32,7 +32,7 @@ public class HasPropertyRestriction extends AbstractRestricton {
 		if (ObjectAccess.propertyValue(this.propertyName, o) != null) {
 			return Status.OK_STATUS;
 		}
-		return new Status(Status.ERROR, 0, ",missing required property " + this.propertyName);
+		return new Status(Status.ERROR, 0, ",missing required property " + this.propertyName,o);
 	}
 
 	/** {@inheritDoc} */
@@ -72,7 +72,8 @@ public class HasPropertyRestriction extends AbstractRestricton {
 	@Override
 	public Status validate(ITypeRegistry registry) {
 		if (!ownerType.allSuperTypes().contains(BuiltIns.OBJECT)) {
-			return error("properties facet can only be used with objects");
+			Status error = error("properties facet can only be used with objects");
+			return error;
 		}
 		return Status.OK_STATUS;
 	}

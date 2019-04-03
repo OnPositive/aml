@@ -5,6 +5,9 @@ import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.ITypeRegistry;
 import org.aml.typesystem.RestrictionsConflict;
 import org.aml.typesystem.Status;
+import org.aml.typesystem.values.IArray;
+import org.aml.typesystem.values.IObject;
+import org.aml.typesystem.values.IParseError;
 import org.aml.typesystem.values.ObjectAccess;
 
 /**
@@ -18,6 +21,8 @@ public class PropertyIs extends IntersectRequires implements IMatchesProperty ,I
 	private final String name;
 
 	private final AbstractType requirement;
+	
+	protected boolean positional;
 
 	/**
 	 * <p>Constructor for PropertyIs.</p>
@@ -41,17 +46,39 @@ public class PropertyIs extends IntersectRequires implements IMatchesProperty ,I
 		this.requirement = requirement;
 		this.name = name;
 	}
+	
+	public PropertyIs(AbstractType requirement, String name,boolean positional) {
+		super();
+		this.requirement = requirement;
+		this.name = name;
+		this.positional=positional;
+	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
+		
 		final Object propertyValue = ObjectAccess.propertyValue(name, o);
 		if (propertyValue == null) {
 			return Status.OK_STATUS;
 		}
 		final Status validate = this.requirement.validate(propertyValue);
 		if (!validate.isOk()){
-			return new Status(Status.ERROR, 0, "value of property "+this.name+" "+validate.getMessage());
+			if (propertyValue instanceof IObject) {
+				return validate;
+			}
+			if (propertyValue instanceof IParseError) {
+				if (!((IParseError) propertyValue).getMessage().startsWith("should")) {
+					return validate;
+				}
+			}
+			if (propertyValue instanceof IArray&&requirement.isArray()) {
+				validate.setKey(this.name);
+				return validate;
+			}
+			Status status = new Status(Status.ERROR, 0, "value of property "+this.name+" "+validate.getMessage(),o);
+			status.setKey(this.name);
+			return status;
 		}
 		return validate;
 	}
@@ -135,6 +162,14 @@ public class PropertyIs extends IntersectRequires implements IMatchesProperty ,I
 	@Override
 	public AbstractType requiredType() {
 		return BuiltIns.OBJECT;
+	}
+
+	public boolean isPositional() {
+		return positional;
+	}
+
+	public void setPositional(boolean positional) {
+		this.positional = positional;
 	}
 
 }

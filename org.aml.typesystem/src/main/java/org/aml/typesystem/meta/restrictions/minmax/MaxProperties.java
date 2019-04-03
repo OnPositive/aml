@@ -1,6 +1,7 @@
 package org.aml.typesystem.meta.restrictions.minmax;
 
 import org.aml.typesystem.BuiltIns;
+import org.aml.typesystem.values.IKnowsPropertyCount;
 import org.aml.typesystem.values.ObjectAccess;
 
 /**
@@ -23,12 +24,16 @@ public class MaxProperties extends MinMaxRestriction {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "object should have not more then " + doubleValue() + " properties";
+		return "object should have not more then " + (int)doubleValue() + " properties";
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected Object extractValue(Object o) {
+		if (o instanceof IKnowsPropertyCount) {
+			IKnowsPropertyCount m=(IKnowsPropertyCount) o;
+			return m.propertyCount();
+		}
 		return ObjectAccess.properties(o).size();
 	}
 

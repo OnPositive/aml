@@ -60,4 +60,6 @@ public interface IProperty extends INamedEntity {
 	AbstractType range();
 
 	String description();
+
+	boolean isPositional();
 }

@@ -27,7 +27,7 @@ public class NothingRestriction extends InternalRestriction {
 		if (o == null) {
 			return Status.OK_STATUS;
 		}
-		return new Status(Status.ERROR, Status.NOTHING_CAN_PASS, "nothing can pass false except null");
+		return new Status(Status.ERROR, Status.NOTHING_CAN_PASS, "nothing can pass false except null",o);
 	}
 
 	/** {@inheritDoc} */

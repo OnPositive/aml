@@ -23,6 +23,7 @@ public class TypeOps {
 	 * @return a {@link org.aml.typesystem.AbstractType} object.
 	 */
 	public static AbstractType derive(String name, AbstractType... ankestors) {
+		
 		if (ankestors.length == 0) {
 			throw new IllegalArgumentException("At least one ancestor is needed");
 		}

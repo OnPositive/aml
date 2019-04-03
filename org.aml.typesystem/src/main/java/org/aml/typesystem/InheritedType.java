@@ -43,6 +43,33 @@ public class InheritedType extends AbstractType {
 			t.subTypes.add(this);
 		}
 	}
+	public void setSuperTypes(AbstractType...types) {
+		this.superTypes.forEach(v->{
+			v.subTypes.remove(this);
+		});
+		this.superTypes.clear();
+		for (AbstractType t:types) {
+			addSuperType(t);
+		}
+	}
+	public boolean isSubTypeOf(String string) {	
+		Set<AbstractType> allSuperTypes = this.allSuperTypes();
+		for (AbstractType t:allSuperTypes) {
+			if (t.name().equals(string)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public void setSuperType(AbstractType t) {
+		this.superTypes.forEach(v->{
+			v.subTypes.remove(this);
+		});
+		this.superTypes.clear();		
+		addSuperType(t);
+		
+	}
+	
 
 	/** {@inheritDoc} */
 	@Override

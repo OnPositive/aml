@@ -96,7 +96,7 @@ public class ANDRestricton extends InternalRestriction {
 	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
-		final Status okStatus = new Status(Status.OK, 0, "");
+		final Status okStatus = new Status(Status.OK, 0, "",this);
 		for (final AbstractRestricton r : this.options) {
 			okStatus.addSubStatus(r.validate(registry));
 		}

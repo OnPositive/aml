@@ -1,6 +1,7 @@
 package org.aml.typesystem;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * <p>Status class.</p>
@@ -27,7 +28,7 @@ public class Status {
 	/** Constant <code>OK=0</code> */
 	public static final int OK = 0;
 	/** Constant <code>OK_STATUS</code> */
-	public static final Status OK_STATUS = new Status(OK, 0, "");
+	public static final Status OK_STATUS = new Status(OK, 0, "",null);
 	/** Constant <code>RESTRICTIONS_CONFLICT=55343</code> */
 	public static final int RESTRICTIONS_CONFLICT = 55343;
 
@@ -38,8 +39,10 @@ public class Status {
 	protected String message;
 	protected int severity;
 	protected Object source;
-
+	protected String key;
+	protected boolean onKey;
 	protected ArrayList<Status> subStatus = new ArrayList<>();
+	
 
 	/**
 	 * <p>Constructor for Status.</p>
@@ -48,8 +51,15 @@ public class Status {
 	 * @param code a int.
 	 * @param message a {@link java.lang.String} object.
 	 */
-	public Status(int severity, int code, String message) {
+	public Status(int severity, int code, String message,Object source) {
 		super();
+		this.severity = severity;
+		this.code = code;
+		this.message = message;
+		this.source=source;
+	}
+	public Status(int severity, int code, String message) {
+		super();	
 		this.severity = severity;
 		this.code = code;
 		this.message = message;
@@ -111,5 +121,33 @@ public class Status {
 			return "OK";
 		}
 		return this.message;
+	}
+	public ArrayList<Status> getSubStatus() {
+		return subStatus;
+	}
+	
+	public void visitErrors(IStatusVisitor st) {
+		if (this.severity>=OK) {
+			st.startVisiting(this);
+			try {
+			this.subStatus.forEach(x->x.visitErrors(st));
+			}finally {
+				st.endVisiting(this);
+			}
+		}	
+		
+	}
+	public void setKey(String name) {
+		this.key=name;
+		this.subStatus.forEach(s->s.setKey(name));
+	}
+	public String getKey() {
+		return key;
+	}
+	public boolean isOnKey() {
+		return onKey;
+	}
+	public void setOnKey(boolean onKey) {
+		this.onKey = onKey;
 	}
 }

@@ -25,7 +25,7 @@ public class RecurentTypeRestriction extends InternalRestriction {
 		if (o == null) {
 			return Status.OK_STATUS;
 		}
-		return new Status(Status.ERROR, Status.NOTHING_CAN_PASS, message());
+		return new Status(Status.ERROR, Status.NOTHING_CAN_PASS, message(),o);
 	}
 
 	/** {@inheritDoc} */
@@ -76,6 +76,6 @@ public class RecurentTypeRestriction extends InternalRestriction {
 	/** {@inheritDoc} */
 	@Override
 	public Status validate(ITypeRegistry registry) {
-		return new Status(Status.ERROR,0,message());
+		return new Status(Status.ERROR,0,message(),this);
 	}
 }

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Typesystem
+Bundle-SymbolicName: org.aml.typesystem
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.aml.typesystem,
+ org.aml.typesystem.acbuilder,
+ org.aml.typesystem.beans,
+ org.aml.typesystem.internal.annotations,
+ org.aml.typesystem.meta,
+ org.aml.typesystem.meta.facets,
+ org.aml.typesystem.meta.facets.internal,
+ org.aml.typesystem.meta.restrictions,
+ org.aml.typesystem.meta.restrictions.minmax,
+ org.aml.typesystem.tests,
+ org.aml.typesystem.values

@@ -51,7 +51,6 @@ public class Raml2JavaMojo extends AbstractDependencyFilterMojo{
 	
 	@Parameter
 	protected String defaultPackageName="org.aml.samples";
-	
 		
 	@Parameter
 	protected boolean gsonSupport=false;//done

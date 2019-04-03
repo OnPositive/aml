@@ -48,7 +48,7 @@ public class AdditionalProperties extends IntersectRequires implements IMatchesP
 	/** {@inheritDoc} */
 	@Override
 	public Status check(Object o) {
-		final Status status = new Status(Status.OK, 0, "");
+		final Status status = new Status(Status.OK, 0, "",o);
 		for (final String s : ObjectAccess.properties(o)) {
 			boolean alreadyMatched = false;
 			for (final IMatchesProperty p : this.baseType.meta(IMatchesProperty.class)) {

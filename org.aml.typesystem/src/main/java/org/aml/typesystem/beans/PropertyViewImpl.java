@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.meta.TypeInformation;
@@ -14,6 +15,7 @@ import org.aml.typesystem.meta.restrictions.AdditionalProperties;
 import org.aml.typesystem.meta.restrictions.HasPropertyRestriction;
 import org.aml.typesystem.meta.restrictions.IMatchesProperty;
 import org.aml.typesystem.meta.restrictions.MapPropertyIs;
+import org.aml.typesystem.meta.restrictions.PropertyIs;
 
 /**
  * <p>PropertyViewImpl class.</p>
@@ -139,6 +141,10 @@ public class PropertyViewImpl implements IPropertyView {
 			value2.isMap = true;
 			value2.required = true;
 		}
+		if (ps instanceof PropertyIs) {
+			PropertyIs m=(PropertyIs) ps;
+			value2.positional=m.isPositional();
+		}
 		value2.type = ps.range();
 		value2.id = ps.id();
 		props.put(ps.id(), value2);
@@ -179,5 +185,10 @@ public class PropertyViewImpl implements IPropertyView {
 	@Override
 	public IProperty property(String name) {
 		return allprops.get(name);
+	}
+
+	@Override
+	public List<IProperty> positionalProperties() {
+		return this.properties().stream().filter(x->x.isPositional()).collect(Collectors.toList());
 	}
 }

@@ -33,7 +33,7 @@ public class ComponentShouldBeOfType extends IntersectRequires implements IRange
 	@Override
 	public Status check(Object o) {
 		final int length = ObjectAccess.length(o);
-		final Status result = new Status(Status.OK, 0, "");
+		final Status result = new Status(Status.OK, 0, "",o);
 		for (int i = 0; i < length; i++) {
 			result.addSubStatus(type.validate(ObjectAccess.item(o, i)));
 		}

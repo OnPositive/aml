@@ -12,8 +12,6 @@ import org.aml.typesystem.reflection.ReflectionType;
 import org.junit.Assert;
 import org.junit.Test;
 
-import junit.framework.TestCase;
-
 public class BasicTests {
 
 	@Test

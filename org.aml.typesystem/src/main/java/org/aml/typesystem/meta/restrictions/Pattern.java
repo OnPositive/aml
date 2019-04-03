@@ -29,7 +29,7 @@ public class Pattern extends FacetRestriction<String> {
 		if (val instanceof String) {
 			final String str = (String) val;
 			if (!str.matches(value)) {
-				return new Status(Status.ERROR, 0, "string should match to " + this.value);
+				return new Status(Status.ERROR, 0, "string should match to " + this.value,o);
 			}
 		}
 		return Status.OK_STATUS;

@@ -53,7 +53,7 @@ public abstract class AbstractRestricton extends TypeInformation {
 	 * @return a {@link org.aml.typesystem.Status} object.
 	 */
 	protected Status error() {
-		return new Status(Status.ERROR, 0, this.toString());
+		return new Status(Status.ERROR, 0, this.toString(),null);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public abstract class AbstractRestricton extends TypeInformation {
 	 * @return a {@link org.aml.typesystem.Status} object.
 	 */
 	protected Status error(String message) {
-		return new Status(Status.ERROR, 0, message);
+		return new Status(Status.ERROR, 0, message,null);
 	}
 
 	/**

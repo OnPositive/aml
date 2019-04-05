@@ -138,6 +138,9 @@ public class Status {
 		
 	}
 	public void setKey(String name) {
+		if (this.key!=null) {
+			return;
+		}
 		this.key=name;
 		this.subStatus.forEach(s->s.setKey(name));
 	}
@@ -149,5 +152,8 @@ public class Status {
 	}
 	public void setOnKey(boolean onKey) {
 		this.onKey = onKey;
+	}
+	public void setSeverity(int i) {
+		this.severity=i;
 	}
 }

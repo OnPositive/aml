@@ -1064,9 +1064,10 @@ public abstract class AbstractType implements IType {
 		if (obj instanceof IParseError) {
 			return new Status(Status.ERROR, 0, ((IParseError) obj).getMessage(),obj);
 		}
+		
 		AbstractType ac = ac(obj);
 		
-		if (!ac.isSubTypeOf(this)) {
+		if (!ac.isSubTypeOf(this)&&!this.isUnion()) {
 			String name2 = this.name;
 			if (this.isAnonimous())
 			{

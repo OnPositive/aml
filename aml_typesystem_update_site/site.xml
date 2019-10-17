@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.onpositive.aml_1.0.0.qualifier.jar" id="com.onpositive.aml" version="1.0.0.qualifier"/>
+</site>

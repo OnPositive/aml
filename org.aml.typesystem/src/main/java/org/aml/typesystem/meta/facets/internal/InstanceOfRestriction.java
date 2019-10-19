@@ -30,6 +30,24 @@ public class InstanceOfRestriction extends InternalRestriction {
 		if (clazz.isInstance(o)) {
 			return Status.OK_STATUS;
 		}
+		if (o instanceof String) {
+			if (clazz==Number.class) {
+				try {
+					Double.parseDouble(o.toString());
+					return Status.OK_STATUS;
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+			if (clazz==Integer.class||clazz==Long.class) {
+				try {
+					Long.parseLong(o.toString());
+					return Status.OK_STATUS;
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		}
 		return error();
 	}
 
